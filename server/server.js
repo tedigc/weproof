@@ -1,10 +1,14 @@
-var express = require('express');
-var morgan  = require('morgan');
-var path    = require('path');
+var express           = require('express');
+var morgan            = require('morgan');
+var path              = require('path');
+var webpack           = require('webpack');
+var webpackMiddleware = require('webpack-dev-middleware');
+var webpackConfig     = require('../webpack.dev.config.js');
 
 var port = process.env.PORT || 8888; 
 var app  = express();
 
+app.use(webpackMiddleware(webpack(webpackConfig)));
 app.use(morgan('dev'));
 
 app.get('/*', function(req, res) {
