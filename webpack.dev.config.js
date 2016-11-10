@@ -1,5 +1,7 @@
 var webpack = require('webpack');
-var path    = require('path');
+var path = require('path');
+var autoprefixer = require('autoprefixer');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var BUILD_DIR = path.resolve(__dirname, 'dist/');
 var APP_DIR   = path.resolve(__dirname, 'client/');
@@ -21,11 +23,20 @@ var config = {
         include : APP_DIR,
         loaders : [ 'babel-loader' ],
         exclude : /node_modules/
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css?modules',
+        include: /flexboxgrid/,
       }
     ]
   },
-  resolve : {
-    extensions : ['', '.js', '.jsx']
+  resolve: {
+    extensions: ['', '.jsx', '.styl', '.js', '.json'],
+    modulesDirectories: [
+      'node_modules',
+      path.resolve(__dirname, './node_modules')
+    ]
   },
   plugins : [
     new webpack.NoErrorsPlugin(),

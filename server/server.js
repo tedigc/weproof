@@ -1,7 +1,6 @@
-var express           = require('express');
-var morgan            = require('morgan');
-var path              = require('path');
-
+var express = require('express');
+var morgan  = require('morgan');
+var path    = require('path');
 var webpack              = require('webpack');
 var webpackMiddleware    = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
@@ -19,7 +18,7 @@ app.use(webpackMiddleware(compiler, {
 }));
 app.use(webpackHotMiddleware(compiler));
 
-
+app.use(express.static(__dirname));
 app.use(morgan('dev'));
 
 app.get('/*', function(req, res) {
