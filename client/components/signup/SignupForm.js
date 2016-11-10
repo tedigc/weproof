@@ -26,7 +26,8 @@ class SignupForm extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    console.log(this.state);
+    console.log('hi');
+    this.props.userSignupRequest(this.state);
   }
 
   render() {
@@ -40,6 +41,7 @@ class SignupForm extends React.Component {
               <CardText>
 
                 <form onSubmit={this.onSubmit}>
+                
                   {/* Username */}
                   <div className="row">
                     <TextField 
@@ -50,6 +52,7 @@ class SignupForm extends React.Component {
                       type="text" 
                     />
                   </div>
+
                   {/* E-mail */}
                   <div className="row">
                     <TextField 
@@ -60,6 +63,7 @@ class SignupForm extends React.Component {
                       type="email" 
                     />
                   </div>
+
                   {/* Password */}
                   <div className="row">
                     <TextField 
@@ -70,6 +74,7 @@ class SignupForm extends React.Component {
                       type="password" 
                     />
                   </div>
+
                   {/* Confirm Password */}
                   <div className="row">
                     <TextField 
@@ -80,6 +85,7 @@ class SignupForm extends React.Component {
                       type="password" 
                     />
                   </div>
+
                   <div className="row">
                     <RaisedButton type="submit" label="Submit" primary={true}/>
                   </div>
@@ -93,6 +99,10 @@ class SignupForm extends React.Component {
       </div>
     );
   }
+}
+
+SignupForm.propTypes = {
+  userSignupRequest : React.PropTypes.func.isRequired
 }
 
 export default SignupForm;
