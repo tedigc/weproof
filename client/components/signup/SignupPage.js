@@ -8,7 +8,7 @@ class SignupPage extends React.Component {
   render() {
     const { userSignupRequest } = this.props;
     return (
-      <div>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
         <SignupForm userSignupRequest={userSignupRequest} />
       </div>
     );

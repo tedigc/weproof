@@ -11,7 +11,9 @@ class SignupForm extends React.Component {
       'email'           : '',
       'username'        : '',
       'password'        : '',
-      'confirmPassword' : ''
+      'passwordConfirm' : '',
+      'isLoading'       : false,
+      'errors'          : {}
     }
 
     this.onChange = this.onChange.bind(this);
@@ -26,77 +28,74 @@ class SignupForm extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    console.log('hi');
-    this.props.userSignupRequest(this.state);
+    this.setState({ errors : {}, isLoading : true });
+    this.props.userSignupRequest(this.state)
+      .then((res) => console.log(response))
+      .catch((err) => {
+        this.setState({ errors : err.response.data, isLoading : false });
+      });
   }
 
   render() {
     return (
-      <div>
-        <div className="row" >
-          <div className="col-md-6 col-md-offset-3">
+      <Card style={{width: 500}}>
+      <div style={{margin: 20}}>
+        <CardTitle title="Sign up" />
+        <CardText>
 
-            <Card>
-              <CardTitle title="Sign up" />
-              <CardText>
+          <form onSubmit={this.onSubmit} style={{display: 'flex', flexDirection: 'column'}}>
+          
+            {/* Username */}
+            <TextField 
+              value={this.state.username} 
+              onChange={this.onChange} 
+              name="username"  
+              hintText="Username"
+              type="text"
+              errorText={this.state.errors.username}
+            />
 
-                <form onSubmit={this.onSubmit}>
-                
-                  {/* Username */}
-                  <div className="row">
-                    <TextField 
-                      value={this.state.username} 
-                      onChange={this.onChange} 
-                      name="username"  
-                      hintText="Username"
-                      type="text" 
-                    />
-                  </div>
+            {/* E-mail */}
+            <TextField 
+              value={this.state.email} 
+              onChange={this.onChange} 
+              name="email"  
+              hintText="E-mail"
+              type="email" 
+              errorText={this.state.errors.email}
+            />
 
-                  {/* E-mail */}
-                  <div className="row">
-                    <TextField 
-                      value={this.state.email} 
-                      onChange={this.onChange} 
-                      name="email"  
-                      hintText="E-mail"
-                      type="email" 
-                    />
-                  </div>
+            {/* Password */}
+            <TextField 
+              value={this.state.password} 
+              onChange={this.onChange} 
+              name="password"  
+              hintText="Password"
+              type="password"
+              errorText={this.state.errors.password}
+            />
 
-                  {/* Password */}
-                  <div className="row">
-                    <TextField 
-                      value={this.state.password} 
-                      onChange={this.onChange} 
-                      name="password"  
-                      hintText="Password"
-                      type="password" 
-                    />
-                  </div>
+            {/* Confirm Password */}
+            <TextField 
+              value={this.state.passwordConfirm} 
+              onChange={this.onChange} 
+              name="passwordConfirm"  
+              hintText="Confirm Password"
+              type="password" 
+              errorText={this.state.errors.passwordConfirm}
+            />
 
-                  {/* Confirm Password */}
-                  <div className="row">
-                    <TextField 
-                      value={this.state.confirmPassword} 
-                      onChange={this.onChange} 
-                      name="confirmPassword"  
-                      hintText="Confirm Password"
-                      type="password" 
-                    />
-                  </div>
+            {/* Submit button */}
+            <div style={{ display : "flex", justifyContent : "flex-end"}}>
+              <RaisedButton disabled={this.state.isLoading} type="submit" label="Submit" primary={true}/>
+            </div>
 
-                  <div className="row">
-                    <RaisedButton type="submit" label="Submit" primary={true}/>
-                  </div>
-                </form>
+          </form>
 
-              </CardText>
-            </Card>
-
-          </div>
-        </div>        
+        </CardText>
       </div>
+      </Card>
+
     );
   }
 }

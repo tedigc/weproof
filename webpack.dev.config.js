@@ -23,16 +23,11 @@ var config = {
         include : APP_DIR,
         loaders : [ 'babel-loader' ],
         exclude : /node_modules/
-      },
-      {
-        test: /\.css$/,
-        loader: 'style!css?modules',
-        include: /flexboxgrid/,
       }
     ]
   },
   resolve: {
-    extensions: ['', '.jsx', '.styl', '.js', '.json'],
+    extensions: ['', '.jsx', '.js', '.json'],
     modulesDirectories: [
       'node_modules',
       path.resolve(__dirname, './node_modules')
