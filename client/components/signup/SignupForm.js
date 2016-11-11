@@ -2,6 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField  from 'material-ui/TextField';
 import { Card, CardTitle, CardText, CardActions, CardHeader } from 'material-ui/Card';
+import validateInput from '../../../server/shared/validations/signup';
 
 class SignupForm extends React.Component {
 
@@ -28,12 +29,22 @@ class SignupForm extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    this.setState({ errors : {}, isLoading : true });
-    this.props.userSignupRequest(this.state)
-      .then((res) => console.log(response))
-      .catch((err) => {
-        this.setState({ errors : err.response.data, isLoading : false });
-      });
+    if(this.isValid()) {
+      this.setState({ errors : {}, isLoading : true });
+      this.props.userSignupRequest(this.state)
+        .then((res) => console.log(response))
+        .catch((err) => {
+          this.setState({ errors : err.response.data, isLoading : false });
+        });
+    }
+  }
+
+  isValid() {
+    var validation = validateInput(this.state);
+    if(!validation.isValid) {
+      this.setState({ errors : validation.errors });
+    }
+    return validation.isValid;
   }
 
   render() {

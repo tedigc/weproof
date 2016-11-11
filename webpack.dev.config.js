@@ -20,7 +20,11 @@ var config = {
     loaders : [ 
       {
         test    : /\.jsx?$/,
-        include : APP_DIR,
+        include : [
+          __dirname + '/client/',
+          __dirname + '/server/',
+          __dirname + '/server/shared'
+        ],
         loaders : [ 'babel-loader' ],
         exclude : /node_modules/
       }
