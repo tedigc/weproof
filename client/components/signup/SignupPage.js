@@ -25,12 +25,4 @@ SignupPage.propTypes = {
   addFlashMessage   : React.PropTypes.func.isRequired
 }
 
-// function mapStateToProps(state) {
-//   return {};
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return { userSignupRequest };
-// }
-
 export default connect(null, { userSignupRequest, addFlashMessage })(SignupPage);

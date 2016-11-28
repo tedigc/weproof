@@ -24,7 +24,7 @@ class SignupForm extends React.Component {
   onChange(event) {
     this.setState({
       [event.target.name] : event.target.value
-    })
+    });
   }
 
   onSubmit(event) {
@@ -66,7 +66,7 @@ class SignupForm extends React.Component {
             {/* Username */}
             <TextField 
               value={this.state.username} 
-              onChange={this.onChange} 
+              onChange={this.onChange}
               name="username"  
               hintText="Username"
               type="text"
