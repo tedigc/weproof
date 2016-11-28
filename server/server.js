@@ -10,6 +10,7 @@ var webpackConfig        = require('../webpack.dev.config.js');
 
 // routes
 var users = require('./controllers/users');
+var auth = require('./controllers/auth');
 
 var port = process.env.PORT || 8888; 
 var app  = express();
@@ -29,6 +30,7 @@ app.use(bodyParser.json());
 
 // set up routes
 app.use('/api/users', users);
+app.use('/api/auth', auth);
 
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
