@@ -25,7 +25,7 @@ router.post('/', function(req, res) {
         res.status(401).json({ errors: { form: "Incorrect Password" } });
       }
     } else {
-      res.status(401).json({ errors: { form: "We couldn't find a user with that username / Email" } });
+      res.status(401).json({ errors: { form: "We couldn't find a user with that Username / Email" } });
     }
   });
 });

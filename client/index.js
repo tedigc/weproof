@@ -5,7 +5,10 @@ import { Router, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk'
+import jwt from 'jsonwebtoken';
 import rootReducer from './reducers/rootReducer';
+import setAuthorizationToken from './utils/setAuthorizationToken';
+import { setCurrentUser } from './actions/authActions';
 
 // material-ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -23,6 +26,11 @@ const store = createStore(
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
+
+if(localStorage.jwtToken) {
+  setAuthorizationToken(localStorage.jwtToken);
+  store.dispatch(setCurrentUser(jwt.decode(localStorage.jwtToken)));
+}
 
 ReactDOM.render(
   <Provider store={store}>

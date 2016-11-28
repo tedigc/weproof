@@ -4,7 +4,7 @@ import TextField  from 'material-ui/TextField';
 import { Card, CardTitle, CardText, CardActions, CardHeader } from 'material-ui/Card';
 import validateInput from '../../../server/shared/validations/login';
 import { connect } from 'react-redux';
-import { login } from '../../actions/login';
+import { login } from '../../actions/authActions';
 
 class LoginForm extends React.Component {
 
@@ -34,7 +34,7 @@ class LoginForm extends React.Component {
       this.props.login(this.state)
         .then(
           (res) => { this.context.router.push('/'); },
-          (err) => { this.setState({ errors: err.data.errors, isLoading: false});}
+          (err) => { this.setState({ errors: err.form, isLoading: false}); }
         );
     }
   }

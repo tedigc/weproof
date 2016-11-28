@@ -42,6 +42,10 @@ var config = {
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ],
+  node : {
+    net: 'empty',
+    dns: 'empty'
+  },
   devTools : 'eval-source-map'
 }
 
