@@ -10,7 +10,7 @@ export function setCurrentUser(user) {
       user
     }
   };
-};
+}
 
 export function login(data) {
   return dispatch => {
@@ -21,7 +21,7 @@ export function login(data) {
       dispatch(setCurrentUser(jwt.decode(token)));
     });
   };
-};
+}
 
 export function logout() {
   return dispatch => {
@@ -29,4 +29,4 @@ export function logout() {
     setAuthorizationToken(false);
     dispatch(setCurrentUser({}));
   };
-};
+}

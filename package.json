@@ -5,7 +5,8 @@
   "repository": "https://github.com/tedigc/individual-project",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon --watch server -- server/server.js"
+    "start": "npm server/server.js",
+    "watch": "nodemon --watch server -- server/server.js"
   },
   "author": "tedigc",
   "license": "ISC",
@@ -33,14 +34,14 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "shortid": "^2.2.6",
-    "validator": "^6.1.0"
+    "validator": "^6.1.0",
+    "nodemon": "^1.11.0"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-loader": "^6.2.7",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
-    "nodemon": "^1.11.0",
     "npm": "^3.10.9",
     "react-hot-loader": "^3.0.0-beta.6",
     "webpack": "^1.13.3",
