@@ -1,0 +1,12 @@
+# server
+server/node_modules
+server/npm-debug.log
+
+# client
+client/node_modules
+client/npm-debug.log
+client/coverage
+client/.env
+
+# Misc
+.DS_Store
