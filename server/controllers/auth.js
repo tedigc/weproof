@@ -2,12 +2,14 @@ var express = require('express');
 var bcrypt  = require('bcrypt');
 var jwt     = require('jsonwebtoken');
 
-var config = require('../config');
 var User = require('../models/user');
 
 var router = express.Router();
 
+var jwtSecret = process.env.JWT_SECRET || 'mysecretkey';
+
 router.post('/', function(req, res) {
+  console.log(jwtSecret);
   var identifier = req.body.identifier;
   var password   = req.body.password;
   User.query({
@@ -19,7 +21,7 @@ router.post('/', function(req, res) {
         var token = jwt.sign({
           id       : user.get('id'),
           username : user.get('username')
-        }, config.jwtSecret);
+        }, jwtSecret);
         res.json({ token });
       } else {
         res.status(401).json({ errors: { form: "Incorrect Password" } });
