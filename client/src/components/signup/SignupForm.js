@@ -1,9 +1,7 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField  from 'material-ui/TextField';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
+import { Button, Card, Content, Form, Group, Input } from 'semantic-ui-react';
 
 function validateInput(data) {
   var errors = {};
@@ -87,64 +85,65 @@ class SignupForm extends React.Component {
 
   render() {
     return (
-      <Card style={{width: 500}}>
-      <div style={{margin: 20}}>
-        <CardTitle title="Sign up" />
-        <CardText>
-
-          <form onSubmit={this.onSubmit} style={{display: 'flex', flexDirection: 'column'}}>
-          
-            {/* Username */}
-            <TextField 
-              value={this.state.username} 
-              onChange={this.onChange}
-              name="username"  
-              hintText="Username"
-              type="text"
-              errorText={this.state.errors.username}
+      <Card style={{ width: 400}}>
+        <Card.Content header="Join Our Community"/>
+        <Card.Content>
+        <Form loading={this.state.isLoading} onSubmit={this.onSubmit}>
+          {/* Username */}
+          <Form.Field>
+            <label>Username</label>
+            <input 
+            name="username" 
+            type="text" 
+            placeholder="Username"
+            value={this.state.identifier} 
+            onChange={this.onChange} 
             />
+          </Form.Field>
 
-            {/* E-mail */}
-            <TextField 
-              value={this.state.email} 
-              onChange={this.onChange} 
-              name="email"  
-              hintText="E-mail"
-              type="email" 
-              errorText={this.state.errors.email}
+          {/* Email */}
+          <Form.Field>
+            <label>Email</label>
+            <input 
+            name="email" 
+            type="email" 
+            placeholder="user@domain.com"
+            value={this.state.identifier} 
+            onChange={this.onChange} 
             />
+          </Form.Field>
 
+          <Form.Group widths="equal">
             {/* Password */}
-            <TextField 
-              value={this.state.password} 
-              onChange={this.onChange} 
-              name="password"  
-              hintText="Password"
-              type="password"
-              errorText={this.state.errors.password}
-            />
-
-            {/* Confirm Password */}
-            <TextField 
-              value={this.state.passwordConfirm} 
-              onChange={this.onChange} 
-              name="passwordConfirm"  
-              hintText="Confirm Password"
+            <Form.Field>
+              <label>Password</label>
+              <input 
+              name="password" 
               type="password" 
-              errorText={this.state.errors.passwordConfirm}
-            />
+              placeholder="* * * * * * * *"
+              value={this.state.identifier} 
+              onChange={this.onChange} 
+              />
+            </Form.Field>
 
-            {/* Submit button */}
-            <div style={{ display : "flex", justifyContent : "flex-end"}}>
-              <RaisedButton disabled={this.state.isLoading} type="submit" label="Submit" primary={true}/>
-            </div>
+            {/* Password Confirmation */}
+            <Form.Field>
+              <label>Confirm Password</label>
+              <input 
+              name="passwordConfirm" 
+              type="password" 
+              placeholder="* * * * * * * *"
+              value={this.state.identifier} 
+              onChange={this.onChange} 
+              />
+            </Form.Field>
+          </Form.Group>
 
-          </form>
 
-        </CardText>
-      </div>
+          <Button type='submit' primary>Submit</Button>
+        </Form>
+        </Card.Content>
       </Card>
-
     );
   }
 }

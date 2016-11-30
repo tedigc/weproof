@@ -1,11 +1,9 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField  from 'material-ui/TextField';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { connect } from 'react-redux';
 import { login } from '../../actions/authActions';
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
+import { Button, Card, Content, Field, Form, Input } from 'semantic-ui-react';
 
 function validateInput(data) {
   var errors = {};
@@ -70,41 +68,38 @@ class LoginForm extends React.Component {
   render() {
     return (
       <Card>
-        <CardTitle title="Log in"/>
-        <CardText>
-          <form onSubmit={this.onSubmit}>
+        <Card.Content header="Log in"/>
+        <Card.Content>
+          <Form loading={this.state.isLoading} onSubmit={this.onSubmit}>
 
-            <div style={{ display: "flex", flexDirection: "column"}}>
-              
-              {/* Username field */}
-              <TextField
-                value={this.state.identifier} 
-                onChange={this.onChange}
-                name="identifier"  
-                hintText="Username / Email"
-                type="text"
-                errorText={this.state.errors.identifier}
+            {/* Username / Email */}
+            <Form.Field>
+              <label>Username / Email</label>
+              <input 
+              name="identifier" 
+              type="text" 
+              placeholder='username / user@domain.com' 
+              value={this.state.identifier} 
+              onChange={this.onChange} 
               />
+            </Form.Field>
 
-              {/* Password field */}
-              <TextField
-                value={this.state.password} 
-                onChange={this.onChange}
-                name="password"  
-                hintText="Password"
+            {/* Password */}
+            <Form.Field>
+              <label>Password</label>
+              <input 
+                name="password"
                 type="password"
-                errorText={this.state.errors.password}
+                placeholder='* * * * * * * *'
+                value={this.state.password}
+                onChange={this.onChange}
               />
+            </Form.Field>
 
-              {/* Submit button */}
-              <div style={{ display : "flex", justifyContent : "flex-end"}}>
-                <RaisedButton disabled={this.state.isLoading} type="submit" label="Submit" primary={true}/>
-              </div>
-
-            </div>
-
-          </form>
-        </CardText>
+            <Button type='submit' primary>Submit</Button>
+            
+          </Form>
+        </Card.Content>
       </Card>
     );
   }

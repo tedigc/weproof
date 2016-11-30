@@ -5,9 +5,12 @@
   "repository": "https://github.com/tedigc/individual-project",
   "main": "server.js",
   "scripts": {
-    "start": "node server/server.js",
-    "watch": "nodemon --watch server -- server/server.js"
+    "start": "node server/src/server.js",
+    "watch": "nodemon --watch server -- server/src/server.js"
   },
   "author": "tedigc",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^6.1.0"
+  }
 }

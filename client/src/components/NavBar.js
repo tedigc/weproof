@@ -1,17 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
-import AppBar     from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import MenuItem from 'material-ui/MenuItem';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { connect } from 'react-redux';
 import { logout } from '../actions/authActions';
-
-const style = {
-  color : "white"
-};
+import { Menu } from 'semantic-ui-react'
 
 class NavBar extends React.Component {
 
@@ -27,25 +18,50 @@ class NavBar extends React.Component {
 
   render() {
     const { isAuthenticated } = this.props.auth;
+    const activeItem = 'sign-in';
+
     const guestOptions = (
-      <div>
-        <FlatButton label="Sign up" style={style} containerElement={<Link to="/signup"/>}/>
-        <FlatButton label="Log in" style={style} containerElement={<Link to="/login"/>}/>
-      </div>
+      <Menu.Menu position="right">
+        <Menu.Item
+          name='signup'
+          active={activeItem === 'signup'}
+          onClick={this.handleItemClick}
+        >
+          <Link to='/signup' activeClassName='active'>
+            Sign up
+          </Link>
+        </Menu.Item>
+        <Menu.Item
+          name='login'
+          active={activeItem === 'login'}
+          onClick={this.handleItemClick}
+        >
+          <Link to='/login' activeClassName='active'>
+            Log in
+          </Link>
+        </Menu.Item>
+      </Menu.Menu>
     );
 
     const userOptions = (
-      <IconMenu
-      iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-      targetOrigin={{horizontal: 'right', vertical: 'top'}}
-      anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-        <MenuItem primaryText="Settings"/>
-        <MenuItem primaryText="Help"/>
-        <MenuItem primaryText="Sign out" onClick={this.logout}/>
-      </IconMenu>
+      <Menu.Item
+        name='logout'
+        position="right"
+        active={activeItem === 'signup'}
+        onClick={this.logout}
+      >
+        Log out
+      </Menu.Item>
     );
     return (
-      <AppBar title="Individual Project" iconElementRight={ isAuthenticated ? userOptions : guestOptions}/>
+      <Menu stackable>
+        <Menu.Item>
+          <img src='http://semantic-ui.com/images/logo.png' />
+        </Menu.Item>
+
+        {isAuthenticated ? userOptions : guestOptions }
+
+      </Menu>
     );
   }
 
