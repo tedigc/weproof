@@ -1,7 +1,7 @@
 import React from 'react';
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
-import { Button, Card, Content, Form, Group, Input } from 'semantic-ui-react';
+import { Button, Card, Form } from 'semantic-ui-react';
 
 function validateInput(data) {
   var errors = {};

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { login } from '../../actions/authActions';
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
-import { Button, Card, Content, Field, Form, Input } from 'semantic-ui-react';
+import { Button, Card, Form } from 'semantic-ui-react';
 
 function validateInput(data) {
   var errors = {};
