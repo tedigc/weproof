@@ -1,8 +1,6 @@
 {
-  "name": "idv-project",
+  "name": "server",
   "version": "1.0.0",
-  "description": "individual project source code",
-  "repository": "https://github.com/tedigc/individual-project",
   "main": "server.js",
   "scripts": {
     "start": "nodemon --watch src -- src/server.js",
