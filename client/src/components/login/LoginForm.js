@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { login } from '../../actions/authActions';
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
-import { Button, Card, Form } from 'semantic-ui-react';
+import { Button, Card, Form, Message } from 'semantic-ui-react';
 
 function validateInput(data) {
   var errors = {};
@@ -21,7 +21,7 @@ function validateInput(data) {
   return {
     errors,
     isValid : isEmpty(errors)
-  }
+  };
 }
 
 class LoginForm extends React.Component {
@@ -37,6 +37,7 @@ class LoginForm extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.isValid  = this.isValid.bind(this);
+    this.renderErrorMessage = this.renderErrorMessage.bind(this);
   }
 
   onChange(event) {
@@ -52,7 +53,10 @@ class LoginForm extends React.Component {
       this.props.login(this.state)
         .then(
           (res) => { this.context.router.push('/'); },
-          (err) => { this.setState({ errors: err.form, isLoading: false}); }
+          (err) => { 
+            console.log(err.response.data.errors.form);
+            this.setState({ errors: err.response.data.errors, isLoading: false}); 
+          }
         );
     }
   }
@@ -65,34 +69,49 @@ class LoginForm extends React.Component {
     return validation.isValid;
   }
 
+  renderErrorMessage() {
+    console.log(this.state.errors.form);
+    if(this.state.errors.form) {
+      return <Message
+        error
+        header="Oops! Something went wrong."
+        content={this.state.errors.form}
+      />
+    } else {
+      return '';
+    }
+  }
+
   render() {
     return (
       <Card>
         <Card.Content header="Log in"/>
         <Card.Content>
+          {this.renderErrorMessage()}
           <Form loading={this.state.isLoading} onSubmit={this.onSubmit}>
-
             {/* Username / Email */}
             <Form.Field>
               <label>Username / Email</label>
-              <input 
+              <Form.Input 
               name="identifier" 
               type="text" 
               placeholder='username / user@domain.com' 
-              value={this.state.identifier} 
+              value={this.state.identifier}
               onChange={this.onChange} 
+              error={!!this.state.errors.identifier}
               />
             </Form.Field>
 
             {/* Password */}
             <Form.Field>
               <label>Password</label>
-              <input 
+              <Form.Input 
                 name="password"
                 type="password"
                 placeholder='* * * * * * * *'
                 value={this.state.password}
                 onChange={this.onChange}
+                error={!!this.state.errors.password}
               />
             </Form.Field>
 

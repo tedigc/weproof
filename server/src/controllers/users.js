@@ -52,8 +52,6 @@ router.post('/', function(req, res) {
         res.status(400).json(validation.errors);    
       }
     });
-
-  // var validation = validateInput(req.body);
 });
 
 module.exports = router;
