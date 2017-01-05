@@ -2,7 +2,7 @@
 
 ### Quick start
 
-Start postgreSQL. ***In its own window***, run the command:
+First, start postgreSQL ***in its own terminal window*** by running the command:
 ```
 $ postgres -D /usr/local/var/postgres 
 ```
@@ -41,9 +41,22 @@ Some useful commands:
 
 ### Building and deploying
 
+To deploy to Heroku, first ensure that the client application's latest build is available. Once that is done, you can then push to Heroku.
 
+```
+$ npm run build
+$ git add *
+$ git commit -m "Deploy to Heroku"
+$ git push heroku master --force
+```
 
-...
+If there are any issues once deployed, the commit can be amended with:
+
+```
+$ git add *
+$ git commit --amend
+$ git push heroku master --force
+```
 
 ---
 
@@ -53,6 +66,21 @@ Some useful commands:
 
 ---
 
-Misc Notes:
+#### Misc notes on previous problems:
 
-#### 'Uncaught SyntaxError: Unexpected token <'
+##### 'Uncaught SyntaxError: Unexpected token <'
+
+This can be caused by a number of things. The main way to resolve it *(I found)* was to ensure that the `index.html` and js files are being located/properly referenced. For example, when deploying to Heroku, I ran into this issue quite a lot, and it was caused by incorrectly importing static assets. To fix this, static files are set up using the following lines of code in `server.js`:
+
+```
+app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '../../client/build')));
+```
+
+and `index.html` is served up by this snippet of code from `server.js`:
+
+```
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../../client/build/index.html'));
+});
+```
