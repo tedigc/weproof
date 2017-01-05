@@ -11,7 +11,8 @@ var port = process.env.PORT || 8888;
 var app  = express();
 
 app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname, '../client/build')));
+app.use(express.static(path.join(__dirname, '../../client/build')));
+
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 

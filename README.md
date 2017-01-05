@@ -1,6 +1,6 @@
 # Individual Project
 
-#### Quick start
+### Quick start
 
 Start postgreSQL. ***In its own window***, run the command:
 ```
@@ -22,7 +22,7 @@ $ npm run client
 
 ---
 
-#### Interacting with the database through the shell
+### Interacting with the database through the shell
 
 In its own terminal window, type the command:
 
@@ -37,10 +37,22 @@ Some useful commands:
 <dbname>=# \dt       // List all tables
 ```
 
-#### Building and deploying
+---
+
+### Building and deploying
+
+
 
 ...
 
-#### Making migrations remotely
+---
+
+### Making migrations remotely
 
 ...
+
+---
+
+Misc Notes:
+
+#### 'Uncaught SyntaxError: Unexpected token <'
