@@ -5,12 +5,18 @@
   "repository": "https://github.com/tedigc/individual-project",
   "main": "server/src/server.js",
   "scripts": {
-    "start": "node server/src/server.js",
-    "watch": "nodemon --watch server -- server/src/server.js"
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "client": "cd client && npm start"
   },
   "author": "tedigc",
   "license": "ISC",
   "dependencies": {
     "pg": "^6.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "concurrently": "^3.1.0",
+    "react-scripts": "^0.8.4"
   }
 }

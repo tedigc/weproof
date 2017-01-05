@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var users = require('./controllers/users');
 var auth = require('./controllers/auth');
 
-var port = process.env.PORT || 8080; 
+var port = process.env.PORT || 8888; 
 var app  = express();
 
 app.use(express.static(__dirname));

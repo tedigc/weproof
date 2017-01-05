@@ -84,7 +84,7 @@ class LoginForm extends React.Component {
 
   render() {
     return (
-      <Card>
+      <Card style={{ width: 400}}>
         <Card.Content header="Log in"/>
         <Card.Content>
           {this.renderErrorMessage()}
