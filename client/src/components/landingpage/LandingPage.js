@@ -1,7 +1,7 @@
 import React from 'react';
 import NavBar from './NavBar';
 
-class App extends React.Component {
+class LandingPage extends React.Component {
 
   render() {
     return (
@@ -15,4 +15,4 @@ class App extends React.Component {
 
 }
 
-export default App;
+export default LandingPage;

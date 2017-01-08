@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../actions/authActions';
+import { login } from '../../../actions/authActions';
 import isEmpty from 'lodash/isEmpty';
 import Validator from 'validator';
 import { Button, Card, Form, Message } from 'semantic-ui-react';
@@ -70,7 +70,6 @@ class LoginForm extends React.Component {
   }
 
   renderErrorMessage() {
-    console.log(this.state.errors.form);
     if(this.state.errors.form) {
       return <Message
         error
