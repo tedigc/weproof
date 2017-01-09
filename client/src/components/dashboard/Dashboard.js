@@ -1,8 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { Button } from 'semantic-ui-react';
 import { logout } from '../../actions/authActions';
-import { Sidebar, Segment, Menu, Image, Icon, Header } from 'semantic-ui-react';
+import { Sidebar, Menu, Icon, Header } from 'semantic-ui-react';
+
+const divStyle = {
+  top: 0,
+  height: "800px",
+};
 
 class Dashboard extends React.Component {
 
@@ -18,26 +24,41 @@ class Dashboard extends React.Component {
 
   render() {
     return (
-      <Sidebar.Pushable as={Segment}>
+      <Sidebar.Pushable>
         <Sidebar as={Menu} animation='uncover' width='thin' visible={true} icon='labeled' vertical inverted>
-          <Menu.Item name='home'>
+          
+          <Menu.Item as={Link} to='home' name='home'>
             <Icon name='home' />
             Home
           </Menu.Item>
-          <Menu.Item name='gamepad'>
-            <Icon name='gamepad' />
-            Games
+
+          <Menu.Item as={Link} to='work' name='work'>
+            <Icon name='industry' />
+            <Link to='/work' activeClassName='active'>
+              Work
+            </Link>
           </Menu.Item>
-          <Menu.Item name='camera'>
-            <Icon name='camera' />
-            Channels
+
+          <Menu.Item as={Link} to='submitted' name='submitted'>
+            <Icon name='folder open' />
+            Submitted
           </Menu.Item>
+
+          <Menu.Item as={Link} to='settings' name='setting'>
+            <Icon name='setting' />
+            Settings
+          </Menu.Item>
+
+          <Menu.Item name='logout' onClick={this.logout}>
+            <Icon name='sign out' />
+            Log Out
+          </Menu.Item>
+
         </Sidebar>
         <Sidebar.Pusher>
-          <Segment basic>
-            <Header as='h3'>Application Content</Header>
-            <Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />
-          </Segment>
+          <div style={divStyle}>
+            {this.props.children}  
+          </div>
         </Sidebar.Pusher>
       </Sidebar.Pushable>
     );

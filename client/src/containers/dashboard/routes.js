@@ -1,10 +1,17 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
-import Dashboard   from '../../components/dashboard/Dashboard';
-import Greetings   from '../../components/Greetings';
+import Dashboard from '../../components/dashboard/Dashboard';
+import Home      from '../../components/dashboard/home/Home';
+import Work      from '../../components/dashboard/work/Work';
+import Submitted from '../../components/dashboard/submitted/Submitted';
+import Settings  from '../../components/dashboard/settings/Settings';
 
 export default (
   <Route path="/" component={Dashboard}>
-    <IndexRoute component={Greetings}/>
+    <IndexRoute component={Home}/>
+    <Route path="home"      component={Home}/>
+    <Route path="work"      component={Work}/>
+    <Route path="submitted" component={Submitted}/>
+    <Route path="settings"  component={Settings}/>
   </Route>
 );
