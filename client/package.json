@@ -10,8 +10,10 @@
     "jwt-decode": "^2.1.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-router": "^3.0.0",
     "semantic-ui-css": "^2.2.4",
-    "semantic-ui-react": "^0.63.5"
+    "semantic-ui-react": "^0.63.5",
+    "validator": "^6.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
