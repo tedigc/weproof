@@ -1,9 +1,9 @@
 import React from 'react';
+import Router from 'react-router';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { Button } from 'semantic-ui-react';
 import { logout } from '../../actions/authActions';
-import { Sidebar, Menu, Icon, Header } from 'semantic-ui-react';
+import { Sidebar, Menu, Icon } from 'semantic-ui-react';
 
 const divStyle = {
   top: 0,
@@ -20,6 +20,7 @@ class Dashboard extends React.Component {
   logout(e) {
     e.preventDefault();
     this.props.logout();
+    this.context.router.push('/');
   }
 
   render() {
@@ -69,5 +70,9 @@ class Dashboard extends React.Component {
 Dashboard.propTypes = {
   logout: React.PropTypes.func.isRequired
 };
+
+Dashboard.contextTypes = {
+  router : React.PropTypes.object.isRequired 
+}
 
 export default connect(null, { logout })(Dashboard);
