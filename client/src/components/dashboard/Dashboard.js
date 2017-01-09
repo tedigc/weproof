@@ -1,5 +1,4 @@
 import React from 'react';
-import Router from 'react-router';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/authActions';
