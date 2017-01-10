@@ -1,12 +1,16 @@
 import React from 'react';
-import { Header } from 'semantic-ui-react';
+import PageHeader from '../PageHeader';
 
 class Submitted extends React.Component {
 
   render() {
     return (
       <div>
-        <Header content="Submitted"/>
+        <PageHeader 
+          title="Submitted" 
+          description="View the tasks you have completed and submitted in detail" 
+          icon="tasks"
+        />
       </div>
     );
   }

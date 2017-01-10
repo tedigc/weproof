@@ -6,7 +6,10 @@ import { Sidebar, Menu, Icon } from 'semantic-ui-react';
 
 const divStyle = {
   top: 0,
-  height: "800px",
+  height: "100vh",
+  marginLeft: "32px",
+  marginRight: "250px",
+  marginTop: "32px"
 };
 
 class Dashboard extends React.Component {
@@ -24,43 +27,48 @@ class Dashboard extends React.Component {
 
   render() {
     return (
-      <Sidebar.Pushable>
-        <Sidebar as={Menu} animation='uncover' width='thin' visible={true} icon='labeled' vertical inverted>
-          
-          <Menu.Item as={Link} to='home' name='home'>
-            <Icon name='home' />
-            Home
-          </Menu.Item>
+      <div>
+        <Sidebar.Pushable>
+          <Sidebar as={Menu} animation='uncover' width='thin' visible={true} icon='labeled' vertical inverted>
+            
+            <Menu.Item as={Link} to='home' name='home'>
+              <Icon name='home' />
+              Home
+            </Menu.Item>
 
-          <Menu.Item as={Link} to='work' name='work'>
-            <Icon name='industry' />
-            <Link to='/work' activeClassName='active'>
-              Work
-            </Link>
-          </Menu.Item>
+            <Menu.Item as={Link} to='work' name='work'>
+              <Icon name='industry' />
+                Work
+            </Menu.Item>
 
-          <Menu.Item as={Link} to='submitted' name='submitted'>
-            <Icon name='folder open' />
-            Submitted
-          </Menu.Item>
+            <Menu.Item as={Link} to='submitted' name='submitted'>
+              <Icon name='tasks' />
+              Submitted
+            </Menu.Item>
 
-          <Menu.Item as={Link} to='settings' name='setting'>
-            <Icon name='setting' />
-            Settings
-          </Menu.Item>
+            <Menu.Item as={Link} to='excerpts' name='excerpts'>
+              <Icon name='folder open' />
+              My Excerpts
+            </Menu.Item>
 
-          <Menu.Item name='logout' onClick={this.logout}>
-            <Icon name='sign out' />
-            Log Out
-          </Menu.Item>
+            <Menu.Item as={Link} to='settings' name='setting'>
+              <Icon name='setting' />
+              Settings
+            </Menu.Item>
 
-        </Sidebar>
-        <Sidebar.Pusher>
-          <div style={divStyle}>
-            {this.props.children}  
-          </div>
-        </Sidebar.Pusher>
-      </Sidebar.Pushable>
+            <Menu.Item name='logout' onClick={this.logout}>
+              <Icon name='sign out' />
+              Log Out
+            </Menu.Item>
+
+          </Sidebar>
+          <Sidebar.Pusher>
+            <div style={divStyle}>
+              {this.props.children}  
+            </div>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+      </div>
     );
   }
 

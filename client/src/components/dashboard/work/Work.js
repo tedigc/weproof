@@ -1,12 +1,16 @@
 import React from 'react';
-import { Header } from 'semantic-ui-react';
+import PageHeader from '../PageHeader';
 
 class Work extends React.Component {
 
   render() {
     return (
       <div>
-        <Header content="Work"/>
+        <PageHeader 
+          title="Work" 
+          description="Complete correction tasks and earn rewards!" 
+          icon="industry"
+        />
       </div>
     );
   }

@@ -1,15 +1,17 @@
 import React from 'react';
+import { Container } from 'semantic-ui-react';
 import NavBar from './NavBar';
 
 class LandingPage extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <Container>
         <NavBar/>
-        <br/>
-        {this.props.children}
-      </div>
+        <div style={{ marginTop: "80px" }}>
+          {this.props.children}
+        </div>
+      </Container>
     );
   }
 

@@ -1,12 +1,16 @@
 import React from 'react';
-import { Header } from 'semantic-ui-react';
+import PageHeader from '../PageHeader';
 
 class Settings extends React.Component {
 
   render() {
     return (
       <div>
-        <Header content="Settings"/>
+        <PageHeader 
+          title="Settings" 
+          description="Change your user settings" 
+          icon="setting"
+        />
       </div>
     );
   }

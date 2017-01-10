@@ -7,12 +7,16 @@ class NavBar extends React.Component {
   render() {
     const activeItem = window.location.pathname;
     return (
-      <Menu stackable>
+      <Menu fixed="top" stackable>
         <Menu.Item
           as={Link}
           to="/"
         >
           <img src='http://semantic-ui.com/images/logo.png' alt="logo" />
+        </Menu.Item>
+
+        <Menu.Item header>
+          Individual Project
         </Menu.Item>
 
         <Menu.Menu position="right">
