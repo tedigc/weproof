@@ -4,8 +4,9 @@ var path       = require('path');
 var bodyParser = require('body-parser');
 
 // routes
-var users = require('./controllers/users');
-var auth = require('./controllers/auth');
+var users    = require('./controllers/users');
+var auth     = require('./controllers/auth');
+var excerpts = require('./controllers/excerpts');
 
 var port = process.env.PORT || 8888; 
 var app  = express();
@@ -17,8 +18,9 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 
 // set up routes
-app.use('/api/users', users);
-app.use('/api/auth' , auth);
+app.use('/api/users'    , users);
+app.use('/api/auth'     , auth);
+app.use('/api/excerpts' , excerpts);
 
 // serve up web application
 app.get('/*', function(req, res) {

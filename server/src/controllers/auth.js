@@ -2,11 +2,13 @@ var express = require('express');
 var bcrypt  = require('bcrypt');
 var jwt     = require('jsonwebtoken');
 
+var config = require('../config');
+
 var User = require('../models/user');
 
 var router = express.Router();
 
-var jwtSecret = process.env.JWT_SECRET || 'mysecretkey';
+var jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
 
 router.post('/', function(req, res) {
   var identifier = req.body.identifier;
