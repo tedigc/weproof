@@ -4,7 +4,8 @@ var authenticate = require('../middlewares/authenticate');
 var router = express.Router();
 
 router.post('/', authenticate, function(req, res) {
-  console.log(req.currentUser);
+  console.log(req.currentUser.attributes);
+  console.log(req.body);
   res.status(201).json({ success : true });
 });
 

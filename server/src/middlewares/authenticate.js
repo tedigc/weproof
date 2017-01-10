@@ -15,7 +15,10 @@ module.exports = function(req, res, next) {
         res.status(401).json({ error: "Failed to authenticate" });
       } else {
         // Token is valid
-        new User({ id: decoded.id }).fetch().then(function(user) {
+        User.query({
+          where: { id: decoded.id },
+          select: ['id', 'username', 'email']
+        }).fetch().then(function(user) {
           if(!user) {
             res.status(404).json({ error: "No such user" });
           } else {
