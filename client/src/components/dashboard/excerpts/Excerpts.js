@@ -15,11 +15,17 @@ class Excerpts extends React.Component {
       loading  : true,
       modalOpen: false
     };
-    this.handleOpen  = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+    this.refreshExcerpts = this.refreshExcerpts.bind(this);
+    this.handleOpen      = this.handleOpen.bind(this);
+    this.handleClose     = this.handleClose.bind(this);
   }
 
   componentWillMount() {
+    this.refreshExcerpts();
+  }
+
+  refreshExcerpts() {
+    this.setState({loading: true});
     this.props.fetchExcerpts()
       .then(
         (res) => {
@@ -35,6 +41,7 @@ class Excerpts extends React.Component {
           });
         }
       );
+    
   }
 
   handleOpen(e) {
@@ -62,18 +69,17 @@ class Excerpts extends React.Component {
 
         <Button onClick={this.handleOpen}><Icon name='plus'/>Create New</Button>
 
-        <Menu pointing secondary>
+        <Menu secondary>
           <Menu.Item name="all"/>
           <Menu.Item name="complete"/>
           <Menu.Item name="pending"/>
-          <Menu.Item name="refresh" position="right" as={Button} icon="refresh" />
+          <Menu.Item name="refresh" position="right" as={Button} onClick={this.refreshExcerpts} icon="refresh" />
         </Menu>
 
-        <Container fluid>
+        <Dimmer.Dimmable as={Item.Group} divided dimmed={this.state.loading}>
           <Dimmer active={this.state.loading} inverted>
-            <Loader inverted>Loading</Loader>
+            <Loader float="top" inverted>Loading</Loader>
           </Dimmer>
-          <Item.Group divided>
           {Object.keys(self.state.excerpts).map(function(key) {
             var item = self.state.excerpts[key];
             return <SingleExcerpt
@@ -85,8 +91,7 @@ class Excerpts extends React.Component {
                     created={item.created_at}
                   />
           })}
-          </Item.Group>
-        </Container>
+        </Dimmer.Dimmable>
         
         <Modal 
           open={this.state.modalOpen}
