@@ -3,14 +3,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/authActions';
 import { Sidebar, Menu, Icon } from 'semantic-ui-react';
-
-const divStyle = {
-  top: 0,
-  height: "100vh",
-  marginLeft: "32px",
-  marginRight: "250px",
-  marginTop: "32px"
-};
+import style from './Style';
 
 class Dashboard extends React.Component {
 
@@ -28,10 +21,9 @@ class Dashboard extends React.Component {
   render() {
     const activeItem = window.location.pathname;
     return (
-      <div>
-        <Sidebar.Pushable>
-          <Sidebar as={Menu} animation='uncover' width='thin' visible={true} icon='labeled' vertical inverted>
-            
+      <div style={style.container}>
+        <Sidebar style={style.menu} as={Menu} animation='uncover' width='thin' visible={true} icon='labeled' vertical inverted>
+
             <Menu.Item as={Link} to='home' name='home' active={activeItem === '/home;'}>
               <Icon name='home' />
               Home
@@ -62,13 +54,10 @@ class Dashboard extends React.Component {
               Log Out
             </Menu.Item>
 
-          </Sidebar>
-          <Sidebar.Pusher>
-            <div style={divStyle}>
-              {this.props.children}  
-            </div>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
+          </Sidebar>          
+          <div style={style.main}>
+            {this.props.children}  
+          </div>
       </div>
     );
   }
