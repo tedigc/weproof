@@ -22,23 +22,6 @@ $ npm run client
 
 ---
 
-### Interacting with the database through the shell
-
-In its own terminal window, type the command:
-
-```
-$ psql <dbname>
-```
-
-Some useful commands:
-
-```
-<dbname>=# \x auto   // Pretty print tables
-<dbname>=# \dt       // List all tables
-```
-
----
-
 ### Building and deploying
 
 To deploy to Heroku, first ensure that the client application's latest build is available. Once that is done, you can then push to Heroku.
@@ -60,13 +43,51 @@ $ git push heroku master --force
 
 ---
 
-### Making migrations remotely
+### Working with the database
 
-...
+Migrations are incremental, reversable changes made to a databases schema during development. knex provides several tools for managing migrations, but here are some common ones used during this project's development.
+
+**Creating a database** *(realistically only needs to be done once)*
+
+```
+$ createdb <dbname>
+```
+
+**Deleting the database and starting fresh**
+
+The best way to do this is to first drop tables from the database *(including the migration tables)*:
+
+```
+$ psql <dbname>
+$ <dbname>=# drop <tablename>; // do this for all tables
+$ <dbname>=# \q
+```
+
+Then delete any unwanted migrations *(like duplicates)* and run `knex migrate:latest`:
+
+```
+$ cd server/src
+$ cd knex migrate:latest
+```
+
+**Interacting with the database through the shell**
+In its own terminal window, type the command:
+
+```
+$ psql <dbname>
+```
+
+**Some useful commands**
+
+```
+<dbname>=# \x auto   // Pretty print tables
+<dbname>=# \dt       // List all tables
+```
+
 
 ---
 
-#### Misc notes on previous problems:
+### Misc notes on previous problems:
 
 ##### 'Uncaught SyntaxError: Unexpected token <'
 
@@ -83,4 +104,17 @@ and `index.html` is served up by this snippet of code from `server.js`:
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, '../../client/build/index.html'));
 });
+```
+##### '[JsonWebTokenError: invalid signature]'
+
+This appears when using the `authenticate` middleware used for certain serverside routes (e.g. creating excerpts). The most common cause is a difference in jwtSecret between when a token was originally signed and when it is decoded. In this particular instance, it happened because when a token was signed after login in `controllers/auth.js`, it was being signed with the wrong secret. This was fixed by changing this line:
+
+```
+    var jwtSecret = process.env.JWT_SECRET || 'mysecret';
+```
+
+to this:
+
+```
+    var jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
 ```

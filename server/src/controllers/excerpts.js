@@ -5,6 +5,22 @@ var Excerpt = require('../models/excerpts');
 
 var router = express.Router();
 
+// Get all excerpts for the logged in user
+//
+router.get('/', authenticate, function(req, res) {
+
+  Excerpt.where({ownerId: req.currentUser.id}).fetchAll().then(function(results) {
+    var excerpts = [];
+    for(var i=0; i<results.models.length; i++) {
+      excerpts.push(results.models[i].attributes);
+    }
+    res.status(200).json(results);
+  });
+
+});
+
+// Submit an excerpt and write it to the database
+//
 router.post('/', authenticate, function(req, res) {
   var title = req.body.title;
   var excerpt = req.body.excerpt;
@@ -23,7 +39,7 @@ router.post('/', authenticate, function(req, res) {
       console.log(err);
       res.status(500).json({ error: err });
     });
-    
+
 });
 
 module.exports = router;
