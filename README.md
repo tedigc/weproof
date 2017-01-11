@@ -41,6 +41,26 @@ $ git commit --amend
 $ git push heroku master --force
 ```
 
+**Working with the db remotely**
+
+The database can be reset at any time with this command:
+
+```
+$ heroku pg:reset DATABASE
+```
+
+It can be rolled back with:
+
+```
+$ heroku run knex migrate:rollback --knexfile server/src/knexfile.js
+```
+
+Update the schema by making migrations using knex. This is done with:
+
+```
+$ heroku run knex migrate:latest --knexfile server/src/knexfile.js
+```
+
 ---
 
 ### Working with the database
