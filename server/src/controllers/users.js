@@ -1,9 +1,8 @@
-var express = require('express');
-var bcrypt = require('bcrypt');
-var isEmpty = require('lodash/isEmpty');
-var commonValidations = require('../shared/validations/signup');
-
-var User = require('../models/user');
+import express from 'express';
+import bcrypt  from 'bcrypt';
+import isEmpty from 'lodash/isEmpty';
+import commonValidations from '../shared/validations/signup';
+import User from '../models/user';
 
 var router = express.Router();
 
@@ -12,7 +11,7 @@ function validateInput(data, otherValidations) {
   return User.query({
     where  : { username: data.username },
     orWhere: { email: data.email }
-  }).fetch().then(function(user) {
+  }).fetch().then((user) => {
     if(user) {
       if(user.get('username') === data.username) {
         validation.errors.username = "A user with that username already exists.";
@@ -28,9 +27,9 @@ function validateInput(data, otherValidations) {
   });
 }
 
-router.post('/', function(req, res) {
+router.post('/', (req, res) => {
   validateInput(req.body, commonValidations)
-    .then(function(validation) {
+    .then((validation) => {
       if(validation.isValid) {
         var username = req.body.username;
         var email    = req.body.email;
@@ -41,11 +40,11 @@ router.post('/', function(req, res) {
           username, email, password_digest
         }, { hasTimestamps: true })
           .save(null, {method: 'insert'})
-          .then(function(user) {
+          .then((user) => {
             res.json({ success: true });
           })
-          .catch(function(err) {
-            console.log(err);
+          .catch((err) => {
+            console.error(err);
             res.status(500).json({ error: err });
           });
       } else {
@@ -54,4 +53,4 @@ router.post('/', function(req, res) {
     });
 });
 
-module.exports = router;
+export default router;

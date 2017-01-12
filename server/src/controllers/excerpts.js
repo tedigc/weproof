@@ -1,15 +1,14 @@
-var express = require('express');
-var authenticate = require('../middlewares/authenticate');
-
-var Excerpt = require('../models/excerpts');
+import express from 'express';
+import authenticate from '../middlewares/authenticate';
+import Excerpt from '../models/excerpts';
 
 var router = express.Router();
 
 // Get all excerpts for the logged in user
 //
-router.get('/', authenticate, function(req, res) {
+router.get('/', authenticate, (req, res) => {
 
-  Excerpt.where({ownerId: req.currentUser.id}).fetchAll().then(function(results) {
+  Excerpt.where({ownerId: req.currentUser.id}).fetchAll().then((results) => {
     var excerpts = [];
     for(var i=0; i<results.models.length; i++) {
       excerpts.push(results.models[i].attributes);
@@ -21,7 +20,7 @@ router.get('/', authenticate, function(req, res) {
 
 // Submit an excerpt and write it to the database
 //
-router.post('/', authenticate, function(req, res) {
+router.post('/', authenticate, (req, res) => {
   var title = req.body.title;
   var excerpt = req.body.excerpt;
 
@@ -32,14 +31,14 @@ router.post('/', authenticate, function(req, res) {
     ownerId: req.currentUser.attributes.id
   }, { hasTimestamps: true})
     .save(null, { method: 'insert'})
-    .then(function(user) {
+    .then((user) => {
       res.json({ success: true });
     })
-    .catch(function(err) {
+    .catch((err) => {
       console.log(err);
       res.status(500).json({ error: err });
     });
 
 });
 
-module.exports = router;
+export default router;

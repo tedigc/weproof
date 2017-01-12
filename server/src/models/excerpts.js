@@ -1,4 +1,4 @@
-var bookshelf = require('../bookshelf');
+import bookshelf from '../bookshelf';
 
 module.exports = bookshelf.Model.extend({
   tableName: 'excerpts'

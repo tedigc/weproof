@@ -1,7 +1,7 @@
-var validator = require('validator');
-var isEmpty   = require('lodash/isEmpty');
+import validator from 'validator';
+import isEmpty   from 'lodash/isEmpty';
 
-module.exports = function validateInput(data) {
+export default function validateInput(data) {
   var errors = {};
 
   // Identifier validation

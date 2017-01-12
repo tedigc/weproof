@@ -1,8 +1,10 @@
-var jwt = require('jsonwebtoken');
-var config = require('../config');
-var User = require('../models/user');
+import jwt from 'jsonwebtoken';
+import config from '../config';
+import User from '../models/user';
 
-module.exports = function(req, res, next) {
+var jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
+
+export default function(req, res, next) {
   const authorizationHeader = req.headers.authorization;
   var token;
   if(authorizationHeader) {
@@ -10,7 +12,7 @@ module.exports = function(req, res, next) {
   }
 
   if(token) {
-    jwt.verify(token, config.jwtSecret, function(err, decoded) {
+    jwt.verify(token, jwtSecret, function(err, decoded) {
       if(err) {
         res.status(401).json({ error: "Failed to authenticate" });
       } else {
@@ -18,7 +20,7 @@ module.exports = function(req, res, next) {
         User.query({
           where: { id: decoded.id },
           select: ['id', 'username', 'email']
-        }).fetch().then(function(user) {
+        }).fetch().then((user) => {
           if(!user) {
             res.status(404).json({ error: "No such user" });
           } else {
