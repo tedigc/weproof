@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Menu, Button, Modal, Header, Icon, Container, Dimmer, Loader, Item } from 'semantic-ui-react';
+import { Menu, Button, Modal, Header, Icon, Dimmer, Loader, Item } from 'semantic-ui-react';
 import PageHeader from '../PageHeader';
 import SubmitForm from './SubmitForm';
 import { fetchExcerpts } from '../../../actions/excerptActions';
@@ -78,7 +78,7 @@ class Excerpts extends React.Component {
 
         <Dimmer.Dimmable as={Item.Group} divided dimmed={this.state.loading}>
           <Dimmer active={this.state.loading} inverted>
-            <Loader float="top" inverted>Loading</Loader>
+            <Loader inverted>Loading</Loader>
           </Dimmer>
           {Object.keys(self.state.excerpts).map(function(key) {
             var item = self.state.excerpts[key];

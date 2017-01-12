@@ -1,8 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Container } from 'semantic-ui-react';
 import NavBar from './NavBar';
 
 class LandingPage extends React.Component {
+
+  // Re-route back to dashboard if user is logged in
+  componentWillMount() {
+    if(this.props.auth.isAuthenticated) {
+      this.props.router.push('/dashboard/home');
+    }
+  }
 
   render() {
     return (
@@ -17,4 +25,18 @@ class LandingPage extends React.Component {
 
 }
 
-export default LandingPage;
+LandingPage.PropTypes = {
+  auth : React.PropTypes.object.isRequired
+};
+
+LandingPage.ContextTypes = {
+  router : React.PropTypes.object.isRequired
+};
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth
+  };
+}
+
+export default connect(mapStateToProps)(LandingPage);
