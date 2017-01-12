@@ -1,12 +1,17 @@
-var express    = require('express');
-var morgan     = require('morgan');
-var path       = require('path');
-var bodyParser = require('body-parser');
+// var express    = require('express');
+// var morgan     = require('morgan');
+// var path       = require('path');
+// var bodyParser = require('body-parser');
+
+import express    from 'express';
+import morgan     from 'morgan';
+import path       from 'path';
+import bodyParser from 'body-parser';
 
 // routes
-var users    = require('./controllers/users');
-var auth     = require('./controllers/auth');
-var excerpts = require('./controllers/excerpts');
+import users    from './controllers/users';
+import auth     from './controllers/auth';
+import excerpts from './controllers/excerpts';
 
 var port = process.env.PORT || 8888; 
 var app  = express();
