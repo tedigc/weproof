@@ -104,37 +104,6 @@ $ psql <dbname>
 <dbname>=# \dt       // List all tables
 ```
 
-
 ---
 
-### Misc notes on previous problems:
-
-##### 'Uncaught SyntaxError: Unexpected token <'
-
-This can be caused by a number of things. The main way to resolve it *(I found)* was to ensure that the `index.html` and js files are being located/properly referenced. For example, when deploying to Heroku, I ran into this issue quite a lot, and it was caused by incorrectly importing static assets. To fix this, static files are set up using the following lines of code in `server.js`:
-
-```
-app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname, '../../client/build')));
-```
-
-and `index.html` is served up by this snippet of code from `server.js`:
-
-```
-app.get('/*', function(req, res) {
-  res.sendFile(path.join(__dirname, '../../client/build/index.html'));
-});
-```
-##### '[JsonWebTokenError: invalid signature]'
-
-This appears when using the `authenticate` middleware used for certain serverside routes (e.g. creating excerpts). The most common cause is a difference in jwtSecret between when a token was originally signed and when it is decoded. In this particular instance, it happened because when a token was signed after login in `controllers/auth.js`, it was being signed with the wrong secret. This was fixed by changing this line:
-
-```
-    var jwtSecret = process.env.JWT_SECRET || 'mysecret';
-```
-
-to this:
-
-```
-    var jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
-```
+For annoying errors during development and their fixes, see the [Wiki](https://github.com/tedigc/individual-project/wiki)
