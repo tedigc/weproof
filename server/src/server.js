@@ -1,3 +1,7 @@
+require('babel-register')({
+  "presets": ["es2015"]
+});
+
 import express    from 'express';
 import morgan     from 'morgan';
 import path       from 'path';
