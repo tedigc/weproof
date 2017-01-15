@@ -1,5 +1,6 @@
 import React from 'react';
 import PageHeader from '../PageHeader';
+import TaskFind from './find/TaskFind';
 
 class Work extends React.Component {
 
@@ -11,6 +12,7 @@ class Work extends React.Component {
           description="Complete correction tasks and earn rewards!" 
           icon="industry"
         />
+        <TaskFind/>
       </div>
     );
   }
