@@ -6,8 +6,6 @@ const markStyle = {
   color: "red"
 };
 
-// const pairs = [ 2, 20, 40, 150, 160, 162 ];
-
 class TaskFind extends React.Component {
 
   constructor(props) {
@@ -20,70 +18,45 @@ class TaskFind extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
+
+  //
+  /* Newer work-in-progress version */
+  //
   getHighlightedTextReact() {
     var original = this.state.text;
-    var pairs = this.state.pairs;
+    var pairs = this.state.pairs.slice();
+
+    // If there are no pairs, just return the unhighlighted original text
+    if(pairs.length === 0) return <div id="excerpt">{original}</div>;
+
     function highlight() {
       var components = [];
-      for(var i=0; i<pairs.length; i+=2) {
-        components.push(<mark key={i} style={markStyle}>{original.slice(pairs[i], pairs[i+1])}</mark>);
-        components.push(original.slice(pairs[i+1], pairs[i+2]));
+      for(var i=0; i<pairs.length; i++) {
+        components.push(
+          <mark key={i} className="highlight" style={markStyle}>
+            {original.slice(pairs[i][0], pairs[i][1])}
+          </mark>
+        );
+        if(i === pairs.length-1) break;
+        components.push(original.slice(pairs[i][1], pairs[i+1][0]));
       }
       return components;
     }
 
     return (
       <div id="excerpt">
-        {original.slice(0, pairs[0])}
+        {original.slice(0, pairs[0][0])}
         {highlight()}
+        {original.slice(pairs[pairs.length-1][1], original.length)}
       </div>
     );
   }
 
-  // getHighlightedTextReact() {
-  //   var original = this.state.text;
-
-  //   function highlight() {
-  //     var components = [];
-  //     for(var i=0; i<pairs.length; i+=2) {
-  //       components.push(<mark key={i} style={markStyle}>{original.slice(pairs[i], pairs[i+1])}</mark>);
-  //       components.push(original.slice(pairs[i+1], pairs[i+2]));
-  //     }
-  //     return components;
-  //   }
-
-  //   return (
-  //     <div id="excerpt">
-  //       {original.slice(0, pairs[0])}
-  //       {highlight()}
-  //     </div>
-  //   );
-  // }
-
-  // Remove this when safe //
-  // getHighlightedText(){
-  //   var original = this.state.text;
-  //   var modified = original.slice(0, pairs[0]);
-  //   for(var i=0; i<pairs.length; i+=2) {
-  //     // Append the highlighted piece of text
-  //     modified += "<mark>" + original.slice(pairs[i], pairs[i+1]) + "</mark>";
-  //     // Append the next piece of text, up until the next pair
-  //     modified += original.slice(pairs[i+1], pairs[i+2]);
-  //   }
-  //   return { __html: modified };
-  // }
-
   handleClick(e) {
 
-    // // returns the selected string
-    // console.log(window.getSelection().toString());
-
-    // // returns the DOM element
-    // console.log(window.getSelection().getRangeAt(0).startContainer.parentNode);
-
-    // console.log(document.getSelection());
-
     var el = window.getSelection().getRangeAt(0).startContainer.parentNode;
+    if(el.className === "highlight") el = el.parentNode;
+    if(el.id !== "excerpt") return;
 
     var start, end;
     var sel, range, priorRange;
@@ -94,18 +67,30 @@ class TaskFind extends React.Component {
       priorRange.setEnd(range.startContainer, range.startOffset);
       start = priorRange.toString().length;
       end = start + range.toString().length;
-      this.setState({ pairs: [start, end] });
+
+      var pairArray = this.state.pairs.slice();
+      pairArray.push([start, end]);
+
+      function comparator(a, b) {
+        if(a[0] < b[0]) return -1;
+        if(a[0] > b[0]) return  1;
+        else return 0;
+      }
+
+      pairArray = pairArray.sort(comparator);
+      console.log(pairArray);
+      this.setState({ pairs: pairArray });
+      window.getSelection().removeAllRanges();
     } else if(typeof document.getSelection !== undefined) {
 
     }
-
-    console.log(start, end);
   }
 
   render() {
     return (
       <div>
         <Grid>
+        
           <Grid.Row>
 
             {/* Excerpt window */}
