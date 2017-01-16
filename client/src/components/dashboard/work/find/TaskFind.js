@@ -18,10 +18,6 @@ class TaskFind extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-
-  //
-  /* Newer work-in-progress version */
-  //
   getHighlightedTextReact() {
     var original = this.state.text;
     var pairs = this.state.pairs.slice();
@@ -53,14 +49,15 @@ class TaskFind extends React.Component {
   }
 
   handleClick(e) {
-
     var el = window.getSelection().getRangeAt(0).startContainer.parentNode;
     if(el.className === "highlight") el = el.parentNode;
     if(el.id !== "excerpt") return;
 
+    // Add the user selection to the list of highlights
     var start, end;
-    var sel, range, priorRange;
+    var range, priorRange;
     if(typeof window.getSelection !== undefined) {
+      // find the range of the selection
       range = window.getSelection().getRangeAt(0);
       priorRange = range.cloneRange();
       priorRange.selectNodeContents(el);
@@ -68,21 +65,34 @@ class TaskFind extends React.Component {
       start = priorRange.toString().length;
       end = start + range.toString().length;
 
+      // add it to the array of pairs
       var pairArray = this.state.pairs.slice();
       pairArray.push([start, end]);
 
+      // sort the array of pairs by their left hand index
       function comparator(a, b) {
         if(a[0] < b[0]) return -1;
         if(a[0] > b[0]) return  1;
         else return 0;
       }
-
       pairArray = pairArray.sort(comparator);
-      console.log(pairArray);
-      this.setState({ pairs: pairArray });
-      window.getSelection().removeAllRanges();
-    } else if(typeof document.getSelection !== undefined) {
 
+      // merge overlapping pairs
+      var merged = [];
+      var currentPair = pairArray[0];
+      for(var i=0; i<pairArray.length; i++) {
+        if(currentPair[1] >= pairArray[i][0]) {
+          // pairs overlap
+          currentPair[1] = pairArray[i][1];
+        } else {
+          merged.push(currentPair);
+          currentPair = pairArray[i];
+        }
+      }
+      merged.push(currentPair);
+
+      this.setState({ pairs: merged });
+      window.getSelection().removeAllRanges();
     }
   }
 
@@ -90,7 +100,6 @@ class TaskFind extends React.Component {
     return (
       <div>
         <Grid>
-        
           <Grid.Row>
 
             {/* Excerpt window */}
