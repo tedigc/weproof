@@ -8,8 +8,12 @@ const buttonBarHeight = 70;
 
 const styles = {
   highlight : {
-    background: "pink",
-    color: "red"
+    background: '#ffc4d3',
+    color: '#992340'
+  },
+  highlightSelected : {
+    background: '#e2b2ff',
+    color: '#541e72'
   },
   excerpt : {
     height: excerptHeight + buttonBarHeight,
@@ -37,12 +41,14 @@ class TaskFind extends React.Component {
     super(props);
     this.state = {
       pairs: [],
-      highlights: []
+      currentlySelected: -1
     };
     this.getHighlightedTextReact = this.getHighlightedTextReact.bind(this);
     this.handleHighlight = this.handleHighlight.bind(this);
     this.handleRemoveHighlight = this.handleRemoveHighlight.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.handleHighlightMouseEnter = this.handleHighlightMouseEnter.bind(this);
+    this.handleHighlightMouseLeave = this.handleHighlightMouseLeave.bind(this);
   }
 
   getHighlightedTextReact() {
@@ -52,11 +58,14 @@ class TaskFind extends React.Component {
     // If there are no pairs, just return the unhighlighted original text
     if(pairs.length === 0) return <div id="excerpt">{original}</div>;
 
+    var self = this;
     function highlight() {
       var components = [];
+
       for(var i=0; i<pairs.length; i++) {
+        var highlightStyle = (i === self.state.currentlySelected) ? styles.highlightSelected : styles.highlight;
         components.push(
-          <mark key={i} className="highlight" style={styles.highlight}>
+          <mark key={i} className="highlight" style={highlightStyle}>
             {original.slice(pairs[i][0], pairs[i][1])}
           </mark>
         );
@@ -139,6 +148,14 @@ class TaskFind extends React.Component {
     this.setState({ pairs: [] });
   }
 
+  handleHighlightMouseEnter(highlightIndex, e) {
+    this.setState({ currentlySelected: highlightIndex });
+  }
+
+  handleHighlightMouseLeave(highlightIndex, e) {
+    this.setState({ currentlySelected: -1 });
+  }
+
   render() {
 
     var highlights;
@@ -158,7 +175,14 @@ class TaskFind extends React.Component {
         <Item.Group divided style={styles.itemGroupDiv}>
           {this.state.pairs.map((pair, index) => {
             var text = this.props.excerpt.slice(pair[0], pair[1]);
-            return <Highlight key={index} id={index} text={text} remove={this.handleRemoveHighlight.bind(null, index)}/>
+            return <Highlight 
+                      key={index} 
+                      id={index} 
+                      text={text} 
+                      remove={this.handleRemoveHighlight.bind(null, index)}
+                      mouseEnter={this.handleHighlightMouseEnter.bind(null, index)}
+                      mouseLeave={this.handleHighlightMouseLeave.bind(null, index)}
+                    />
           })}
         </Item.Group>
       );

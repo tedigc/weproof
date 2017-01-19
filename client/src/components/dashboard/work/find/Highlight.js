@@ -3,9 +3,23 @@ import { Button, Item } from 'semantic-ui-react';
 
 class Highlight extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+  }
+
+  handleMouseEnter(e) {
+    console.log('enter ' + this.props.id);
+  }
+
+  handleMouseLeave(e) {
+    console.log('exit  ' + this.props.id);
+  }
+
   render() {
     return (
-      <Item>
+      <Item onMouseEnter={this.props.mouseEnter} onMouseLeave={this.props.mouseLeave}>
         <Item.Content>
 
           {this.props.text.slice(0, 50)}
@@ -22,7 +36,9 @@ class Highlight extends React.Component {
 Highlight.PropTypes = {
   id  : React.PropTypes.number.isRequired,
   text: React.PropTypes.string.isRequired,
-  remove: React.PropTypes.func.isRequired
+  remove: React.PropTypes.func.isRequired,
+  mouseEnter: React.PropTypes.func.isRequired,
+  mouseLeave: React.PropTypes.func.isRequired
 };
 
 export default Highlight;
