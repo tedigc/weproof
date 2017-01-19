@@ -11,8 +11,8 @@ const styles = {
     color: '#992340'
   },
   highlightSelected : {
-    background: '#e2b2ff',
-    color: '#541e72'
+    background: '#c1d5ff',
+    color: '#283f70'
   },
   excerpt : {
     height: excerptHeight + buttonBarHeight,
@@ -85,14 +85,15 @@ class TaskFind extends React.Component {
 
   handleHighlight(e) {
 
-    var el = window.getSelection().getRangeAt(0).startContainer.parentNode;
-    if(el.className === "highlight") el = el.parentNode;
-    if(el.id !== "excerpt") return;
-
     // Add the user selection to the list of highlights
-    var start, end;
-    var range, priorRange;
-    if(typeof window.getSelection !== undefined) {
+    if(typeof window.getSelection() !== undefined && window.getSelection().anchorNode !== null) {
+
+      var el = window.getSelection().getRangeAt(0).startContainer.parentNode;
+      if(el.className === "highlight") el = el.parentNode;
+      if(el.id !== "excerpt") return;
+
+      var start, end;
+      var range, priorRange;
 
       // find the range of the selection
       //
