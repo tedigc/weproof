@@ -1,7 +1,6 @@
 import React from 'react';
 import { Item, Button, Grid, Header, Label, Segment } from 'semantic-ui-react';
 import Highlight from './Highlight';
-// import HighlightList from './HighlightList';
 
 const excerptHeight = 250;
 const buttonBarHeight = 70;
@@ -103,7 +102,7 @@ class TaskFind extends React.Component {
       priorRange.setEnd(range.startContainer, range.startOffset);
       start = priorRange.toString().length;
       end = start + range.toString().length;
-
+      end = Math.min(end, this.props.excerpt.length);
       // add it to the array of pairs
       //
       var pairArray = this.state.pairs.slice();
