@@ -38,7 +38,6 @@ class SubmitForm extends React.Component {
       .then(
         (res) => {
           this.setState({ loading: false, submitted: true});
-          // this.context.router.push('/excerpts');
         },
         (err) => {
           this.setState({ loading: false, errors: err });

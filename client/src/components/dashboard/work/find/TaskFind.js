@@ -1,6 +1,8 @@
 import React from 'react';
-import { Item, Button, Grid, Header, Label, Segment } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { Button, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-react';
 import Highlight from './Highlight';
+import { submitTask } from '../../../../actions/taskActions';
 
 const excerptHeight = 250;
 const buttonBarHeight = 70;
@@ -48,6 +50,7 @@ class TaskFind extends React.Component {
     this.handleClear = this.handleClear.bind(this);
     this.handleHighlightMouseEnter = this.handleHighlightMouseEnter.bind(this);
     this.handleHighlightMouseLeave = this.handleHighlightMouseLeave.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   getHighlightedTextReact() {
@@ -84,6 +87,7 @@ class TaskFind extends React.Component {
   }
 
   handleHighlight(e) {
+    e.preventDefault();
 
     // Add the user selection to the list of highlights
     if(typeof window.getSelection() !== undefined && window.getSelection().anchorNode !== null) {
@@ -144,16 +148,32 @@ class TaskFind extends React.Component {
     this.setState({ pairs: pairsEdit });
   }
 
-  handleClear() {
+  handleClear(e) {
+    e.preventDefault();
     this.setState({ pairs: [] });
   }
 
   handleHighlightMouseEnter(highlightIndex, e) {
+    e.preventDefault();
     this.setState({ currentlySelected: highlightIndex });
   }
 
   handleHighlightMouseLeave(highlightIndex, e) {
+    e.preventDefault();
     this.setState({ currentlySelected: -1 });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    this.props.submitTask({ excerptId: 1, excerpt: this.props.excerpt, pairs: this.state.pairs})
+      .then(
+        (res) => {
+          console.log(res);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 
   render() {
@@ -165,7 +185,7 @@ class TaskFind extends React.Component {
           <Header.Content>
             You have no highlights
             <Header.Subheader>
-              Highlight errors in the excerpt with the blue button.
+              Highlight errors in the excerpt with the button button below.
             </Header.Subheader>
           </Header.Content>
         </Header>
@@ -190,6 +210,8 @@ class TaskFind extends React.Component {
 
     return (
       <div>
+        <Form onSubmit={this.handleSubmit}>
+
         <Grid>
           <Grid.Row>
 
@@ -223,6 +245,10 @@ class TaskFind extends React.Component {
 
           </Grid.Row>
         </Grid>
+
+        <Button floated="right" type='submit' primary>Submit</Button>
+
+        </Form>
       </div>
     );
   }
@@ -230,7 +256,8 @@ class TaskFind extends React.Component {
 }
 
 TaskFind.PropTypes = {
-  excerpt: React.PropTypes.string.isRequired
+  excerpt    : React.PropTypes.string.isRequired,
+  submitTask : React.PropTypes.func.isRequired
 };
 
-export default TaskFind;
+export default connect(null, { submitTask })(TaskFind);
