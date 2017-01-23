@@ -11,6 +11,7 @@ import bodyParser from 'body-parser';
 import users    from './controllers/users';
 import auth     from './controllers/auth';
 import excerpts from './controllers/excerpts';
+import tasks    from './controllers/tasks';
 
 var port = process.env.PORT || 8888; 
 var app  = express();
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use('/api/users'    , users);
 app.use('/api/auth'     , auth);
 app.use('/api/excerpts' , excerpts);
+app.use('/api/tasks'    , tasks);
 
 // serve up web application
 app.get('/*', function(req, res) {
