@@ -80,6 +80,8 @@ class Excerpts extends React.Component {
           <Dimmer active={this.state.loading} inverted>
             <Loader inverted>Loading</Loader>
           </Dimmer>
+
+          {/* Item list of excerpts */}
           {Object.keys(self.state.excerpts).map(function(key) {
             var item = self.state.excerpts[key];
             return <SingleExcerpt
@@ -91,6 +93,7 @@ class Excerpts extends React.Component {
                     created={item.created_at}
                   />
           })}
+
         </Dimmer.Dimmable>
         
         <Modal 

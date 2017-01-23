@@ -28,7 +28,9 @@ router.post('/', authenticate, (req, res) => {
   Excerpt.forge({
     title  : title,
     excerpt: excerpt,
-    ownerId: req.currentUser.attributes.id
+    ownerId: req.currentUser.attributes.id,
+    status : 'pending',
+    stage  : 'find' 
   }, { hasTimestamps: true})
     .save(null, { method: 'insert'})
     .then((user) => {

@@ -5,3 +5,9 @@ export function submitTask(task) {
     return axios.post('/api/tasks', task);
   };
 };
+
+export function fetchTasks() {
+  return dispatch => {
+    return axios.get('/api/tasks');
+  };
+};

@@ -108,6 +108,7 @@ class TaskFind extends React.Component {
       start = priorRange.toString().length;
       end = start + range.toString().length;
       end = Math.min(end, this.props.excerpt.length);
+
       // add it to the array of pairs
       //
       var pairArray = this.state.pairs.slice();
@@ -212,41 +213,41 @@ class TaskFind extends React.Component {
       <div>
         <Form onSubmit={this.handleSubmit}>
 
-        <Grid>
-          <Grid.Row>
+          <Grid>
+            <Grid.Row>
 
-            {/* Excerpt window */}
-            <Grid.Column width={10}>
-            
-              <Segment size="large" style={styles.excerpt}>
-                {this.getHighlightedTextReact()}      
-                <Label attached='bottom left'>Excerpt</Label>          
-              </Segment>
-
-            </Grid.Column>
-
-            {/* Highlight window */}
-            <Grid.Column width={6}>
-
-              <Segment attached='top' style={styles.highlightMenu}>
-                {highlights}
-              </Segment>
-
-              <Segment style={styles.buttonBar} attached='bottom'>
-                <div style={{display: 'flex'}}>
-                  <Button.Group fluid >
-                    <Button content="Highlight" onClick={this.handleHighlight} primary />
-                    <Button content="Clear All" onClick={this.handleClear}/>
-                  </Button.Group>
-                </div>
-              </Segment>
+              {/* Excerpt window */}
+              <Grid.Column width={10}>
               
-            </Grid.Column>
+                <Segment size="large" style={styles.excerpt}>
+                  {this.getHighlightedTextReact()}      
+                  <Label attached='bottom left'>Excerpt</Label>          
+                </Segment>
 
-          </Grid.Row>
-        </Grid>
+              </Grid.Column>
 
-        <Button floated="right" type='submit' primary>Submit</Button>
+              {/* Highlight window */}
+              <Grid.Column width={6}>
+
+                <Segment attached='top' style={styles.highlightMenu}>
+                  {highlights}
+                </Segment>
+
+                <Segment style={styles.buttonBar} attached='bottom'>
+                  <div style={{display: 'flex'}}>
+                    <Button.Group fluid >
+                      <Button content="Highlight" onClick={this.handleHighlight} primary />
+                      <Button content="Clear All" onClick={this.handleClear}/>
+                    </Button.Group>
+                  </div>
+                </Segment>
+                
+              </Grid.Column>
+
+            </Grid.Row>
+          </Grid>
+
+          <Button floated="right" type='submit' primary>Submit</Button>
 
         </Form>
       </div>
@@ -257,7 +258,8 @@ class TaskFind extends React.Component {
 
 TaskFind.PropTypes = {
   excerpt    : React.PropTypes.string.isRequired,
-  submitTask : React.PropTypes.func.isRequired
+  submitTask : React.PropTypes.func.isRequired,
+  fetchTasks : React.PropTypes.func.isRequired
 };
 
 export default connect(null, { submitTask })(TaskFind);

@@ -1,12 +1,48 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Dimmer, Item, Loader } from 'semantic-ui-react';
 import PageHeader from '../PageHeader';
-import TaskFind from './find/TaskFind';
-
-const text = "Most apps are composed of both necessary files and generated files. When using a source control system like git, you should avoid tracking anything that’s generated. For example, your node app probably has a node_modules directory for dependencies, which you should keep out of git. As long as each dependency is listed in package.json, anyone can create a working local copy of your app - including node_modules - by running npm install.";
+import SingleTask from './SingleTask';
+import { fetchTasks } from '../../../actions/taskActions';
 
 class Work extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      tasks  : []
+    };
+    this.refreshTasks = this.refreshTasks.bind(this);
+  }
+
+  componentWillMount() {
+    console.log('loaded');
+    this.refreshTasks();
+  }
+
+  refreshTasks() {
+    this.setState({ loading : true });
+    console.log('refreshing');
+    this.props.fetchTasks()
+      .then(
+        (res) => {
+          this.setState({ 
+            loading : false,
+            tasks   : res.data
+          });
+          console.log('finished');
+          console.log(res.data);
+        },
+        (err) => {
+          this.setState({ loading : false });
+          console.error(err);
+        }
+      );
+  }
+
   render() {
+    var self = this;
     return (
       <div>
         <PageHeader 
@@ -14,11 +50,29 @@ class Work extends React.Component {
           description="Complete correction tasks and earn rewards!" 
           icon="industry"
         />
-        <TaskFind excerpt={text}/>
+
+        <Dimmer.Dimmable as={Item.Group} divided dimmed={this.state.loading}>
+          <Dimmer active={self.state.loading} inverted>
+            <Loader inverted>Loading</Loader>
+          </Dimmer>
+
+          {/* Item list of available tasks */}
+          {self.state.tasks.map((task, index) => {
+            return <SingleTask
+                      key={index}
+                    />;
+          })}
+
+        </Dimmer.Dimmable>
+
       </div>
     );
   }
 
 }
 
-export default Work;
+Work.PropTypes = {
+  fetchTasks : React.PropTypes.func.isRequired
+};
+
+export default connect(null, { fetchTasks })(Work);
