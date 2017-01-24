@@ -11,3 +11,9 @@ export function fetchExcerpts() {
     return axios.get('/api/excerpts');
   };
 };
+
+export function fetchSingleExcerpt(id) {
+  return dispatch => {
+    return axios.get('/api/excerpts/' + id);
+  };
+};

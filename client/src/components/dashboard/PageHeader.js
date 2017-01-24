@@ -19,7 +19,7 @@ class PageHeader extends React.Component {
 
 }
 
-PageHeader.PropTypes = {
+PageHeader.propTypes ={
   icon        : React.PropTypes.string.isRequired,
   title       : React.PropTypes.string.isRequired,
   description : React.PropTypes.string.isRequired,

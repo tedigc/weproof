@@ -10,6 +10,7 @@ import LandingPage from './components/landingpage/LandingPage';
 import SignupPage  from './components/landingpage/signup/SignupPage';
 import LoginPage   from './components/landingpage/login/LoginPage';
 import Greetings   from './components/landingpage/Greetings';
+import Task        from './components/task/Task';
 import requireAuth from './utils/requireAuth';
 
 export default (
@@ -26,6 +27,10 @@ export default (
       <Route path="submitted" component={Submitted}/>
       <Route path="excerpts"  component={Excerpts}/>
       <Route path="settings"  component={Settings}/>
+    </Route>
+    <Route path="/task" component={requireAuth(Task)}>
+      <IndexRedirect to="/dashboard/work" />
+      <Route path=":excerptId" component={Task}/>
     </Route>
   </Route>
 );

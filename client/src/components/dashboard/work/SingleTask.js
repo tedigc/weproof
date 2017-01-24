@@ -3,6 +3,16 @@ import { Button, Icon, Table } from 'semantic-ui-react';
 
 class SingleTask extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.handleButtonPress = this.handleButtonPress.bind(this);
+  }
+
+  handleButtonPress(e) {
+    e.preventDefault()
+    this.context.router.push('/task/' + this.props.id);
+  }
+
   render() {
 
     var cornerIcon;
@@ -33,18 +43,24 @@ class SingleTask extends React.Component {
         <Table.Cell collapsing>{this.props.stage}</Table.Cell>
         <Table.Cell collapsing>{this.props.excerpt.slice(0, Math.min(100, this.props.excerpt.length))}</Table.Cell>
         <Table.Cell collapsing>{this.props.created}</Table.Cell>
-        <Table.Cell collapsing><Button content='Start' icon='write'/></Table.Cell>
+        <Table.Cell collapsing>
+          <Button content='Start' icon='write' onClick={this.handleButtonPress}/>
+        </Table.Cell>
       </Table.Row>
     );
   }
 
 }
 
-SingleTask.PropTypes = {
+SingleTask.propTypes = {
   id     : React.PropTypes.number.isRequired,
   stage  : React.PropTypes.string.isRequired,
   excerpt: React.PropTypes.string.isRequired,
   created: React.PropTypes.string.isRequired
+};
+
+SingleTask.contextTypes = {
+  router : React.PropTypes.object.isRequired
 };
 
 export default SingleTask;

@@ -17,7 +17,7 @@ class SingleExcerpt extends React.Component {
 
 }
 
-SingleExcerpt.PropTypes = {
+SingleExcerpt.propTypes ={
   id      : React.PropTypes.number.isRequired,
   title   : React.PropTypes.string.isRequired,
   excerpt : React.PropTypes.string.isRequired,

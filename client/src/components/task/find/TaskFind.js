@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-react';
+import { Button, Container, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-react';
 import Highlight from './Highlight';
-import { submitTask } from '../../../../actions/taskActions';
+import { submitTask } from '../../../actions/taskActions';
 
 const excerptHeight = 250;
 const buttonBarHeight = 70;
@@ -166,7 +166,7 @@ class TaskFind extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.submitTask({ excerptId: 1, excerpt: this.props.excerpt, pairs: this.state.pairs})
+    this.props.submitTask({ excerptId: this.props.id, excerpt: this.props.excerpt, pairs: this.state.pairs})
       .then(
         (res) => {
           console.log(res);
@@ -210,7 +210,7 @@ class TaskFind extends React.Component {
     }
 
     return (
-      <div>
+      <Container>
         <Form onSubmit={this.handleSubmit}>
 
           <Grid>
@@ -250,16 +250,16 @@ class TaskFind extends React.Component {
           <Button floated="right" type='submit' primary>Submit</Button>
 
         </Form>
-      </div>
+      </Container>
     );
   }
 
 }
 
-TaskFind.PropTypes = {
+TaskFind.propTypes = {
+  id         : React.PropTypes.number.isRequired,
   excerpt    : React.PropTypes.string.isRequired,
-  submitTask : React.PropTypes.func.isRequired,
-  fetchTasks : React.PropTypes.func.isRequired
+  submitTask : React.PropTypes.func.isRequired
 };
 
 export default connect(null, { submitTask })(TaskFind);

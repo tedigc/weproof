@@ -6,6 +6,24 @@ var router = express.Router();
 
 // Get all excerpts for the logged in user
 //
+router.get('/:excerptId', authenticate, (req, res) => {
+
+  Excerpt.query({
+    where: { id: req.params.excerptId }
+  }).fetch().then((excerpt) => {
+    if(!excerpt) {
+      res.status(404).json({ error: "No such excerpt" });
+    } else {
+      res.status(200).json({
+        excerpt: excerpt.attributes
+      });
+    }
+  });
+
+});
+
+// Get all excerpts for the logged in user
+//
 router.get('/', authenticate, (req, res) => {
 
   Excerpt.where({owner_id: req.currentUser.id}).fetchAll().then((results) => {

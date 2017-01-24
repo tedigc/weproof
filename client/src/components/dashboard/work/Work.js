@@ -5,6 +5,16 @@ import PageHeader from '../PageHeader';
 import SingleTask from './SingleTask';
 import { fetchTasks } from '../../../actions/taskActions';
 
+/**
+
+TODO
+
+- properly display errors
+- fix console error to do with nested divs, tables and dimmers
+- show special message if no tasks are available
+
+*/
+
 class Work extends React.Component {
 
   constructor(props) {
@@ -52,7 +62,7 @@ class Work extends React.Component {
           <Menu.Item name="find"/>
           <Menu.Item name="fix"/>
           <Menu.Item name="verify"/>
-          <Menu.Item name="refresh" position="right" as={Button} onClick={this.refreshExcerpts} icon="refresh" />
+          <Menu.Item name="refresh" position="right" as={Button} icon="refresh" />
         </Menu>
 
         <Divider/>
@@ -93,19 +103,8 @@ class Work extends React.Component {
 
 }
 
-Work.PropTypes = {
+Work.propTypes = {
   fetchTasks : React.PropTypes.func.isRequired
 };
 
 export default connect(null, { fetchTasks })(Work);
-
-// {/* Item list of available tasks */}
-//           {self.state.tasks.map((task, index) => {
-//             return <SingleTask
-//                       key={index}
-//                       id={task.id}
-//                       stage={task.stage}
-//                       excerpt={task.excerpt}
-//                       created={task.created_at}
-//                     />;
-//           })}

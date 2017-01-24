@@ -25,11 +25,11 @@ class LandingPage extends React.Component {
 
 }
 
-LandingPage.PropTypes = {
+LandingPage.propTypes ={
   auth : React.PropTypes.object.isRequired
 };
 
-LandingPage.ContextTypes = {
+LandingPage.contextTypes ={
   router : React.PropTypes.object.isRequired
 };
 

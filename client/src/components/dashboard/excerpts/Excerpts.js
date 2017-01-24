@@ -88,7 +88,7 @@ class Excerpts extends React.Component {
                     id={item.id}
                     title={item.title}
                     excerpt={item.excerpt}
-                    ownerId={item.ownerId}
+                    ownerId={parseInt(item.owner_id, 10)}
                     created={item.created_at}
                   />
           })}
@@ -111,7 +111,7 @@ class Excerpts extends React.Component {
 
 }
 
-Excerpts.PropTypes = {
+Excerpts.propTypes ={
   fetchExcerpts: React.PropTypes.func.isRequired
 };
 

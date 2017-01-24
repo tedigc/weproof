@@ -17,7 +17,7 @@ class Highlight extends React.Component {
 
 }
 
-Highlight.PropTypes = {
+Highlight.propTypes ={
   id  : React.PropTypes.number.isRequired,
   text: React.PropTypes.string.isRequired,
   remove: React.PropTypes.func.isRequired,
