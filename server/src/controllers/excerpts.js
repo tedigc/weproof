@@ -8,7 +8,7 @@ var router = express.Router();
 //
 router.get('/', authenticate, (req, res) => {
 
-  Excerpt.where({ownerId: req.currentUser.id}).fetchAll().then((results) => {
+  Excerpt.where({owner_id: req.currentUser.id}).fetchAll().then((results) => {
     var excerpts = [];
     for(var i=0; i<results.models.length; i++) {
       excerpts.push(results.models[i].attributes);
@@ -28,7 +28,7 @@ router.post('/', authenticate, (req, res) => {
   Excerpt.forge({
     title  : title,
     excerpt: excerpt,
-    ownerId: req.currentUser.attributes.id,
+    owner_id: req.currentUser.attributes.id,
     status : 'pending',
     stage  : 'find' 
   }, { hasTimestamps: true})

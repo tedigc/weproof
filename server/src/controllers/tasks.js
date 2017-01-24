@@ -9,7 +9,7 @@ var router = express.Router();
 //
 router.get('/', authenticate, (req, res) => {
 
-  Excerpt.where('ownerId', '<>', req.currentUser.id).fetchAll().then((results) => {
+  Excerpt.where('owner_id', '<>', req.currentUser.id).fetchAll().then((results) => {
     var tasks = [];
     for(var i=0; i<results.models.length; i++) {
       tasks.push(results.models[i].attributes);
@@ -38,8 +38,8 @@ router.post('/', authenticate, (req, res) => {
       // If the excerpt exists, forge a new task submission
       TaskSubmission.forge({
         pairs: pairs,
-        ownerId: req.currentUser.attributes.id,
-        excerptId: excerpt.id, // TODO replace this placeholder
+        owner_id: req.currentUser.attributes.id,
+        excerpt_id: excerpt.id,
         }, { hasTimestamps: true })
           .save(null, { method: 'insert' })
           .then((data) => {

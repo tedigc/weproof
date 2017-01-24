@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dimmer, Item, Loader } from 'semantic-ui-react';
+import { Button, Dimmer, Divider, Loader, Menu, Table } from 'semantic-ui-react';
 import PageHeader from '../PageHeader';
 import SingleTask from './SingleTask';
 import { fetchTasks } from '../../../actions/taskActions';
@@ -17,13 +17,11 @@ class Work extends React.Component {
   }
 
   componentWillMount() {
-    console.log('loaded');
     this.refreshTasks();
   }
 
   refreshTasks() {
     this.setState({ loading : true });
-    console.log('refreshing');
     this.props.fetchTasks()
       .then(
         (res) => {
@@ -31,8 +29,6 @@ class Work extends React.Component {
             loading : false,
             tasks   : res.data
           });
-          console.log('finished');
-          console.log(res.data);
         },
         (err) => {
           this.setState({ loading : false });
@@ -51,17 +47,43 @@ class Work extends React.Component {
           icon="industry"
         />
 
-        <Dimmer.Dimmable as={Item.Group} divided dimmed={this.state.loading}>
+        <Menu secondary>
+          <Menu.Item name="all"/>
+          <Menu.Item name="find"/>
+          <Menu.Item name="fix"/>
+          <Menu.Item name="verify"/>
+          <Menu.Item name="refresh" position="right" as={Button} onClick={this.refreshExcerpts} icon="refresh" />
+        </Menu>
+
+        <Divider/>
+
+        <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
           <Dimmer active={self.state.loading} inverted>
             <Loader inverted>Loading</Loader>
           </Dimmer>
 
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell></Table.HeaderCell>
+              <Table.HeaderCell>Stage</Table.HeaderCell>
+              <Table.HeaderCell>Preview</Table.HeaderCell>
+              <Table.HeaderCell>Created</Table.HeaderCell>
+              <Table.HeaderCell></Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+
           {/* Item list of available tasks */}
+          <Table.Body>
           {self.state.tasks.map((task, index) => {
             return <SingleTask
                       key={index}
+                      id={task.id}
+                      stage={task.stage}
+                      excerpt={task.excerpt}
+                      created={task.created_at}
                     />;
           })}
+          </Table.Body>
 
         </Dimmer.Dimmable>
 
@@ -76,3 +98,14 @@ Work.PropTypes = {
 };
 
 export default connect(null, { fetchTasks })(Work);
+
+// {/* Item list of available tasks */}
+//           {self.state.tasks.map((task, index) => {
+//             return <SingleTask
+//                       key={index}
+//                       id={task.id}
+//                       stage={task.stage}
+//                       excerpt={task.excerpt}
+//                       created={task.created_at}
+//                     />;
+//           })}

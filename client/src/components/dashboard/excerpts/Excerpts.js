@@ -41,7 +41,6 @@ class Excerpts extends React.Component {
           });
         }
       );
-    
   }
 
   handleOpen(e) {
