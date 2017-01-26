@@ -5,7 +5,7 @@ class Highlight extends React.Component {
 
   render() {
     return (
-      <Item onMouseEnter={this.props.mouseEnter} onMouseLeave={this.props.mouseLeave}>
+      <Item onMouseEnter={this.props.mouseEnter} onMouseLeave={this.props.mouseLeave} style={this.props.style}>
         <Item.Content>
           {this.props.text.slice(0, 50)}
           {(this.props.text.length > 50) ? "..." : ""}

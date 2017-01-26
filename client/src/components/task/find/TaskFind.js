@@ -16,6 +16,8 @@ const styles = {
     background: '#c1d5ff',
     color: '#283f70'
   },
+  selected   : { background: '#fcfcfc' },
+  unselected : { background: '#ffffff' },
   excerpt : {
     height: excerptHeight + buttonBarHeight,
     lineHeight: "30px"
@@ -144,6 +146,7 @@ class TaskFind extends React.Component {
   }
 
   handleRemoveHighlight(highlightIndex, e) {
+    e.preventDefault();
     var pairsEdit = this.state.pairs.slice();
     pairsEdit.splice(highlightIndex, 1);
     this.setState({ pairs: pairsEdit });
@@ -169,7 +172,7 @@ class TaskFind extends React.Component {
     this.props.submitTask({ excerptId: this.props.id, excerpt: this.props.excerpt, pairs: this.state.pairs})
       .then(
         (res) => {
-          console.log(res);
+          this.context.router.push('/dashboard/home');
         },
         (err) => {
           console.log(err);
@@ -203,6 +206,7 @@ class TaskFind extends React.Component {
                       remove={this.handleRemoveHighlight.bind(null, index)}
                       mouseEnter={this.handleHighlightMouseEnter.bind(null, index)}
                       mouseLeave={this.handleHighlightMouseLeave.bind(null, index)}
+                      style={ (index === this.state.currentlySelected) ? styles.selected : styles.unselected }
                     />
           })}
         </Item.Group>
@@ -260,6 +264,10 @@ TaskFind.propTypes = {
   id         : React.PropTypes.number.isRequired,
   excerpt    : React.PropTypes.string.isRequired,
   submitTask : React.PropTypes.func.isRequired
+};
+
+TaskFind.contextTypes = {
+  router : React.PropTypes.object.isRequired
 };
 
 export default connect(null, { submitTask })(TaskFind);
