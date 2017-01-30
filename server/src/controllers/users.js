@@ -8,23 +8,26 @@ var router = express.Router();
 
 function validateInput(data, otherValidations) {
   var validation = otherValidations(data);
-  return User.query({
-    where  : { username: data.username },
-    orWhere: { email: data.email }
-  }).fetch().then((user) => {
-    if(user) {
-      if(user.get('username') === data.username) {
-        validation.errors.username = "A user with that username already exists.";
+  return User
+    .query({
+      where  : { username: data.username },
+      orWhere: { email: data.email }
+    })
+    .fetch()
+    .then((user) => {
+      if(user) {
+        if(user.get('username') === data.username) {
+          validation.errors.username = "A user with that username already exists.";
+        }
+        if(user.get('email') === data.email) {
+          validation.errors.email = "A user with that Email already exists.";
+        }
       }
-      if(user.get('email') === data.email) {
-        validation.errors.email = "A user with that Email already exists.";
-      }
-    }
-    return {
-      errors: validation.errors,
-      isValid: isEmpty(validation.errors)
-    };
-  });
+      return {
+        errors: validation.errors,
+        isValid: isEmpty(validation.errors)
+      };
+    });
 }
 
 router.post('/', (req, res) => {
@@ -36,9 +39,10 @@ router.post('/', (req, res) => {
         var password = req.body.password;
         var password_digest = bcrypt.hashSync(password, 10);
 
-        User.forge({
-          username, email, password_digest
-        }, { hasTimestamps: true })
+        User
+          .forge({
+            username, email, password_digest
+          }, { hasTimestamps: true })
           .save(null, {method: 'insert'})
           .then((user) => {
             res.json({ success: true });

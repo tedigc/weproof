@@ -249,9 +249,17 @@ class TaskFind extends React.Component {
               </Grid.Column>
 
             </Grid.Row>
+
+            <Grid.Row>
+              <Grid.Column width={16}>
+              <Segment>
+                <Button floated="right" type='submit' primary>Submit</Button>
+              </Segment>
+              </Grid.Column>
+            </Grid.Row>
+
           </Grid>
 
-          <Button floated="right" type='submit' primary>Submit</Button>
 
         </Form>
       </Container>

@@ -8,17 +8,20 @@ var router = express.Router();
 //
 router.get('/:excerptId', authenticate, (req, res) => {
 
-  Excerpt.query({
-    where: { id: req.params.excerptId }
-  }).fetch().then((excerpt) => {
-    if(!excerpt) {
-      res.status(404).json({ error: "No such excerpt" });
-    } else {
-      res.status(200).json({
-        excerpt: excerpt.attributes
-      });
-    }
-  });
+  Excerpt
+    .query({
+      where: { id: req.params.excerptId }
+    })
+    .fetch()
+    .then((excerpt) => {
+      if(!excerpt) {
+        res.status(404).json({ error: "No such excerpt" });
+      } else {
+        res.status(200).json({
+          excerpt: excerpt.attributes
+        });
+      }
+    });
 
 });
 
@@ -26,13 +29,16 @@ router.get('/:excerptId', authenticate, (req, res) => {
 //
 router.get('/', authenticate, (req, res) => {
 
-  Excerpt.where({owner_id: req.currentUser.id}).fetchAll().then((results) => {
-    var excerpts = [];
-    for(var i=0; i<results.models.length; i++) {
-      excerpts.push(results.models[i].attributes);
-    }
-    res.status(200).json(results);
-  });
+  Excerpt
+    .where({owner_id: req.currentUser.id})
+    .fetchAll()
+    .then((results) => {
+      var excerpts = [];
+      for(var i=0; i<results.models.length; i++) {
+        excerpts.push(results.models[i].attributes);
+      }
+      res.status(200).json(results);
+    });
 
 });
 
@@ -43,13 +49,14 @@ router.post('/', authenticate, (req, res) => {
   var excerpt = req.body.excerpt;
 
   // Write the excerpt to the database
-  Excerpt.forge({
-    title  : title,
-    excerpt: excerpt,
-    owner_id: req.currentUser.attributes.id,
-    status : 'pending',
-    stage  : 'find' 
-  }, { hasTimestamps: true})
+  Excerpt
+    .forge({
+      title  : title,
+      excerpt: excerpt,
+      owner_id: req.currentUser.attributes.id,
+      status : 'pending',
+      stage  : 'find' 
+    }, { hasTimestamps: true})
     .save(null, { method: 'insert'})
     .then((user) => {
       res.json({ success: true });

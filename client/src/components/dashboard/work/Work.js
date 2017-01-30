@@ -53,7 +53,7 @@ class Work extends React.Component {
       <div>
         <PageHeader 
           title="Work" 
-          description="Complete correction tasks and earn rewards!" 
+          description="Complete correction tasks and earn rewards" 
           icon="industry"
         />
 
