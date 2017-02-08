@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Dimmer, Divider, Loader, Menu, Table } from 'semantic-ui-react';
 import PageHeader from '../PageHeader';
 import SingleTask from './SingleTask';
-import { fetchTasks } from '../../../actions/taskActions';
+import { fetchAvailableTasks } from '../../../actions/taskActions';
 
 /**
 
@@ -32,7 +32,7 @@ class Work extends React.Component {
 
   refreshTasks() {
     this.setState({ loading : true });
-    this.props.fetchTasks()
+    this.props.fetchAvailableTasks()
       .then(
         (res) => {
           this.setState({ 
@@ -104,7 +104,7 @@ class Work extends React.Component {
 }
 
 Work.propTypes = {
-  fetchTasks : React.PropTypes.func.isRequired
+  fetchAvailableTasks : React.PropTypes.func.isRequired
 };
 
-export default connect(null, { fetchTasks })(Work);
+export default connect(null, { fetchAvailableTasks })(Work);

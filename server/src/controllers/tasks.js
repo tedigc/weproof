@@ -1,49 +1,29 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate';
-import Excerpt from '../models/excerpts';
-import TaskSubmission from '../models/task-submissions';
+import { Excerpt, TaskSubmission } from '../db/models';
 import knex from 'knex';
 
 var router = express.Router();
 
-// Get all tasks available to the logged in user
+// Fetch all tasks submitted by the current user
 //
 router.get('/', authenticate, (req, res) => {
 
-  // Find all the excerpt ids of task submissions the user has made
-  
   TaskSubmission
     .query({
-      where : { owner_id : req.currentUser.id },
-      select: [ 'excerpt_id' ]
+      where: { owner_id: req.currentUser.attributes.id }
     })
-    .fetchAll()
-    .then((taskResults) => {
-
-      var submittedTaskExcerptIDs = []
-      for(var j=0; j<taskResults.models.length; j++) {
-        submittedTaskExcerptIDs.push(taskResults.models[j].attributes.excerpt_id);
-      }
-
-      // exclude any excerpts that the user has already submitted a task for
-
-      Excerpt
-        .query((qb) => {
-          qb
-            .where('id', 'not in', submittedTaskExcerptIDs)
-            .andWhere('owner_id', '!=', req.currentUser.id );
-        })
-        .fetchAll()
-        .then((excerptResults) => {
-          var tasks = [];
-          for(var i=0; i<excerptResults.models.length; i++) {
-            tasks.push(excerptResults.models[i].attributes);
-          }
-          res.status(200).json(tasks);
-        });
-
-
+    .fetchAll({
+      withRelated: ['excerpt']
+    })
+    .then(taskSubmissions => {
+      res.json({ taskSubmissions });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: err });
     });
+
 });
 
 // Submit a task and write it to the database
@@ -84,6 +64,46 @@ router.post('/', authenticate, (req, res) => {
       }
     });
 
+});
+
+// Get all tasks available to the logged in user
+//
+router.get('/available', authenticate, (req, res) => {
+
+  // Find all the excerpt ids of task submissions the user has made
+  
+  TaskSubmission
+    .query({
+      where : { owner_id : req.currentUser.id },
+      select: [ 'excerpt_id' ]
+    })
+    .fetchAll()
+    .then((taskSubmissions) => {
+
+      var submittedTaskExcerptIDs = []
+      for(var j=0; j<taskSubmissions.models.length; j++) {
+        submittedTaskExcerptIDs.push(taskSubmissions.models[j].attributes.excerpt_id);
+      }
+
+      // exclude any excerpts that the user has already submitted a task for
+
+      Excerpt
+        .query((qb) => {
+          qb
+            .where('id', 'not in', submittedTaskExcerptIDs)
+            .andWhere('owner_id', '!=', req.currentUser.id );
+        })
+        .fetchAll()
+        .then((excerpts) => {
+          var tasks = [];
+          for(var i=0; i<excerpts.models.length; i++) {
+            tasks.push(excerpts.models[i].attributes);
+          }
+          res.status(200).json(tasks);
+        });
+
+
+    });
 });
 
 export default router;

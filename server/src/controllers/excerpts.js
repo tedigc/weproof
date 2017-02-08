@@ -1,6 +1,6 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate';
-import Excerpt from '../models/excerpts';
+import { Excerpt } from '../db/models';
 
 var router = express.Router();
 

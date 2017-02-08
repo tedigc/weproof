@@ -10,4 +10,11 @@ export function fetchTasks() {
   return dispatch => {
     return axios.get('/api/tasks');
   };
+}
+
+
+export function fetchAvailableTasks() {
+  return dispatch => {
+    return axios.get('/api/tasks/available');
+  };
 };

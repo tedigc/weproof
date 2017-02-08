@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import config from '../config';
-import User from '../models/user';
+import { User } from '../db/models';
 
 var jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
 
