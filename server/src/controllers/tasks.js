@@ -14,7 +14,9 @@ router.get('/', authenticate, (req, res) => {
       where: { owner_id: req.currentUser.attributes.id }
     })
     .fetchAll({
-      withRelated: ['excerpt']
+      withRelated: [ { 'excerpt' : qb => {
+        qb.column('id', 'title', 'excerpt', 'status'); 
+      }}],
     })
     .then(taskSubmissions => {
       res.json({ taskSubmissions });

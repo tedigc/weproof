@@ -16,6 +16,7 @@ export default function(req, res, next) {
       if(err) {
         res.status(401).json({ error: "Failed to authenticate" });
       } else {
+
         // Token is valid
         User
           .query({
@@ -32,6 +33,7 @@ export default function(req, res, next) {
               next();
             }
           });
+
       }
     });
   } else {
