@@ -37,7 +37,7 @@ router.get('/', authenticate, (req, res) => {
       for(var i=0; i<results.models.length; i++) {
         excerpts.push(results.models[i].attributes);
       }
-      res.status(200).json(results);
+      res.status(200).json(excerpts);
     });
 
 });

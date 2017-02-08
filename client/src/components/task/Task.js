@@ -13,6 +13,13 @@ TODO:
 
 */
 
+
+const styles = {
+  backgroundDiv : {
+    backgroundColor: "#A0A0A0"
+  }
+}
+
 class Task extends React.Component {
 
   constructor(props) {
@@ -53,7 +60,7 @@ class Task extends React.Component {
       );
     } else {
       display = (
-        <Container>
+        <Container style={styles.backgroundDiv}>
           <Segment style={{ marginTop: '60px'}}>
             <TaskFind id={this.state.excerpt.id} excerpt={this.state.excerpt.excerpt} />
           </Segment>

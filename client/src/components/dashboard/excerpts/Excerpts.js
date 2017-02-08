@@ -11,7 +11,7 @@ class Excerpts extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      excerpts : {},
+      excerpts : [],
       loading  : true,
       modalOpen: false
     };
