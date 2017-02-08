@@ -61,7 +61,7 @@ class Task extends React.Component {
     } else {
       display = (
         <Container style={styles.backgroundDiv}>
-          <Segment style={{ marginTop: '60px'}}>
+          <Segment style={{ marginTop: '40px'}}>
             <TaskFind id={this.state.excerpt.id} excerpt={this.state.excerpt.excerpt} />
           </Segment>
         </Container>

@@ -252,14 +252,14 @@ class TaskFind extends React.Component {
 
             <Grid.Row>
               <Grid.Column width={16}>
-              <Segment>
+                <h3>Instructions</h3>
+                <span style={{ color: 'gray' }}>Use your mouse to highlight portions of the above excerpt. Click the 'Highlight' button when you want to save it. Browse your saved highlights using the window on the right. You can delete individual highlights by pressing the circular 'x' button, or clear all highlights at once using the 'Clear All' button. When you are happy with the highlights you have saved, click submit to continue.</span>
+                <br/>
                 <Button floated="right" type='submit' primary>Submit</Button>
-              </Segment>
               </Grid.Column>
             </Grid.Row>
 
           </Grid>
-
 
         </Form>
       </Container>

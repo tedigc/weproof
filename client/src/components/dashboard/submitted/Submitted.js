@@ -19,7 +19,6 @@ class Submitted extends React.Component {
     this.props.fetchTasks()
       .then(
         res => {
-          console.log(res);
           this.setState({ 
             loading : false,
             taskSubmissions: res.data.taskSubmissions
@@ -68,7 +67,6 @@ class Submitted extends React.Component {
           {/* Item list of available tasks */}
           <Table.Body>
           {self.state.taskSubmissions.map((taskSubmission, index) => {
-            console.log(taskSubmission);
             return <SingleSubmission
                       key={index}
                       id={taskSubmission.id}
