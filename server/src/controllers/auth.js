@@ -1,8 +1,8 @@
-import express from 'express';
-import bcrypt  from 'bcrypt';
-import jwt     from 'jsonwebtoken';
-import config from '../config';
-import User from '../models/user';
+import express  from 'express';
+import bcrypt   from 'bcrypt';
+import jwt      from 'jsonwebtoken';
+import config   from '../config';
+import { User } from '../db/models';
 
 var router = express.Router();
 var jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
