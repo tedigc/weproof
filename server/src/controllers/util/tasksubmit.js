@@ -11,10 +11,17 @@ export function submitFindTask(req, res, excerpt) {
     .save(null, { method: 'insert' })
     .then((data) => {
 
-      // update the excerpt's stage
+      // algorithm to determine the best pairs for recommendation
+      //
+      // * for now, just use the pairs from the first submission
+      let recommended_edits = req.body.pairs;
+
+      // update the excerpt's stage and recommended edits
+      //
       excerpt
         .save({
-          stage: 'fix'
+          stage             : 'fix',
+          recommended_edits : recommended_edits
         })
         .then(result => {
           res.json(result);
