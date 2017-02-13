@@ -11,11 +11,19 @@ let Excerpt = bookshelf.Model.extend({
   }
 });
 
-let TaskSubmission = bookshelf.Model.extend({
-  tableName: 'task_submissions',
+let Task = bookshelf.Model.extend({
+  tableName: 'tasks',
   excerpt: function() {
     return this.belongsTo(Excerpt, 'excerpt_id');
   }
 });
 
-export { User, Excerpt, TaskSubmission };
+let TaskFind = bookshelf.Model.extend({
+  tableName: 'tasks_find',
+});
+
+let TaskFix = bookshelf.Model.extend({
+  tableName: 'tasks_fix',
+});
+
+export { User, Excerpt, Task, TaskFind, TaskFix };

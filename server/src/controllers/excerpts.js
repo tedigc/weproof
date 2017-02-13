@@ -45,6 +45,7 @@ router.get('/', authenticate, (req, res) => {
 // Submit an excerpt and write it to the database
 //
 router.post('/', authenticate, (req, res) => {
+
   var title = req.body.title;
   var excerpt = req.body.excerpt;
 
@@ -53,10 +54,8 @@ router.post('/', authenticate, (req, res) => {
     .forge({
       title  : title,
       excerpt: excerpt,
-      owner_id: req.currentUser.attributes.id,
-      status : 'pending',
-      stage  : 'find' 
-    }, { hasTimestamps: true})
+      owner_id: req.currentUser.attributes.id
+    }, { hasTimestamps: true })
     .save(null, { method: 'insert'})
     .then((user) => {
       res.json({ success: true });

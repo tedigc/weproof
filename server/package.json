@@ -4,7 +4,10 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node",
-    "db:migrate": "knex migrate:latest  --knexfile ./src/knexfile.js"
+    "db:migrate"  : "knex migrate:latest --knexfile ./src/db/knexfile.js",
+    "db:rollback" : "knex migrate:rollback --knexfile ./src/db/knexfile.js",
+    "db:populate-users" : "babel-node src/testing/db/populate-users.js",
+    "db:populate-excerpts" : "babel-node src/testing/db/populate-excerpts.js"
   },
   "author": "tedigc",
   "license": "ISC",

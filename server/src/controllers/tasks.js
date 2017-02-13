@@ -1,7 +1,7 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate';
-import { Excerpt, TaskSubmission } from '../db/models';
-import knex from 'knex';
+import { Excerpt, Task, TaskFind, TaskFix } from '../db/models';
+import { submitFindTask } from './util/tasksubmit';
 
 var router = express.Router();
 
@@ -9,12 +9,12 @@ var router = express.Router();
 //
 router.get('/', authenticate, (req, res) => {
 
-  TaskSubmission
+  Task
     .query({
       where: { owner_id: req.currentUser.attributes.id }
     })
     .fetchAll({
-      withRelated: [ { 'excerpt' : qb => {
+      withRelated: [{ 'excerpt' : qb => {
         qb.column('id', 'title', 'excerpt', 'status'); 
       }}],
     })
@@ -32,9 +32,8 @@ router.get('/', authenticate, (req, res) => {
 //
 router.post('/', authenticate, (req, res) => {
 
-  var excerptId = req.body.excerptId;
-  var excerpt = req.body.excerpt;
-  var pairs = req.body.pairs;
+  let excerptId = req.body.excerptId;
+  let taskType = req.body.taskType;
 
   Excerpt
     .query({
@@ -47,34 +46,32 @@ router.post('/', authenticate, (req, res) => {
         res.status(500).json({ error: "No such excerpt" });
       } else {
 
-        // If the excerpt exists, forge a new task submission
-        TaskSubmission
-          .forge({
-            pairs      : pairs,
-            owner_id   : req.currentUser.attributes.id,
-            excerpt_id : excerpt.id,
-            }, { hasTimestamps: true })
-          .save(null, { method: 'insert' })
-          .then((data) => {
-            res.json({ success: true });
-          })
-          .catch((err) => {
-            console.error(err);
-            res.status(500).json({ error: err });
-          });
+        switch(taskType) {
+          case "find":
+            submitFindTask(req, res, excerpt);
+            break;
+
+          case "fix":
+            // submitFixTask(req.body);
+            break;
+
+          case "verify":
+            // submitVerifyTask(req.body);
+            break;
+        }
 
       }
     });
 
 });
 
-// Get all tasks available to the logged in user
+// Get all tasks available for completion to the logged in user
 //
 router.get('/available', authenticate, (req, res) => {
 
   // Find all the excerpt ids of task submissions the user has made
   
-  TaskSubmission
+  Task
     .query({
       where : { owner_id : req.currentUser.id },
       select: [ 'excerpt_id' ]
@@ -104,8 +101,40 @@ router.get('/available', authenticate, (req, res) => {
           res.status(200).json(tasks);
         });
 
-
     });
+});
+
+router.post('/test', (req, res) => {
+
+  TaskFix
+    .forge({
+      pairs       : [[0, 1], [5, 6]],
+      owner_id    : 1,
+      excerpt_id  : 2,
+      corrections : ["hello there", "high ground"]
+    }, { hasTimestamps: true })
+    .save(null, { method: 'insert' })
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json(err);
+    });
+
+});
+
+router.get('/test', (req, res) => {
+
+  TaskFind
+    .fetchAll()
+    .then(results => {
+      for(let i=0; i<results.models.length; i++) {
+        console.log(results.models[i].attributes);
+      }
+      res.json(results);
+    });
+
 });
 
 export default router;

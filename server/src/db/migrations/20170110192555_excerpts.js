@@ -1,5 +1,6 @@
 
 exports.up = function(knex, Promise) {
+  
   return knex.schema.createTable('excerpts', function(table) {
     table.increments();
     table.string('title').notNullable();
@@ -7,8 +8,11 @@ exports.up = function(knex, Promise) {
     table.bigInteger('owner_id').unsigned().index().references('id').inTable('users');
     table.timestamps();
   });
+  
 };
 
 exports.down = function(knex, Promise) {
+  
   return knex.schema.dropTable('excerpts');
+
 };
