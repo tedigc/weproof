@@ -6,15 +6,20 @@ export function submitTask(task) {
   };
 };
 
-export function fetchTasks() {
+export function fetchSingleTask(id) {
   return dispatch => {
-    return axios.get('/api/tasks');
+    return axios.get('/api/tasks/' + id)
   };
 }
-
 
 export function fetchAvailableTasks() {
   return dispatch => {
     return axios.get('/api/tasks/available');
   };
 };
+
+export function fetchTasks() {
+  return dispatch => {
+    return axios.get('/api/tasks');
+  };
+}

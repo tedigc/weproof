@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Container, Dimmer, Loader, Segment } from 'semantic-ui-react';
 import TaskFind from './find/TaskFind';
+import TaskFix from './fix/TaskFix';
 import { fetchSingleExcerpt } from '../../actions/excerptActions';
 
 /**
@@ -43,7 +44,6 @@ class Task extends React.Component {
           if(err.response.status === 404) {
             this.context.router.push('/404');
           } else {
-            // other errors
             console.error(err);
           }
         }
@@ -51,7 +51,7 @@ class Task extends React.Component {
   }
 
   render() {
-    var display;
+    let display;
     if(this.state.loading) {
       display = (
         <Dimmer active> 
@@ -59,10 +59,14 @@ class Task extends React.Component {
         </Dimmer> 
       );
     } else {
+      let task;
+      if(this.state.excerpt.stage === 'find')   task = <TaskFind excerpt={this.state.excerpt} />;
+      if(this.state.excerpt.stage === 'fix')    task = <TaskFix excerpt={this.state.excerpt} />;
+      if(this.state.excerpt.stage === 'verify') task = <TaskFix excerpt={this.state.excerpt} />;
       display = (
         <Container style={styles.backgroundDiv}>
           <Segment style={{ marginTop: '40px'}}>
-            <TaskFind id={this.state.excerpt.id} excerpt={this.state.excerpt.excerpt} />
+            {task}
           </Segment>
         </Container>
       );

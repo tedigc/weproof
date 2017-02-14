@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Container } from 'semantic-ui-react';
 import NavBar from './NavBar';
 
 class LandingPage extends React.Component {
@@ -14,12 +13,12 @@ class LandingPage extends React.Component {
 
   render() {
     return (
-      <Container>
+      <div>
         <NavBar/>
-        <div style={{ marginTop: "80px" }}>
+        <div>
           {this.props.children}
         </div>
-      </Container>
+      </div>
     );
   }
 

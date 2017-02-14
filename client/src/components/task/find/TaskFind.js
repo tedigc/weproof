@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Container, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-react';
 import Highlight from './Highlight';
 import { submitTask } from '../../../actions/taskActions';
 
@@ -56,7 +56,7 @@ class TaskFind extends React.Component {
   }
 
   getHighlightedTextReact() {
-    var original = this.props.excerpt;
+    var original = this.props.excerpt.excerpt;
     var pairs = this.state.pairs.slice();
 
     // If there are no pairs, just return the unhighlighted original text
@@ -109,7 +109,7 @@ class TaskFind extends React.Component {
       priorRange.setEnd(range.startContainer, range.startOffset);
       start = priorRange.toString().length;
       end = start + range.toString().length;
-      end = Math.min(end, this.props.excerpt.length);
+      end = Math.min(end, this.props.excerpt.excerpt.length);
 
       // add it to the array of pairs
       //
@@ -169,14 +169,15 @@ class TaskFind extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.submitTask({ excerptId: this.props.id, excerpt: this.props.excerpt, pairs: this.state.pairs})
+    this.props.submitTask({ 
+      excerptId: this.props.excerpt.id, 
+      excerpt: this.props.excerpt.excerpt, 
+      pairs: this.state.pairs, 
+      taskType: "find" 
+    })
       .then(
-        (res) => {
-          this.context.router.push('/dashboard/home');
-        },
-        (err) => {
-          console.log(err);
-        }
+        res => { this.context.router.push('/dashboard/home'); },
+        err => { console.log(err); }
       );
   }
 
@@ -198,7 +199,7 @@ class TaskFind extends React.Component {
       highlights = (
         <Item.Group divided style={styles.itemGroupDiv}>
           {this.state.pairs.map((pair, index) => {
-            var text = this.props.excerpt.slice(pair[0], pair[1]);
+            var text = this.props.excerpt.excerpt.slice(pair[0], pair[1]);
             return <Highlight 
                       key={index} 
                       id={index} 
@@ -214,63 +215,60 @@ class TaskFind extends React.Component {
     }
 
     return (
-      <Container>
-        <Form onSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit}>
 
-          <Grid>
-            <Grid.Row>
+        <Grid>
+          <Grid.Row>
 
-              {/* Excerpt window */}
-              <Grid.Column width={10}>
+            {/* Excerpt window */}
+            <Grid.Column width={10}>
+            
+              <Segment size="large" style={styles.excerpt}>
+                {this.getHighlightedTextReact()}      
+                <Label attached='bottom left'>Excerpt</Label>          
+              </Segment>
+
+            </Grid.Column>
+
+            {/* Highlight window */}
+            <Grid.Column width={6}>
+
+              <Segment attached='top' style={styles.highlightMenu}>
+                {highlights}
+              </Segment>
+
+              <Segment style={styles.buttonBar} attached='bottom'>
+                <div style={{display: 'flex'}}>
+                  <Button.Group fluid >
+                    <Button content="Highlight" onClick={this.handleHighlight} primary />
+                    <Button content="Clear All" onClick={this.handleClear}/>
+                  </Button.Group>
+                </div>
+              </Segment>
               
-                <Segment size="large" style={styles.excerpt}>
-                  {this.getHighlightedTextReact()}      
-                  <Label attached='bottom left'>Excerpt</Label>          
-                </Segment>
+            </Grid.Column>
 
-              </Grid.Column>
+          </Grid.Row>
 
-              {/* Highlight window */}
-              <Grid.Column width={6}>
+          <Grid.Row>
+            <Grid.Column width={16}>
+              <h3>Instructions</h3>
+              <span style={{ color: 'gray' }}>Use your mouse to highlight portions of the above excerpt. Click the 'Highlight' button when you want to save it. Browse your saved highlights using the window on the right. You can delete individual highlights by pressing the circular 'x' button, or clear all highlights at once using the 'Clear All' button. When you are happy with the highlights you have saved, click submit to continue.</span>
+              <br/>
+              <Button floated="right" type='submit' primary>Submit</Button>
+            </Grid.Column>
+          </Grid.Row>
 
-                <Segment attached='top' style={styles.highlightMenu}>
-                  {highlights}
-                </Segment>
+        </Grid>
 
-                <Segment style={styles.buttonBar} attached='bottom'>
-                  <div style={{display: 'flex'}}>
-                    <Button.Group fluid >
-                      <Button content="Highlight" onClick={this.handleHighlight} primary />
-                      <Button content="Clear All" onClick={this.handleClear}/>
-                    </Button.Group>
-                  </div>
-                </Segment>
-                
-              </Grid.Column>
-
-            </Grid.Row>
-
-            <Grid.Row>
-              <Grid.Column width={16}>
-                <h3>Instructions</h3>
-                <span style={{ color: 'gray' }}>Use your mouse to highlight portions of the above excerpt. Click the 'Highlight' button when you want to save it. Browse your saved highlights using the window on the right. You can delete individual highlights by pressing the circular 'x' button, or clear all highlights at once using the 'Clear All' button. When you are happy with the highlights you have saved, click submit to continue.</span>
-                <br/>
-                <Button floated="right" type='submit' primary>Submit</Button>
-              </Grid.Column>
-            </Grid.Row>
-
-          </Grid>
-
-        </Form>
-      </Container>
+      </Form>
     );
   }
 
 }
 
 TaskFind.propTypes = {
-  id         : React.PropTypes.number.isRequired,
-  excerpt    : React.PropTypes.string.isRequired,
+  excerpt    : React.PropTypes.object.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };
 
