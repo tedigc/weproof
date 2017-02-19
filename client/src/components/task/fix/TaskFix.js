@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Button, Form, Grid, Label, Segment, TextArea } from 'semantic-ui-react';
+import { submitTask } from '../../../actions/taskActions';
 
 const excerptHeight = 250;
 const buttonBarHeight = 70;
@@ -44,6 +46,7 @@ class TaskFix extends React.Component {
     };
     this.getHighlightedText = this.getHighlightedText.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.restoreDefault = this.restoreDefault.bind(this);
   }
 
@@ -63,9 +66,25 @@ class TaskFix extends React.Component {
 
   handleChange(e) {
     e.preventDefault();
-    if(e.target.name == "editTextArea") {
+    if(e.target.name === "editTextArea") {
       this.setState({ correction : e.target.value });
     }
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    console.log('ayy lmao');
+    this.props.submitTask({
+      excerptId  : this.props.excerpt.id, 
+      excerpt    : this.props.excerpt.excerpt,
+      chosenEdit : this.state.chosenEdit,
+      correction : this.state.correction, 
+      taskType   : "fix" 
+    })
+      .then(
+        res => { this.context.router.push('/dashboard/home'); },
+        err => { console.log(err); }
+      );
   }
 
   restoreDefault(e) {
@@ -77,7 +96,7 @@ class TaskFix extends React.Component {
 
   render() {
     return (
-      <Form>
+      <Form onSubmit={this.handleSubmit}>
 
         <Grid>
           <Grid.Row>
@@ -106,9 +125,10 @@ class TaskFix extends React.Component {
           <Grid.Row>
             <Grid.Column width={16}>
               <h3>Instructions</h3>
-              <span style={{ color: 'gray' }}>Use your mouse to highlight portions of the above excerpt. Click the 'Highlight' button when you want to save it. Browse your saved highlights using the window on the right. You can delete individual highlights by pressing the circular 'x' button, or clear all highlights at once using the 'Clear All' button. When you are happy with the highlights you have saved, click submit to continue.</span>
+              <span style={{ color: 'gray' }}>The box on the left contains an excerpt of text. The segment highlighted in blue has been identified as possible containing a mistake in grammar or that spelling. Correct any such mistakes by editing the text in the box on the right. If you wish to revert the text to its original value, click the grey "Restore Original Text" button underneith the text box to the right.</span>
               <br/>
-              <Button floated="right" type='submit' primary>Submit</Button>
+              <br/>
+              <Button floated='right' type='submit' primary>Submit</Button>
             </Grid.Column>
           </Grid.Row>
 
@@ -121,11 +141,12 @@ class TaskFix extends React.Component {
 }
 
 TaskFix.propTypes = {
-  excerpt : React.PropTypes.object.isRequired,
+  excerpt    : React.PropTypes.object.isRequired,
+  submitTask : React.PropTypes.func.isRequired
 };
 
 TaskFix.contextTypes = {
   router : React.PropTypes.object.isRequired
 };
 
-export default TaskFix;
+export default connect(null, { submitTask })(TaskFix);

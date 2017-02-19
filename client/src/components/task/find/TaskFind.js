@@ -29,7 +29,7 @@ const styles = {
     height : buttonBarHeight,
     display: 'flex', 
     flexDirection: 'column', 
-    justifyContent: 'center'
+    justifyContent: 'flex-end'
   },
   itemGroupDiv : {
     height: excerptHeight - 20,
@@ -237,14 +237,12 @@ class TaskFind extends React.Component {
                 {highlights}
               </Segment>
 
-              <Segment style={styles.buttonBar} attached='bottom'>
-                <div style={{display: 'flex'}}>
-                  <Button.Group fluid >
-                    <Button content="Highlight" onClick={this.handleHighlight} primary />
-                    <Button content="Clear All" onClick={this.handleClear}/>
-                  </Button.Group>
+              <div style={styles.buttonBar}>
+                <div style={{ display: 'flex'}}>
+                  <Button content="Highlight" fluid onClick={this.handleHighlight} primary />
+                  <Button content="Clear All" fluid onClick={this.handleClear}/>
                 </div>
-              </Segment>
+              </div>
               
             </Grid.Column>
 

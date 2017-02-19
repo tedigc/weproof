@@ -8,7 +8,7 @@ export function submitTask(task) {
 
 export function fetchSingleTask(id) {
   return dispatch => {
-    return axios.get('/api/tasks/' + id)
+    return axios.get('/api/tasks/' + id);
   };
 }
 
