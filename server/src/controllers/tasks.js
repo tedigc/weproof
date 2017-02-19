@@ -1,7 +1,7 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate';
 import { Excerpt, Task, TaskFind, TaskFix } from '../db/models';
-import { submitFindTask } from './util/tasksubmit';
+import { submitFindTask, submitFixTask } from './util/tasksubmit';
 
 var router = express.Router();
 
@@ -46,19 +46,9 @@ router.post('/', authenticate, (req, res) => {
         res.status(500).json({ error: "No such excerpt" });
       } else {
 
-        switch(taskType) {
-          case "find":
-            submitFindTask(req, res, excerpt);
-            break;
-
-          case "fix":
-            // submitFixTask(req.body);
-            break;
-
-          case "verify":
-            // submitVerifyTask(req.body);
-            break;
-        }
+        if(taskType === "find")   submitFindTask(req, res, excerpt);
+        if(taskType === "fix")    submitFixTask(req, res, excerpt);
+        // if(taskType === "verify") submitFindTask(req, res, excerpt);
 
       }
     });

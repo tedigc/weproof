@@ -16,7 +16,8 @@ exports.up = function(knex, Promise) {
 
     knex.schema.createTable('tasks_fix', function(table) {
       table.inherits('tasks');
-      table.specificType('corrections', 'text[]');
+      table.integer('chosen_edit');
+      table.string('correction');
       table.enu('type', ['find', 'fix', 'verify']).defaultTo('fix');
     }),
 
