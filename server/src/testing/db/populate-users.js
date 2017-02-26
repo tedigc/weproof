@@ -24,22 +24,33 @@ const users = [
   }
 ];
 
+let promises = [];
+
 // Save users
 //
 for(let i=0; i<users.length; i++) {
   let user = users[i];
   let password_digest = bcrypt.hashSync(user.password, 10);
-  User
-    .forge({
-      username        : user.username,
-      email           : user.email,
-      password_digest : password_digest
-    }, { hasTimestamps: true })
-    .save(null, { method: 'insert' })
-    .then(newUser => {
-      console.log('[user] ' + user.username + ' saved to database.');
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  promises.push(new Promise((resolve, reject) => {
+
+    return User
+      .forge({
+        username        : user.username,
+        email           : user.email,
+        password_digest : password_digest
+      }, { hasTimestamps: true })
+      .save(null, { method: 'insert' })
+      .then(newUser => {
+        console.log('[user] ' + user.username + ' saved to database.');
+        resolve();
+      })
+      .catch(err => {
+        console.error(err);
+        reject();
+      });
+
+  }));
 }
+
+Promise.all(promises)
+  .then(() => { process.exit() });

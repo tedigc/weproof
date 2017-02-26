@@ -43,21 +43,34 @@ const excerpts = [
   },
 ];
 
+
+let promises = [];
+
 // Save excerpts
 //
 for(let i=0; i<excerpts.length; i++) {
   let excerpt = excerpts[i];
-  Excerpt
-    .forge({
-      title    : excerpt.title,
-      excerpt  : excerpt.excerpt,
-      owner_id : excerpt.owner_id,
-    }, { hasTimestamps: true })
-    .save(null, { method: 'insert' })
-    .then(user => {
-      console.log('[excerpt] ' + excerpt.title + ' saved to database.');
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  promises.push(new Promise((resolve, reject) => {
+
+    return Excerpt
+      .forge({
+        title    : excerpt.title,
+        excerpt  : excerpt.excerpt,
+        owner_id : excerpt.owner_id,
+      }, { hasTimestamps: true })
+      .save(null, { method: 'insert' })
+      .then(user => {
+        console.log('[excerpt] ' + excerpt.title + ' saved to database.');
+        resolve();
+      })
+      .catch(err => {
+        console.error(err);
+        reject();
+      });  
+
+  }));
+  
 }
+
+Promise.all(promises)
+  .then(() => { process.exit() });
