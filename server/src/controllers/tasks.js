@@ -105,7 +105,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
     })
     .fetchAll({
       withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'excerpt', 'status'); 
+        qb.column('id', 'excerpt', 'status', 'recommended_edits'); 
       }}],
     })
     .then(tasks => {
@@ -121,13 +121,14 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
       let attributes = tasks.models[0].attributes;
       let relations  = tasks.models[0].relations;
 
-      let data = {
+      let taskInfo = {
         chosenEdit : attributes.chosen_edit,
         correction : attributes.correction,
-        excerpt    : relations.excerpt
+        excerpt    : relations.excerpt,
+        pair       : relations.excerpt.attributes.recommended_edits[attributes.chosen_edit]
       };
 
-      res.json({ data });
+      res.json({ taskInfo });
     })
     .catch(err => {
       console.error(err);
