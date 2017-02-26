@@ -10,7 +10,7 @@ let User = bookshelf.Model.extend({
 let Excerpt = bookshelf.Model.extend({
   tableName: 'excerpts',
   taskSubmissions: function() {
-    return this.hasMany(TaskSubmission);
+    return this.hasMany(Task);
   }
 });
 
@@ -26,14 +26,6 @@ let Task = bookshelf.Model.extend({
 
 let TaskFind = bookshelf.Model.extend({
   tableName: 'tasks_find',
-});
-
-let TaskFix = bookshelf.Model.extend({
-  tableName: 'tasks_fix',
-});
-
-let Correction = bookshelf.Model.extend({
-  tableName: 'corrections',
   owner: function() {
     return this.belongsTo(User, 'owner_id');
   },
@@ -42,4 +34,14 @@ let Correction = bookshelf.Model.extend({
   }
 });
 
-export { User, Excerpt, Task, TaskFind, TaskFix, Correction };
+let TaskFix = bookshelf.Model.extend({
+  tableName: 'tasks_fix',
+  owner: function() {
+    return this.belongsTo(User, 'owner_id');
+  },
+  excerpt: function() {
+    return this.belongsTo(Excerpt, 'excerpt_id');
+  }
+});
+
+export { User, Excerpt, Task, TaskFind, TaskFix };

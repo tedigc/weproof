@@ -19,6 +19,7 @@ router.get('/', authenticate, (req, res) => {
       }}],
     })
     .then(taskSubmissions => {
+      console.log(taskSubmissions.models[0].attributes);
       res.json({ taskSubmissions });
     })
     .catch(err => {
@@ -92,6 +93,47 @@ router.get('/available', authenticate, (req, res) => {
         });
 
     });
+});
+
+// Get all the necessary information needed for a new verify task
+//
+router.get('/:excerptId/verify', authenticate, (req, res) => {
+
+  TaskFix
+    .query({
+      where  : { excerpt_id : req.params.excerptId }
+    })
+    .fetchAll({
+      withRelated: [{ 'excerpt' : qb => {
+        qb.column('id', 'excerpt', 'status'); 
+      }}],
+    })
+    .then(tasks => {
+
+      // let chosenEdit = -1;
+      // let correction = '';
+      // for each (model in tasks.models) {
+      //
+      //   /* here is where the chosen_edit and correction would be made */
+      // 
+      // }
+
+      let attributes = tasks.models[0].attributes;
+      let relations  = tasks.models[0].relations;
+
+      let data = {
+        chosenEdit : attributes.chosen_edit,
+        correction : attributes.correction,
+        excerpt    : relations.excerpt
+      };
+
+      res.json({ data });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: err });
+    });
+
 });
 
 export default router;

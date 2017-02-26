@@ -1,4 +1,4 @@
-import { Excerpt, Task, TaskFind, TaskFix } from '../../db/models';
+import { Correction, Excerpt, Task, TaskFind, TaskFix } from '../../db/models';
 
 export function submitFindTask(req, res, excerpt) {
 
@@ -48,7 +48,7 @@ export function submitFixTask(req, res, excerpt) {
       chosen_edit: req.body.chosenEdit,
       correction : req.body.correction
     }, { hasTimestamps: true })
-    .save(null, { method: 'insert'})
+    .save(null, { method: 'insert' })
     .then(data => {
 
       // only move onto verify stage once some criteria has been met
