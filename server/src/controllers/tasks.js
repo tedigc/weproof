@@ -94,37 +94,4 @@ router.get('/available', authenticate, (req, res) => {
     });
 });
 
-router.post('/test', (req, res) => {
-
-  TaskFix
-    .forge({
-      pairs       : [[0, 1], [5, 6]],
-      owner_id    : 1,
-      excerpt_id  : 2,
-      corrections : ["hello there", "high ground"]
-    }, { hasTimestamps: true })
-    .save(null, { method: 'insert' })
-    .then(data => {
-      res.json(data);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json(err);
-    });
-
-});
-
-router.get('/test', (req, res) => {
-
-  TaskFind
-    .fetchAll()
-    .then(results => {
-      for(let i=0; i<results.models.length; i++) {
-        console.log(results.models[i].attributes);
-      }
-      res.json(results);
-    });
-
-});
-
 export default router;

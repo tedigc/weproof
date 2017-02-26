@@ -2,8 +2,6 @@ import { Excerpt, Task, TaskFind, TaskFix } from '../../db/models';
 
 export function submitFindTask(req, res, excerpt) {
 
-  console.log('find');
-
   TaskFind
     .forge({
         excerpt_id : req.body.excerptId,
