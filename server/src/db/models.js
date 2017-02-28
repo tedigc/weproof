@@ -44,4 +44,14 @@ let TaskFix = bookshelf.Model.extend({
   }
 });
 
-export { User, Excerpt, Task, TaskFind, TaskFix };
+let TaskVerify = bookshelf.Model.extend({
+  tableName: 'tasks_verify',
+  owner: function() {
+    return this.belongsTo(User, 'owner_id');
+  },
+  excerpt: function() {
+    return this.belongsTo(Excerpt, 'excerpt_id');
+  }
+});
+
+export { User, Excerpt, Task, TaskFind, TaskFix, TaskVerify };

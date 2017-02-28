@@ -1,4 +1,4 @@
-import { Correction, Excerpt, Task, TaskFind, TaskFix } from '../../db/models';
+import { Excerpt, Task, TaskFind, TaskFix, TaskVerify } from '../../db/models';
 
 export function submitFindTask(req, res, excerpt) {
 
@@ -65,6 +65,25 @@ export function submitFixTask(req, res, excerpt) {
           console.error(err);
           res.status(500).json(err);
         });
+
+    });
+
+};
+
+export function submitVerifyTask(req, res, excerpt) {
+
+  TaskVerify
+    .forge({
+      excerpt_id  : req.body.excerptId,
+      owner_id    : req.currentUser.attributes.id,
+      chosen_edit : req.body.chosenEdit,
+      correction  : req.body.correction,
+      accepted    : req.body.accepted
+    }, { hasTimestamps: true })
+    .save(null, { method: 'insert' })
+    .then(data => {
+
+      res.json({ success : true });
 
     });
 

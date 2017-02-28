@@ -1,7 +1,7 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate';
 import { Excerpt, Task, TaskFind, TaskFix } from '../db/models';
-import { submitFindTask, submitFixTask } from './util/tasksubmit';
+import { submitFindTask, submitFixTask, submitVerifyTask } from './util/tasksubmit';
 
 var router = express.Router();
 
@@ -48,7 +48,7 @@ router.post('/', authenticate, (req, res) => {
 
         if(taskType === "find")   submitFindTask(req, res, excerpt);
         if(taskType === "fix")    submitFixTask(req, res, excerpt);
-        // if(taskType === "verify") submitFindTask(req, res, excerpt);
+        if(taskType === "verify") submitVerifyTask(req, res, excerpt);
 
       }
     });

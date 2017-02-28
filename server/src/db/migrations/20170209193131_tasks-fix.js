@@ -15,6 +15,7 @@ exports.up = function(knex, Promise) {
     }),
 
     knex.schema.createTable('tasks_fix', function(table) {
+      table.increments();
       table.inherits('tasks');
       table.integer('chosen_edit');
       table.string('correction');
