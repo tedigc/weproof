@@ -19,7 +19,6 @@ router.get('/', authenticate, (req, res) => {
       }}],
     })
     .then(taskSubmissions => {
-      console.log(taskSubmissions.models[0].attributes);
       res.json({ taskSubmissions });
     })
     .catch(err => {
