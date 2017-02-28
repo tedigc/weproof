@@ -10,7 +10,7 @@ export function fetchSingleTask(id) {
   return dispatch => {
     return axios.get('/api/tasks/' + id);
   };
-}
+};
 
 export function fetchAvailableTasks() {
   return dispatch => {
@@ -22,4 +22,10 @@ export function fetchTasks() {
   return dispatch => {
     return axios.get('/api/tasks');
   };
-}
+};
+
+export function fetchVerifyTask(id) {
+  return dispatch => {
+    return axios.get('/api/tasks/' + id + '/verify');
+  };
+};

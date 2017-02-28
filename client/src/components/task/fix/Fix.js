@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, Grid, Label, Segment, TextArea } from 'semantic-ui-react';
+import Instructions from '../common/Instructions';
 import { submitTask } from '../../../actions/taskActions';
 
 const excerptHeight = 250;
@@ -33,7 +34,7 @@ const styles = {
   }
 };
 
-class TaskFix extends React.Component {
+class Fix extends React.Component {
 
   constructor(props) {
     super(props);
@@ -73,7 +74,6 @@ class TaskFix extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    console.log('ayy lmao');
     this.props.submitTask({
       excerptId  : this.props.excerpt.id, 
       excerpt    : this.props.excerpt.excerpt,
@@ -122,15 +122,8 @@ class TaskFix extends React.Component {
 
           </Grid.Row>
 
-          <Grid.Row>
-            <Grid.Column width={16}>
-              <h3>Instructions</h3>
-              <span style={{ color: 'gray' }}>The box on the left contains an excerpt of text. The segment highlighted in blue has been identified as possible containing a mistake in grammar or that spelling. Correct any such mistakes by editing the text in the box on the right. If you wish to revert the text to its original value, click the grey "Restore Original Text" button underneith the text box to the right.</span>
-              <br/>
-              <br/>
-              <Button floated='right' type='submit' primary>Submit</Button>
-            </Grid.Column>
-          </Grid.Row>
+          <Instructions text='The box on the left contains an excerpt of text. The segment highlighted in blue has been identified as possible containing a mistake in grammar or that spelling. Correct any such mistakes by editing the text in the box on the right. If you wish to revert the text to its original value, click the grey "Restore Original Text" button underneith the text box to the right.'/>
+          <Button floated='right' type='submit' primary>Submit</Button>
 
         </Grid>
 
@@ -140,13 +133,13 @@ class TaskFix extends React.Component {
 
 }
 
-TaskFix.propTypes = {
+Fix.propTypes = {
   excerpt    : React.PropTypes.object.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };
 
-TaskFix.contextTypes = {
+Fix.contextTypes = {
   router : React.PropTypes.object.isRequired
 };
 
-export default connect(null, { submitTask })(TaskFix);
+export default connect(null, { submitTask })(Fix);

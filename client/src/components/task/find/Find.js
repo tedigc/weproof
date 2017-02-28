@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-react';
 import Highlight from './Highlight';
+import Instructions from '../common/Instructions';
 import { submitTask } from '../../../actions/taskActions';
 
 const excerptHeight = 250;
@@ -38,7 +39,7 @@ const styles = {
   }
 };
 
-class TaskFind extends React.Component {
+class Find extends React.Component {
 
   constructor(props) {
     super(props);
@@ -56,18 +57,18 @@ class TaskFind extends React.Component {
   }
 
   getHighlightedTextReact() {
-    var original = this.props.excerpt.excerpt;
-    var pairs = this.state.pairs.slice();
+    let original = this.props.excerpt.excerpt;
+    let pairs = this.state.pairs.slice();
 
     // If there are no pairs, just return the unhighlighted original text
     if(pairs.length === 0) return <div id="excerpt">{original}</div>;
 
-    var self = this;
+    let self = this;
     function highlight() {
-      var components = [];
+      let components = [];
 
-      for(var i=0; i<pairs.length; i++) {
-        var highlightStyle = (i === self.state.currentlySelected) ? styles.highlightSelected : styles.highlight;
+      for(let i=0; i<pairs.length; i++) {
+        let highlightStyle = (i === self.state.currentlySelected) ? styles.highlightSelected : styles.highlight;
         components.push(
           <mark key={i} className="highlight" style={highlightStyle}>
             {original.slice(pairs[i][0], pairs[i][1])}
@@ -94,12 +95,12 @@ class TaskFind extends React.Component {
     // Add the user selection to the list of highlights
     if(typeof window.getSelection() !== undefined && window.getSelection().anchorNode !== null) {
 
-      var el = window.getSelection().getRangeAt(0).startContainer.parentNode;
+      let el = window.getSelection().getRangeAt(0).startContainer.parentNode;
       if(el.className === "highlight") el = el.parentNode;
       if(el.id !== "excerpt") return;
 
-      var start, end;
-      var range, priorRange;
+      let start, end;
+      let range, priorRange;
 
       // find the range of the selection
       //
@@ -113,7 +114,7 @@ class TaskFind extends React.Component {
 
       // add it to the array of pairs
       //
-      var pairArray = this.state.pairs.slice();
+      let pairArray = this.state.pairs.slice();
       pairArray.push([start, end]);
 
       // sort the array of pairs by their left hand index
@@ -127,9 +128,9 @@ class TaskFind extends React.Component {
 
       // merge overlapping pairs
       //
-      var merged = [];
-      var currentPair = pairArray[0];
-      for(var i=0; i<pairArray.length; i++) {
+      let merged = [];
+      let currentPair = pairArray[0];
+      for(let i=0; i<pairArray.length; i++) {
         if(currentPair[1] >= pairArray[i][0]) {
           // pairs overlap
           currentPair[1] = Math.max(currentPair[1], pairArray[i][1]);
@@ -147,7 +148,7 @@ class TaskFind extends React.Component {
 
   handleRemoveHighlight(highlightIndex, e) {
     e.preventDefault();
-    var pairsEdit = this.state.pairs.slice();
+    let pairsEdit = this.state.pairs.slice();
     pairsEdit.splice(highlightIndex, 1);
     this.setState({ pairs: pairsEdit });
   }
@@ -183,7 +184,7 @@ class TaskFind extends React.Component {
 
   render() {
 
-    var highlights;
+    let highlights;
     if(this.state.pairs.length === 0) {
       highlights = (
         <Header textAlign="center" as='h4'>
@@ -199,7 +200,7 @@ class TaskFind extends React.Component {
       highlights = (
         <Item.Group divided style={styles.itemGroupDiv}>
           {this.state.pairs.map((pair, index) => {
-            var text = this.props.excerpt.excerpt.slice(pair[0], pair[1]);
+            let text = this.props.excerpt.excerpt.slice(pair[0], pair[1]);
             return <Highlight 
                       key={index} 
                       id={index} 
@@ -248,14 +249,8 @@ class TaskFind extends React.Component {
 
           </Grid.Row>
 
-          <Grid.Row>
-            <Grid.Column width={16}>
-              <h3>Instructions</h3>
-              <span style={{ color: 'gray' }}>Use your mouse to highlight portions of the above excerpt. Click the 'Highlight' button when you want to save it. Browse your saved highlights using the window on the right. You can delete individual highlights by pressing the circular 'x' button, or clear all highlights at once using the 'Clear All' button. When you are happy with the highlights you have saved, click submit to continue.</span>
-              <br/>
-              <Button floated="right" type='submit' primary>Submit</Button>
-            </Grid.Column>
-          </Grid.Row>
+          <Instructions text='Use your mouse to highlight portions of the above excerpt. Click the "Highlight" button when you want to save it. Browse your saved highlights using the window on the right. You can delete individual highlights by pressing the circular "x" button, or clear all highlights at once using the "Clear All" button. When you are happy with the highlights you have saved, click submit to continue.'/>
+          <Button floated='right' type='submit' primary>Submit</Button>
 
         </Grid>
 
@@ -265,13 +260,13 @@ class TaskFind extends React.Component {
 
 }
 
-TaskFind.propTypes = {
+Find.propTypes = {
   excerpt    : React.PropTypes.object.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };
 
-TaskFind.contextTypes = {
+Find.contextTypes = {
   router : React.PropTypes.object.isRequired
 };
 
-export default connect(null, { submitTask })(TaskFind);
+export default connect(null, { submitTask })(Find);
