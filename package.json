@@ -6,7 +6,7 @@
   },
   "description": "individual project source code",
   "repository": "https://github.com/tedigc/individual-project",
-  "main": "server/src/server.js",
+  "main": "server/src/index.js",
   "scripts": {
     "start"  : "concurrently \"npm run server\" \"npm run client\"",
     "server" : "cd server && npm start",

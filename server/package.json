@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node",
     "db:migrate"           : "knex migrate:latest --knexfile ./src/db/knexfile.js",
