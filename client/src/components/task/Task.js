@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Container, Dimmer, Loader, Segment } from 'semantic-ui-react';
 import Find from './find/Find';
-import Fix from './fix/Fix';
+import FixPropWrapper from './fix/FixPropWrapper';
 import VerifyPropWrapper from './verify/VerifyPropWrapper';
-import { fetchSingleExcerpt } from '../../actions/excerptActions';
+import { fetchSingleExcerptMin } from '../../actions/excerptActions';
 
 /**
  * 
@@ -29,7 +29,7 @@ class Task extends React.Component {
   }
 
   componentWillMount() {
-    this.props.fetchSingleExcerpt(this.props.params.excerptId)
+    this.props.fetchSingleExcerptMin(this.props.params.excerptId)
       .then(
         (res) => {
           this.setState({
@@ -59,7 +59,7 @@ class Task extends React.Component {
       let task;
 
       if(this.state.excerpt.stage === 'find')   task = <Find   excerpt={this.state.excerpt} />;
-      if(this.state.excerpt.stage === 'fix')    task = <Fix    excerpt={this.state.excerpt} />;
+      if(this.state.excerpt.stage === 'fix')    task = <FixPropWrapper    excerpt={this.state.excerpt} />;
       if(this.state.excerpt.stage === 'verify') task = <VerifyPropWrapper excerpt={this.state.excerpt} />;
       
       display = (
@@ -77,11 +77,11 @@ class Task extends React.Component {
 }
 
 Task.propTypes = {
-  fetchSingleExcerpt : React.PropTypes.func.isRequired
+  fetchSingleExcerptMin : React.PropTypes.func.isRequired
 };
 
 Task.contextTypes = {
   router : React.PropTypes.object.isRequired
 };
 
-export default connect(null, { fetchSingleExcerpt })(Task);
+export default connect(null, { fetchSingleExcerptMin })(Task);

@@ -29,3 +29,9 @@ export function fetchVerifyTask(id) {
     return axios.get('/api/tasks/' + id + '/verify');
   };
 };
+
+export function fetchFixTask(id) {
+  return dispatch => {
+    return axios.get('/api/tasks/' + id + '/fix');
+  };
+};

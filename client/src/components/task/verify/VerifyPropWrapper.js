@@ -51,7 +51,7 @@ class VerifyPropWrapper extends React.Component {
                             correction={this.state.correction}
                             pair={this.state.pair}
                           />
-    let display = (this.state.loading) ? <div>Hello</div> : verifyComponent;
+    let display = (this.state.loading) ? <div>Loading...</div> : verifyComponent;
     return (
       display
     );

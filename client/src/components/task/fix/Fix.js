@@ -38,13 +38,11 @@ class Fix extends React.Component {
 
   constructor(props) {
     super(props);
-    let chosenEdit = Math.floor(Math.random() * this.props.excerpt.recommended_edits.length);
-    let pair = this.props.excerpt.recommended_edits[chosenEdit];
-    let correction = this.props.excerpt.excerpt.slice(pair[0], pair[1]);
-    this.state = {
-      chosenEdit,
-      correction
-    };
+
+    let { excerpt, pair } = this.props;
+    let correction = excerpt.excerpt.slice(pair[0], pair[1]);
+    this.state = { correction };
+
     this.getHighlightedText = this.getHighlightedText.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -52,15 +50,15 @@ class Fix extends React.Component {
   }
 
   getHighlightedText() {
-    let original = this.props.excerpt.excerpt;
-    let pair = this.props.excerpt.recommended_edits[this.state.chosenEdit];
+    let { excerpt, pair } = this.props;
+    let originalText = excerpt.excerpt;
     return (
       <div id="excerpt">
-        {original.slice(0, pair[0])}
+        {originalText.slice(0, pair[0])}
         <mark className="highlight" style={styles.highlight}>
           {this.state.correction}
         </mark>
-        {original.slice(pair[1], original.length)}
+        {originalText.slice(pair[1], originalText.length)}
       </div>
     );
   }
@@ -74,11 +72,13 @@ class Fix extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    let { excerpt, chosenEdit } = this.props;
+    let { correction } = this.state;
     this.props.submitTask({
-      excerptId  : this.props.excerpt.id, 
-      excerpt    : this.props.excerpt.excerpt,
-      chosenEdit : this.state.chosenEdit,
-      correction : this.state.correction, 
+      excerptId  : excerpt.id, 
+      excerpt    : excerpt.excerpt,
+      chosenEdit : chosenEdit,
+      correction : correction, 
       taskType   : "fix" 
     })
       .then(
@@ -89,9 +89,9 @@ class Fix extends React.Component {
 
   restoreDefault(e) {
     e.preventDefault();
-    let pair = this.props.excerpt.recommended_edits[this.state.chosenEdit];
-    let correction = this.props.excerpt.excerpt.slice(pair[0], pair[1]);
-    this.setState({ correction : correction });
+    let { pair, excerpt } = this.props;
+    let correction = excerpt.excerpt.slice(pair[0], pair[1]);
+    this.setState({ correction });
   }
 
   render() {
@@ -135,6 +135,8 @@ class Fix extends React.Component {
 
 Fix.propTypes = {
   excerpt    : React.PropTypes.object.isRequired,
+  chosenEdit : React.PropTypes.number.isRequired,
+  pair       : React.PropTypes.array.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };
 

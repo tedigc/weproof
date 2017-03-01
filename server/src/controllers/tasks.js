@@ -94,6 +94,52 @@ router.get('/available', authenticate, (req, res) => {
     });
 });
 
+// Get all the necessary information needed for a new fix task
+//
+router.get('/:excerptId/fix', authenticate, (req, res) => {
+
+  TaskFind
+    .query({
+      where  : { excerpt_id : req.params.excerptId }
+    })
+    .fetchAll({
+      withRelated: [{ 'excerpt' : qb => {
+        qb.column('id', 'excerpt', 'status', 'recommended_edits'); 
+      }}],
+    })
+    .then(tasks => {
+
+      // let chosenEdit = -1;
+      // let correction = '';
+      // for each (model in tasks.models) {
+      //
+      //   /* here is where the chosen_edit and correction would be made */
+      // 
+      // }
+
+      let attributes = tasks.models[0].attributes;
+      let relations  = tasks.models[0].relations;
+
+      // here, use an algorithm to determine which recommended edit to use.
+      let chosenEdit = 0;
+      let pair = relations.excerpt.attributes.recommended_edits[chosenEdit];
+      let excerpt = relations.excerpt.attributes;
+
+      let taskInfo = {
+        chosenEdit,
+        pair,
+        excerpt
+      };
+
+      res.json({ taskInfo });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: err });
+    });
+
+});
+
 // Get all the necessary information needed for a new verify task
 //
 router.get('/:excerptId/verify', authenticate, (req, res) => {

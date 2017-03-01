@@ -25,6 +25,26 @@ router.get('/:excerptId', authenticate, (req, res) => {
 
 });
 
+router.get('/:excerptId/min', authenticate, (req, res) => {
+
+  Excerpt
+    .query({
+      where  : { id: req.params.excerptId },
+      select : [ 'id', 'excerpt', 'stage' ]
+    })
+    .fetch()
+    .then((excerpt) => {
+      if(!excerpt) {
+        res.status(404).json({ error: "No such excerpt" });
+      } else {
+        res.status(200).json({
+          excerpt: excerpt.attributes
+        });
+      }
+    });
+
+});
+
 // Get all excerpts for the logged in user
 //
 router.get('/', authenticate, (req, res) => {
