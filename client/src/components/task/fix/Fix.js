@@ -4,33 +4,29 @@ import { Button, Form, Grid, Label, Segment, TextArea } from 'semantic-ui-react'
 import Instructions from '../common/Instructions';
 import { submitTask } from '../../../actions/taskActions';
 
-const excerptHeight = 250;
-const buttonBarHeight = 70;
+const excerptHeight   = 400;
+const textAreaHeight  = 160;
+const buttonGroupHeight = 100;
 
 const styles = {
   highlight : {
     background: '#c1d5ff',
     color: '#283f70'
   },
-  selected   : { background: '#fcfcfc' },
-  unselected : { background: '#ffffff' },
   excerpt : {
-    height: excerptHeight + buttonBarHeight,
-    lineHeight: "30px"
+    height     : excerptHeight,
+    lineHeight : "30px"
   },
-  highlightMenu : {
-    height: excerptHeight
+  textArea : {
+    height    : textAreaHeight,
+    marginTop : 10
   },
-  buttonBar : {
-    height : buttonBarHeight,
+  buttonGroup : {
+    height : buttonGroupHeight,
     display: 'flex', 
     flexDirection: 'column', 
-    justifyContent: 'flex-end'
-  },
-  itemGroupDiv : {
-    height: excerptHeight - 20,
-    overflowY: 'auto',
-    overflowX: 'hidden'
+    justifyContent: 'space-between',
+    marginTop: 30
   }
 };
 
@@ -97,7 +93,6 @@ class Fix extends React.Component {
   render() {
     return (
       <Form onSubmit={this.handleSubmit}>
-
         <Grid>
           <Grid.Row>
 
@@ -107,26 +102,22 @@ class Fix extends React.Component {
                 {this.getHighlightedText()}
                 <Label attached='bottom left'>Excerpt</Label>          
               </Segment>
-
             </Grid.Column>
 
-            {/* Highlight window */}
+            {/* Input Window */}
             <Grid.Column width={6}>
-
-              <TextArea name="editTextArea" style={styles.highlightMenu} value={this.state.correction} onChange={this.handleChange}/>
-              <div style={styles.buttonBar}>
-                <Button onClick={this.restoreDefault} >Restore Original Text</Button>
+              <div style={{ display: 'flex', flexDirection: 'column', height: excerptHeight }}>
+                <Instructions style={{ marginTop: 10 }} text='The box on the left shows an excerpt of text. The section highlighted in blue may contain an error. Read the excerpt, and if you think the wording, grammar or spelling could use improvement, make changes in the text box below. Revert your changes with the grey "Restore" button.'/>
+                <TextArea name="editTextArea" style={styles.textArea} value={this.state.correction} onChange={this.handleChange}/>
+                <div style={styles.buttonGroup}>
+                  <Button fluid onClick={this.restoreDefault} >Restore Original Text</Button>
+                  <Button fluid type='submit' primary>Submit</Button>
+                </div>
               </div>
-              
             </Grid.Column>
 
           </Grid.Row>
-
-          <Instructions text='The box on the left contains an excerpt of text. The segment highlighted in blue has been identified as possible containing a mistake in grammar or that spelling. Correct any such mistakes by editing the text in the box on the right. If you wish to revert the text to its original value, click the grey "Restore Original Text" button underneith the text box to the right.'/>
-          <Button floated='right' type='submit' primary>Submit</Button>
-
         </Grid>
-
       </Form>
     );
   }

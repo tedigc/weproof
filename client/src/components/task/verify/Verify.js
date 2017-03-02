@@ -4,35 +4,27 @@ import { Button, Form, Grid, Icon, Label, Segment } from 'semantic-ui-react';
 import { submitTask } from '../../../actions/taskActions';
 import Instructions from '../common/Instructions';
 
-const excerptHeight = 320;
-const buttonBarHeight = 70;
+const excerptHeight     = 400;
+const buttonGroupHeight = 150;
 
 const styles = {
   highlight : {
-    background: '#c1d5ff',
-    color: '#283f70'
+    background : '#c1d5ff',
+    color      : '#283f70'
   },
   highlightOriginal : {
-    background: '#dfdfdf',
-    color: '#6e6e6e'
+    background : '#dfdfdf',
+    color      : '#6e6e6e'
   },
   excerpt : {
-    height: excerptHeight + buttonBarHeight,
+    height: excerptHeight,
     lineHeight: "30px"
   },
-  highlightMenu : {
-    height: excerptHeight
-  },
-  buttonBar : {
-    height : buttonBarHeight,
+  buttonGroup : {
+    height : buttonGroupHeight,
+    marginTop: 20,
     display: 'flex', 
     flexDirection: 'column', 
-    justifyContent: 'flex-end'
-  },
-  itemGroupDiv : {
-    height: excerptHeight - 20,
-    overflowY: 'auto',
-    overflowX: 'hidden'
   }
 };
 
@@ -122,42 +114,32 @@ class Verify extends React.Component {
                 {this.getHighlightedText()}
                 <Label attached='bottom left'>Excerpt - {buttonText}</Label>          
               </Segment>
-
             </Grid.Column>
 
-            {/* Buttons */}
+            {/* Input Window */}
             <Grid.Column width={6}>
-
-              <div style={{ display: 'flex', flexDirection: 'column', height: excerptHeight+buttonBarHeight}}>
-
+              <div style={{ display: 'flex', flexDirection: 'column', height: excerptHeight}}>
                 <Instructions text='The box on the left shows an excerpt submitted by a user for correction. By clicking the grey button, you can toggle whether it will show the original or edited version. Read both the original and edited versions of the excerpt and decide whether you want to accept or reject the proposed changes to the text.'/>
-
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 2, marginTop: '20px'}}>
                   
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={styles.buttonGroup}>
                     <div style={{ display : 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      
                       <Button name='rejectButton' style={{ flexGrow: 1 }} size='massive' basic={this.state.acceptReject !== 'reject'} onClick={this.reject} negative>
                         Reject &nbsp; <Icon name='remove'/> 
                       </Button>
                       <Button name='acceptButton'style={{ flexGrow: 1 }} size='massive' basic={this.state.acceptReject !== 'accept'} onClick={this.accept} positive>
                         Accept &nbsp; <Icon name='check'/> 
                       </Button>
-
                     </div>
-                    <br/>
-                    <Button fluid onClick={this.toggleShowOriginal}>View {buttonTextOpposite} Text</Button>
+                    <Button fluid style={{ marginTop: 20 }} onClick={this.toggleShowOriginal}>View {buttonTextOpposite} Text</Button>
                   </div>
 
-                  <Button floated='right' type='submit' disabled={submitDisabled} primary>Submit</Button>
+                  <Button fluid type='submit' disabled={submitDisabled} primary>Submit</Button>
                 </div>
-
-              </div>
-              
+              </div>  
             </Grid.Column>
+
           </Grid.Row>
-
-
         </Grid>
       </Form>
     );

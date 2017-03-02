@@ -1,6 +1,6 @@
 const style = {}
 const sidebarWidth = 128;
-const mainMargin = 20;
+const mainMargin = 32;
 
 style.container = {
 }
@@ -12,8 +12,6 @@ style.menu = {
   left: 0,
   width: sidebarWidth,
   paddingBottom: '1em',
-  // match menu background
-  // prevents a white background when items are filtered out by search
   background: '#1B1C1D',
   overflowY: 'scroll',
 }

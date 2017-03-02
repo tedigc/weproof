@@ -5,8 +5,8 @@ import Highlight from './Highlight';
 import Instructions from '../common/Instructions';
 import { submitTask } from '../../../actions/taskActions';
 
-const excerptHeight = 250;
-const buttonBarHeight = 70;
+const excerptHeight = 400;
+const highlightMenuHeight = 170;
 
 const styles = {
   highlight : {
@@ -20,20 +20,19 @@ const styles = {
   selected   : { background: '#fcfcfc' },
   unselected : { background: '#ffffff' },
   excerpt : {
-    height: excerptHeight + buttonBarHeight,
+    height: excerptHeight,
     lineHeight: "30px"
   },
   highlightMenu : {
-    height: excerptHeight
+    height: highlightMenuHeight
   },
-  buttonBar : {
-    height : buttonBarHeight,
+  buttonGroup : {
     display: 'flex', 
     flexDirection: 'column', 
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between',
   },
-  itemGroupDiv : {
-    height: excerptHeight - 20,
+  itemGroup : {
+    height: highlightMenuHeight-20,
     overflowY: 'auto',
     overflowX: 'hidden'
   }
@@ -198,7 +197,7 @@ class Find extends React.Component {
       );
     } else {
       highlights = (
-        <Item.Group divided style={styles.itemGroupDiv}>
+        <Item.Group divided style={styles.itemGroup}>
           {this.state.pairs.map((pair, index) => {
             let text = this.props.excerpt.excerpt.slice(pair[0], pair[1]);
             return <Highlight 
@@ -231,29 +230,29 @@ class Find extends React.Component {
 
             </Grid.Column>
 
-            {/* Highlight window */}
+            {/* Input window */}
             <Grid.Column width={6}>
 
-              <Segment attached='top' style={styles.highlightMenu}>
-                {highlights}
-              </Segment>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Instructions text='The box on the left shows an excerpt of text. Search for errors in spelling, grammar or wording and highlight them with your mouse. Confirm your highlights with the "Highlight" button and submit when you are happy with your choices.'/>
+                <Segment style={styles.highlightMenu}>
+                  {highlights}
+                </Segment>
 
-              <div style={styles.buttonBar}>
-                <div style={{ display: 'flex'}}>
-                  <Button content="Highlight" fluid onClick={this.handleHighlight} primary />
-                  <Button content="Clear All" fluid onClick={this.handleClear}/>
+                <div style={styles.buttonGroup}>
+                  <div style={{ flexGrow: 1 }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <Button basic content="Highlight" fluid onClick={this.handleHighlight} primary />
+                      <Button basic content="Clear All" fluid onClick={this.handleClear}/>
+                    </div>
+                    <Button style={{ marginTop: 15 }} fluid type='submit' primary>Submit</Button>
+                  </div>
                 </div>
               </div>
-              
             </Grid.Column>
 
           </Grid.Row>
-
-          <Instructions text='Use your mouse to highlight portions of the above excerpt. Click the "Highlight" button when you want to save it. Browse your saved highlights using the window on the right. You can delete individual highlights by pressing the circular "x" button, or clear all highlights at once using the "Clear All" button. When you are happy with the highlights you have saved, click submit to continue.'/>
-          <Button floated='right' type='submit' primary>Submit</Button>
-
         </Grid>
-
       </Form>
     );
   }

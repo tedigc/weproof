@@ -10,7 +10,6 @@ class Instructions extends React.Component {
           <h3>Instructions</h3>
           <span style={{ color: 'gray' }}>{this.props.text}</span>
           <br/>
-          <br/>
         </Grid.Column>
       </Grid.Row>
     );

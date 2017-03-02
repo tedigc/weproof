@@ -45,10 +45,7 @@ class FixPropWrapper extends React.Component {
                           chosenEdit={this.state.chosenEdit} 
                           pair={this.state.pair}
                         />
-    let display = (this.state.loading) ? <div>Loading...</div> : fixComponent;
-    return (
-      display
-    );
+    return (this.state.loading) ? <div>Loading...</div> : fixComponent;
   }
 
 }
