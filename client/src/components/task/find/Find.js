@@ -46,7 +46,7 @@ class Find extends React.Component {
       pairs: [],
       currentlySelected: -1
     };
-    this.getHighlightedTextReact = this.getHighlightedTextReact.bind(this);
+    this.getHighlightedText = this.getHighlightedText.bind(this);
     this.handleHighlight = this.handleHighlight.bind(this);
     this.handleRemoveHighlight = this.handleRemoveHighlight.bind(this);
     this.handleClear = this.handleClear.bind(this);
@@ -55,7 +55,7 @@ class Find extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  getHighlightedTextReact() {
+  getHighlightedText() {
     let original = this.props.excerpt.excerpt;
     let pairs = this.state.pairs.slice();
 
@@ -224,7 +224,7 @@ class Find extends React.Component {
             <Grid.Column width={10}>
             
               <Segment size="large" style={styles.excerpt}>
-                {this.getHighlightedTextReact()}      
+                {this.getHighlightedText()}      
                 <Label attached='bottom left'>Excerpt</Label>          
               </Segment>
 

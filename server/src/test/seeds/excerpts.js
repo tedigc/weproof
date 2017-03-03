@@ -59,7 +59,7 @@ for(let i=0; i<excerpts.length; i++) {
         owner_id : excerpt.owner_id,
       }, { hasTimestamps: true })
       .save(null, { method: 'insert' })
-      .then(user => {
+      .then(data => {
         console.log('[excerpt] ' + excerpt.title + ' saved to database.');
         resolve();
       })

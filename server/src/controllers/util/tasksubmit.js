@@ -11,26 +11,42 @@ export function submitFindTask(req, res, excerpt) {
     .save(null, { method: 'insert' })
     .then((data) => {
 
-      // algorithm to determine the best pairs for recommendation
-      //
-      // * for now, just use the pairs from the first submission
-      let recommended_edits = req.body.pairs;
-
-      // update the excerpt's stage and recommended edits
-      //
-      excerpt
-        .save({
-          stage             : 'fix',
-          recommended_edits : recommended_edits
+      // Find all other task submissions, and calculate whether or not there are sufficient overlapping
+      // highlights to proceed to the fix stage
+      TaskFind
+        .query({
+          where  : { excerpt_id : req.body.excerptId },
+          select : ['id', 'pairs'] 
         })
-        .then(result => {
-          res.json(result);
+        .fetchAll()
+        .then(allTaskSubmissions => {
+
+          let stage = 'find';
+          let recommended_edits;
+
+          // find all highlights
+          // sort by left index
+          // 
+
+          // update the excerpt's stage and recommended edits
+          excerpt
+            .save({
+              stage,
+              recommended_edits
+            })
+            .then(result => {
+              res.json(result);
+            })
+            .catch(err => {
+              console.error(err);
+              res.status(500).json(err);
+            });
+
         })
         .catch(err => {
           console.error(err);
           res.status(500).json(err);
         });
-
     })
     .catch((err) => {
       console.error(err);

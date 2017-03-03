@@ -4,7 +4,7 @@ import { Button, Form, Header, Icon } from 'semantic-ui-react';
 import { createExcerpt } from '../../../actions/excerptActions';
 
 const maxTitleLength  =  40;
-const maxExcerptLength = 500;
+const maxExcerptLength = 700;
 
 class SubmitForm extends React.Component {
 

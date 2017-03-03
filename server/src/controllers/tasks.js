@@ -182,4 +182,75 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
 
 });
 
+router.post('/aggregate', (req, res) => {
+
+  let excerptId = req.body.excerptId;
+  let taskType = req.body.taskType;
+
+  Excerpt
+    .query({
+      where: { id: excerptId },
+      select: ['id', 'title', 'excerpt']
+    })
+    .fetch()
+    .then((excerpt) => {
+      if(!excerpt) {
+        res.status(500).json({ error: "No such excerpt" });
+      } else {
+
+      // Find all other task submissions, and calculate whether or not there are sufficient overlapping
+      // highlights to proceed to the fix stage
+      TaskFind
+        .query({
+          where  : { excerpt_id : req.body.excerptId },
+          select : ['id', 'pairs'] 
+        })
+        .fetchAll()
+        .then(allTaskSubmissions => {
+
+          let stage = 'find';
+          let recommended_edits;
+
+          // find all highlights
+          // sort by left index
+          // check for overlaps
+          // remember that two basic (unmerged) pairs *must* be from different user submissions
+
+          // rather than merging two pairs, save the intersection between them
+          // for each pass, increment some counter indicating the depth
+
+          // with the final intersections, move the ends of each pair to the beginning and end of the word so they appear sensible
+
+          let allPairs = [];
+          for(let i=0; i<allTaskSubmissions.models.length; i++) {
+            console.log(allTaskSubmissions.models[i].attributes);
+          }
+
+          res.json(allTaskSubmissions);
+
+          // update the excerpt's stage and recommended edits
+          // excerpt
+          //   .save({
+          //     stage,
+          //     recommended_edits
+          //   })
+          //   .then(result => {
+          //     res.json(result);
+          //   })
+          //   .catch(err => {
+          //     console.error(err);
+          //     res.status(500).json(err);
+          //   });
+
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).json(err);
+        });
+
+      }
+    });
+
+});
+
 export default router;

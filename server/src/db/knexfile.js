@@ -1,5 +1,3 @@
-// Update with your config settings.
-
 module.exports = {
 
   development: {
@@ -13,9 +11,7 @@ module.exports = {
       min: 2,
       max: 10
     },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
+    migrations: { tableName: 'knex_migrations' }
   },
 
   production: {
@@ -25,9 +21,17 @@ module.exports = {
       min: 2,
       max: 10
     },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
+    migrations: { tableName: 'knex_migrations' }
+  },
+
+  test: {
+    client: 'postgresql',
+    connection: {
+      database: 'individual-project-test',
+      user:     'tedigc',
+      password: ''
+    },
+    migrations: { directory: 'knex_migrations' }
   }
 
 };
