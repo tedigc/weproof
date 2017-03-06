@@ -15,12 +15,6 @@ import { fetchSingleExcerptMin } from '../../actions/excerptActions';
  *
  */
 
-const styles = {
-  backgroundDiv : {
-    backgroundColor: "#A0A0A0"
-  }
-}
-
 class Task extends React.Component {
 
   state = {
@@ -40,6 +34,8 @@ class Task extends React.Component {
         (err) => {
           if(err.response.status === 404) {
             this.context.router.push('/404');
+          } else if(err.response.status === 403) {
+            this.context.router.push('/403');
           } else {
             console.error(err);
           }
@@ -63,7 +59,7 @@ class Task extends React.Component {
       if(this.state.excerpt.stage === 'verify') task = <VerifyPropWrapper excerpt={this.state.excerpt} />;
       
       display = (
-        <Container style={styles.backgroundDiv}>
+        <Container>
           <Segment style={{ marginTop: '40px'}}>
             {task}
           </Segment>

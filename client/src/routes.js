@@ -12,6 +12,7 @@ import LoginPage   from './components/landingpage/login/LoginPage';
 import Greetings   from './components/landingpage/Greetings';
 import Task        from './components/task/Task';
 import Error404    from './components/errors/Error404';
+import Error403    from './components/errors/Error403';
 import requireAuth from './utils/requireAuth';
 
 export default (
@@ -33,6 +34,7 @@ export default (
       <IndexRedirect to="/dashboard/work" />
       <Route path=":excerptId" component={Task}/>
     </Route>
+    <Route path="/403" component={Error403}/>
     <Route path="/404" component={Error404}/>
     <Route path="*"    component={Error404}/>
   </Route>

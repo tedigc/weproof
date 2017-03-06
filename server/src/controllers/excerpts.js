@@ -1,6 +1,6 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate';
-import { Excerpt } from '../db/models';
+import { Excerpt, Task } from '../db/models';
 
 var router = express.Router();
 
@@ -37,9 +37,32 @@ router.get('/:excerptId/min', authenticate, (req, res) => {
       if(!excerpt) {
         res.status(404).json({ error: "No such excerpt" });
       } else {
-        res.status(200).json({
-          excerpt: excerpt.attributes
-        });
+
+        // check if the user has already contributed to this excerpt's revision
+        Task
+          .query({
+            where : { 
+              owner_id : req.currentUser.id,
+              excerpt_id : req.params.excerptId
+            }
+          })
+          .fetchAll()
+          .then((taskSubmissions) => {
+            // If there exists a submission for this excerpt with the current user's ID, let the client know they
+            // have already contributed.
+            let contributed = taskSubmissions.models.length > 0; 
+            if(contributed) {
+              res.status(403).json({
+                contributed
+              });
+            } else {
+              res.status(200).json({
+                excerpt: excerpt.attributes,
+              });
+            }
+                   
+          });
+
       }
     });
 
