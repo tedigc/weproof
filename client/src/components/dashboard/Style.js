@@ -12,7 +12,7 @@ style.menu = {
   left: 0,
   width: sidebarWidth,
   paddingBottom: '1em',
-  background: '#1B1C1D',
+  background: '#09222B',
   overflowY: 'scroll',
 }
 
@@ -23,4 +23,4 @@ style.main = {
   minWidth: parseInt(sidebarWidth, 10) + 300,
 }
 
-export default style
+export default style;

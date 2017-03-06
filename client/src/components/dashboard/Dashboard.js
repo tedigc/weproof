@@ -24,27 +24,27 @@ class Dashboard extends React.Component {
       <div style={style.container}>
         <Sidebar style={style.menu} as={Menu} animation='uncover' width='thin' visible={true} icon='labeled' vertical inverted>
 
-            <Menu.Item as={Link} to='/dashboard/home' name='home' active={activeItem === '/home;'}>
+            <Menu.Item as={Link} to='/dashboard/home' name='home' active={activeItem === '/dashboard/home'}>
               <Icon name='home' />
               Home
             </Menu.Item>
 
-            <Menu.Item as={Link} to='/dashboard/work' name='work' active={activeItem === '/work'}>
+            <Menu.Item as={Link} to='/dashboard/work' name='work' active={activeItem === '/dashboard/work'}>
               <Icon name='industry' />
                 Work
             </Menu.Item>
 
-            <Menu.Item as={Link} to='/dashboard/submitted' name='submitted' active={activeItem === '/submitted'}>
+            <Menu.Item as={Link} to='/dashboard/submitted' name='submitted' active={activeItem === '/dashboard/submitted'}>
               <Icon name='tasks' />
               Submitted
             </Menu.Item>
 
-            <Menu.Item as={Link} to='/dashboard/excerpts' name='excerpts' active={activeItem === '/excerpts'}>
+            <Menu.Item as={Link} to='/dashboard/excerpts' name='excerpts' active={activeItem === '/dashboard/excerpts'}>
               <Icon name='folder open' />
               My Excerpts
             </Menu.Item>
 
-            <Menu.Item as={Link} to='/dashboard/settings' name='setting' active={activeItem === '/settings'}>
+            <Menu.Item as={Link} to='/dashboard/settings' name='setting' active={activeItem === '/dashboard/settings'}>
               <Icon name='setting' />
               Settings
             </Menu.Item>

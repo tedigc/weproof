@@ -35,6 +35,14 @@ const styles = {
     height: highlightMenuHeight-20,
     overflowY: 'auto',
     overflowX: 'hidden'
+  },
+  highlightButton : {
+    backgroundColor: '#FFFFFF', 
+    color : '#4096BE', 
+    borderRadius: 5, 
+    borderStyle: 'solid', 
+    borderWidth: 'thin', 
+    borderColor: '#4096BE' 
   }
 };
 
@@ -242,10 +250,10 @@ class Find extends React.Component {
                 <div style={styles.buttonGroup}>
                   <div style={{ flexGrow: 1 }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <Button basic content="Highlight" fluid onClick={this.handleHighlight} primary />
+                      <Button style={styles.highlightButton} content="Highlight" fluid onClick={this.handleHighlight} />
                       <Button basic content="Clear All" fluid onClick={this.handleClear}/>
                     </div>
-                    <Button style={{ marginTop: 15 }} fluid type='submit' primary>Submit</Button>
+                    <Button style={{ marginTop: 15, backgroundColor: '#4096BE' }} fluid type='submit' primary>Submit</Button>
                   </div>
                 </div>
               </div>

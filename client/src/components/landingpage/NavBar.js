@@ -7,7 +7,7 @@ class NavBar extends React.Component {
   render() {
     const activeItem = window.location.pathname;
     return (
-      <Menu fixed="top" stackable inverted>
+      <Menu style={{ backgroundColor: '#0F2E3A' }} fixed="top" stackable inverted>
         <Menu.Item
           as={Link}
           to="/"

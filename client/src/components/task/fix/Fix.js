@@ -111,7 +111,7 @@ class Fix extends React.Component {
                 <TextArea name="editTextArea" style={styles.textArea} value={this.state.correction} onChange={this.handleChange}/>
                 <div style={styles.buttonGroup}>
                   <Button fluid onClick={this.restoreDefault} >Restore Original Text</Button>
-                  <Button fluid type='submit' primary>Submit</Button>
+                  <Button fluid type='submit' style={{ backgroundColor: '#4096BE' }}>Submit</Button>
                 </div>
               </div>
             </Grid.Column>

@@ -163,7 +163,7 @@ class SignupForm extends React.Component {
             </Form.Group>
 
 
-            <Button type='submit' primary>Submit</Button>
+            <Button style={{ backgroundColor: '#4096BE' }} floated='right' type='submit' primary>Submit</Button>
           </Form>
         </Card.Content>
       </Card>
