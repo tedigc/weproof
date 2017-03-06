@@ -1,27 +1,44 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PageHeader from '../PageHeader';
-import { Button, Divider, Dimmer, Loader, Menu, Table } from 'semantic-ui-react';
+import { Button, Divider, Dimmer, Icon, Loader, Menu, Table } from 'semantic-ui-react';
 import { fetchTasks } from '../../../actions/taskActions';
 import SingleSubmission from './SingleSubmission';
+import Error from '../../error/Error';
 
 class Submitted extends React.Component {
 
+  state = {
+    loading : true,
+    tasks   : [],
+    filter  : 'all',
+    error   : undefined
+  }
+
   constructor(props) {
     super(props);
-    this.state = {
-      loading         : true,
-      taskSubmissions : []
-    };
+    this.refreshTasks = this.refreshTasks.bind(this);
   }
 
   componentWillMount() {
-    this.props.fetchTasks()
+    this.refreshTasks();
+  }
+
+  refreshTasks() {
+    this.props.fetchTasks(this.state.filter)
       .then(
         res => {
+          let error = undefined;
+          if(res.data.tasksFiltered.length === 0) {
+            error = {};
+            error.icon = 'tasks';
+            error.header = 'No tasks';
+            error.message = (this.state.filter === 'all') ? 'You have submitted no tasks. Try the "Work" page.' : 'You have no ' + this.state.filter + ' tasks. Check back later.';
+          }
           this.setState({ 
             loading : false,
-            taskSubmissions: res.data.taskSubmissions
+            tasks: res.data.tasksFiltered,
+            error
           });
         },
         err => {
@@ -30,54 +47,71 @@ class Submitted extends React.Component {
         });
   }
 
+  setFilter(filter) {
+    this.setState({ filter }, () => this.refreshTasks() );
+  }
+
   render() {
     let self = this;
+    let { filter, error } = this.state;
+
+    let tableComponent;
+    if(error) {
+      tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
+    } else {
+      tableComponent =  <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
+                          <Dimmer active={self.state.loading} inverted>
+                            <Loader inverted>Loading</Loader>
+                          </Dimmer>
+
+                          <Table.Header>
+                            <Table.Row>
+                              <Table.HeaderCell></Table.HeaderCell>
+                              <Table.HeaderCell>Status</Table.HeaderCell>
+                              <Table.HeaderCell>Preview</Table.HeaderCell>
+                              <Table.HeaderCell>Created</Table.HeaderCell>
+                            </Table.Row>
+                          </Table.Header>
+
+                          {/* Item list of available tasks */}
+                          <Table.Body>
+                          {self.state.tasks.map((task, index) => {
+                            return <SingleSubmission
+                                      key={index}
+                                      id={task.id}
+                                      status={task.excerpt.status}
+                                      excerpt={task.excerpt.excerpt}
+                                      created={task.created_at}
+                                    />;
+                          })}
+                          </Table.Body>
+
+                        </Dimmer.Dimmable>
+    }
     return (
       <div>
+
+        {/* Header */}
         <PageHeader 
           title="Submitted" 
           description="View the tasks you have completed and submitted in detail" 
           icon="tasks"
         />
 
+        {/* Filters & Refresh button */}
         <Menu secondary>
-          <Menu.Item name="all"/>
-          <Menu.Item name="pending"/>
-          <Menu.Item name="accepted"/>
-          <Menu.Item name="rejected"/>
-          <Menu.Item name="refresh" position="right" as={Button} icon="refresh" />
+          <Menu.Item name="all"      active={filter === 'all'}      onClick={() => { this.setFilter('all') }} />
+          <Menu.Item name="pending"  active={filter === 'pending'}  onClick={() => { this.setFilter('pending') }} />
+          <Menu.Item name="accepted" active={filter === 'accepted'} onClick={() => { this.setFilter('accepted') }} />
+          <Menu.Item name="refresh" position="right">
+            <Button onClick={this.refreshTasks}><Icon name="refresh"/> Refresh</Button>
+          </Menu.Item>
         </Menu>
 
         <Divider/>
 
-        <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
-          <Dimmer active={self.state.loading} inverted>
-            <Loader inverted>Loading</Loader>
-          </Dimmer>
-
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell></Table.HeaderCell>
-              <Table.HeaderCell>Status</Table.HeaderCell>
-              <Table.HeaderCell>Preview</Table.HeaderCell>
-              <Table.HeaderCell>Created</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-
-          {/* Item list of available tasks */}
-          <Table.Body>
-          {self.state.taskSubmissions.map((taskSubmission, index) => {
-            return <SingleSubmission
-                      key={index}
-                      id={taskSubmission.id}
-                      status={taskSubmission.excerpt.status}
-                      excerpt={taskSubmission.excerpt.excerpt}
-                      created={taskSubmission.created_at}
-                    />;
-          })}
-          </Table.Body>
-
-        </Dimmer.Dimmable>
+        {/* Table or error component */}
+        {tableComponent}
 
       </div>
     );

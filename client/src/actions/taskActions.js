@@ -18,9 +18,9 @@ export function fetchAvailableTasks(filter) {
   };
 };
 
-export function fetchTasks() {
+export function fetchTasks(filter) {
   return dispatch => {
-    return axios.get('/api/tasks');
+    return axios.get('/api/tasks/' + filter);
   };
 };
 

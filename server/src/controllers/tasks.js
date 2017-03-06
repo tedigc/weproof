@@ -7,7 +7,10 @@ var router = express.Router();
 
 // Fetch all tasks submitted by the current user
 //
-router.get('/', authenticate, (req, res) => {
+router.get('/:filter', authenticate, (req, res) => {
+
+  let filter = req.params.filter;
+  let status = (filter === 'all') ? undefined : filter;
 
   Task
     .query({
@@ -18,8 +21,15 @@ router.get('/', authenticate, (req, res) => {
         qb.column('id', 'title', 'excerpt', 'status'); 
       }}],
     })
-    .then(taskSubmissions => {
-      res.json({ taskSubmissions });
+    .then(tasks => {
+      let tasksFiltered = [];
+      for(let i=0; i<tasks.models.length; i++) {
+        let item = tasks.models[i];
+        if(filter === 'all' || item.relations.excerpt.attributes.status === status) {
+          tasksFiltered.push(item);
+        }
+      }
+      res.json({ tasksFiltered });
     })
     .catch(err => {
       console.error(err);
@@ -68,7 +78,7 @@ router.get('/available/:filter', authenticate, (req, res) => {
     .fetchAll()
     .then((taskSubmissions) => {
 
-      var submittedTaskExcerptIDs = []
+      var submittedTaskExcerptIDs = [];
       for(var j=0; j<taskSubmissions.models.length; j++) {
         submittedTaskExcerptIDs.push(taskSubmissions.models[j].attributes.excerpt_id);
       }

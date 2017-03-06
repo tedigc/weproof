@@ -1,20 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Dimmer, Divider, Loader, Menu, Table } from 'semantic-ui-react';
+import { Button, Dimmer, Divider, Icon, Loader, Menu, Table } from 'semantic-ui-react';
 import PageHeader from '../PageHeader';
 import SingleTask from './SingleTask';
 import Error from '../../error/Error';
 import { fetchAvailableTasks } from '../../../actions/taskActions';
-
-/**
-
-TODO
-
-- properly display errors
-- fix console error to do with nested divs, tables and dimmers
-- show special message if no tasks are available
-
-*/
 
 class Work extends React.Component {
 
@@ -22,7 +12,7 @@ class Work extends React.Component {
     loading : false,
     tasks   : [],
     filter  : 'all',
-    error   : {}
+    error   : undefined
   }
 
   constructor(props) {
@@ -75,7 +65,10 @@ class Work extends React.Component {
     if(error) {
       tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
     } else {
-      tableComponent = <div>
+      tableComponent = <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
+                          <Dimmer active={self.state.loading} inverted>
+                            <Loader inverted>Loading</Loader>
+                          </Dimmer>
                           <Table.Header>
                             <Table.Row>
                               <Table.HeaderCell></Table.HeaderCell>
@@ -99,7 +92,7 @@ class Work extends React.Component {
                                         />;
                           })}
                           </Table.Body>
-                        </div>
+                        </Dimmer.Dimmable>
     }
 
     return (
@@ -118,18 +111,15 @@ class Work extends React.Component {
           <Menu.Item name="find"   active={filter === 'find'}   onClick={() => { this.setFilter('find') }} />
           <Menu.Item name="fix"    active={filter === 'fix'}    onClick={() => { this.setFilter('fix') }} />
           <Menu.Item name="verify" active={filter === 'verify'} onClick={() => { this.setFilter('verify') }} />
-          <Menu.Item name="refresh" position="right" as={Button} icon="refresh" onClick={this.refreshTasks} />
+          <Menu.Item name="refresh" position="right">
+            <Button onClick={this.refreshTasks}><Icon name="refresh"/> Refresh</Button>
+          </Menu.Item>
         </Menu>
 
         <Divider/>
 
         {/* Table or error message */}
-        <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
-          <Dimmer active={self.state.loading} inverted>
-            <Loader inverted>Loading</Loader>
-          </Dimmer>
-          {tableComponent}
-        </Dimmer.Dimmable>
+        {tableComponent}
 
       </div>
     );

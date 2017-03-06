@@ -60,6 +60,7 @@ class Excerpts extends React.Component {
     return (
       <div>
 
+        {/* Header */}
         <PageHeader 
           title="Excerpts" 
           description="Create and view passages of text for correction." 
@@ -68,6 +69,7 @@ class Excerpts extends React.Component {
 
         <Button onClick={this.handleOpen}><Icon name='plus'/>Create New</Button>
 
+        {/* Filters and refresh button */}
         <Menu secondary>
           <Menu.Item name="all"/>
           <Menu.Item name="complete"/>
@@ -95,6 +97,7 @@ class Excerpts extends React.Component {
 
         </Dimmer.Dimmable>
         
+        {/* Create excerpt modal*/}
         <Modal 
           open={this.state.modalOpen}
           onClose={this.handleClose}
