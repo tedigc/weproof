@@ -57,10 +57,9 @@ router.post('/', authenticate, (req, res) => {
 
 // Get all tasks available for completion to the logged in user
 //
-router.get('/available', authenticate, (req, res) => {
+router.get('/available/:filter', authenticate, (req, res) => {
 
   // Find all the excerpt ids of task submissions the user has made
-  
   Task
     .query({
       where : { owner_id : req.currentUser.id },
@@ -76,19 +75,32 @@ router.get('/available', authenticate, (req, res) => {
 
       // exclude any excerpts that the user has already submitted a task for
 
+      let filter = req.params.filter;
+      let stage = (filter === 'all') ? undefined : filter;
+
       Excerpt
         .query((qb) => {
-          qb
-            .where('id', 'not in', submittedTaskExcerptIDs)
-            .andWhere('owner_id', '!=', req.currentUser.id );
+          if(stage !== undefined) {
+            qb
+              .where('id', 'not in', submittedTaskExcerptIDs)
+              .andWhere('owner_id', '!=', req.currentUser.id )
+              .andWhere('stage', stage);
+          } else {
+            qb
+              .where('id', 'not in', submittedTaskExcerptIDs)
+              .andWhere('owner_id', '!=', req.currentUser.id );
+          }
+          
         })
         .fetchAll()
         .then((excerpts) => {
+
           var tasks = [];
           for(var i=0; i<excerpts.models.length; i++) {
             tasks.push(excerpts.models[i].attributes);
           }
           res.status(200).json(tasks);
+
         });
 
     });

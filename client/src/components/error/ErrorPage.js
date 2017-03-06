@@ -1,15 +1,16 @@
 import React from 'react';
 import { Header, Icon } from 'semantic-ui-react';
 
-class Error404 extends React.Component {
+class ErrorPage extends React.Component {
 
   render() {
+    let { code, message } = this.props;
     return (
       <Header as='h1' icon textAlign='center' style={{ marginTop: "100px" }}>
         <Icon name='browser' />
-        404
+        {code}
         <Header.Subheader>
-          The page you requested was not found.
+          {message}
         </Header.Subheader>
       </Header>
     );
@@ -17,4 +18,9 @@ class Error404 extends React.Component {
 
 }
 
-export default Error404;
+ErrorPage.propTypes = {
+  code    : React.PropTypes.number.isRequired,
+  message : React.PropTypes.string.isRequired
+};
+
+export default ErrorPage;

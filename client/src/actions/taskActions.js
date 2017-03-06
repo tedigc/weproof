@@ -12,9 +12,9 @@ export function fetchSingleTask(id) {
   };
 };
 
-export function fetchAvailableTasks() {
+export function fetchAvailableTasks(filter) {
   return dispatch => {
-    return axios.get('/api/tasks/available');
+    return axios.get('/api/tasks/available/' + filter);
   };
 };
 
