@@ -17,20 +17,24 @@ TODO
 
 class Work extends React.Component {
 
+  state = {
+    loading : false,
+    tasks   : [],
+    filter  : 'all'
+  }
+
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false,
-      tasks  : []
-    };
     this.refreshTasks = this.refreshTasks.bind(this);
+    this.setFilter = this.setFilter.bind(this);
   }
 
   componentWillMount() {
     this.refreshTasks();
   }
 
-  refreshTasks() {
+  refreshTasks(e) {
+    if(e !== undefined) e.preventDefault();
     this.setState({ loading : true });
     this.props.fetchAvailableTasks()
       .then(
@@ -47,8 +51,16 @@ class Work extends React.Component {
       );
   }
 
+  setFilter(filter) {
+    if(filter === 'all')    this.setState({ filter: 'all' });
+    if(filter === 'find')   this.setState({ filter: 'find' });
+    if(filter === 'fix')    this.setState({ filter: 'fix' });
+    if(filter === 'verify') this.setState({ filter: 'verify' });
+  }
+
   render() {
-    var self = this;
+    let self = this;
+    let { filter } = this.state;
     return (
       <div>
         <PageHeader 
@@ -58,11 +70,11 @@ class Work extends React.Component {
         />
 
         <Menu secondary>
-          <Menu.Item name="all"/>
-          <Menu.Item name="find"/>
-          <Menu.Item name="fix"/>
-          <Menu.Item name="verify"/>
-          <Menu.Item name="refresh" position="right" as={Button} icon="refresh" />
+          <Menu.Item name="all"    active={filter === 'all'}    onClick={() => { this.setFilter('all') }} />
+          <Menu.Item name="find"   active={filter === 'find'}   onClick={() => { this.setFilter('find') }} />
+          <Menu.Item name="fix"    active={filter === 'fix'}    onClick={() => { this.setFilter('fix') }} />
+          <Menu.Item name="verify" active={filter === 'verify'} onClick={() => { this.setFilter('verify') }} />
+          <Menu.Item name="refresh" position="right" as={Button} icon="refresh" onClick={this.refreshTasks} />
         </Menu>
 
         <Divider/>
@@ -85,13 +97,14 @@ class Work extends React.Component {
           {/* Item list of available tasks */}
           <Table.Body>
           {self.state.tasks.map((task, index) => {
-            return <SingleTask
-                      key={index}
-                      id={task.id}
-                      stage={task.stage}
-                      excerpt={task.excerpt}
-                      created={task.created_at}
-                    />;
+            if(self.state.filter !== 'all' && self.state.filter !== task.stage) return undefined
+            else return <SingleTask
+                          key={index}
+                          id={task.id}
+                          stage={task.stage}
+                          excerpt={task.excerpt}
+                          created={task.created_at}
+                        />;
           })}
           </Table.Body>
 

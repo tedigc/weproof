@@ -48,6 +48,7 @@ router.get('/:excerptId/min', authenticate, (req, res) => {
           })
           .fetchAll()
           .then((taskSubmissions) => {
+            
             // If there exists a submission for this excerpt with the current user's ID, let the client know they
             // have already contributed.
             let contributed = taskSubmissions.models.length > 0; 
