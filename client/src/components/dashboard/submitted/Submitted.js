@@ -80,7 +80,7 @@ class Submitted extends React.Component {
                                       key={index}
                                       id={task.id}
                                       status={task.excerpt.status}
-                                      excerpt={task.excerpt.excerpt}
+                                      excerpt={task.excerpt.body}
                                       created={task.created_at}
                                     />;
                           })}

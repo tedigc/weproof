@@ -51,7 +51,7 @@ class Verify extends React.Component {
   }
 
   getHighlightedText() {
-    let excerpt = this.props.excerpt.excerpt;
+    let excerpt = this.props.excerpt.body;
     let pair = this.props.pair;
     let original = excerpt.slice(pair[0], pair[1]);
     let highlight = (this.state.showOriginal) ? original : this.props.correction;

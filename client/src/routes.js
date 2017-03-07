@@ -12,7 +12,7 @@ import LoginPage   from './components/landingpage/login/LoginPage';
 import Greetings   from './components/landingpage/Greetings';
 import Task        from './components/task/Task';
 import ErrorPage   from './components/error/ErrorPage';
-import requireAuth from './utils/requireAuth';
+import requireAuth from './util/requireAuth';
 
 export default (
   <Route path="/">

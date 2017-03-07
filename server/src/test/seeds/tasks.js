@@ -1,31 +1,10 @@
 import { Task } from '../../db/models';
 
-const tasks = [
-  {
-    owner_id   : 2,
-    excerpt_id : 1,
-    type       : 'find',
-    pairs      : [ [10, 30], [50, 100], [110, 140] ]
-  },
-  {
-    owner_id   : 3,
-    excerpt_id : 1,
-    type       : 'find',
-    pairs      : [ [20, 40], [50, 100], [110, 140] ]
-  },
-  {
-    owner_id   : 4,
-    excerpt_id : 1,
-    type       : 'find',
-    pairs      : [ [10, 30], [50, 100], [110, 140] ]
-  }
-];
-
 const findPairs = [
     [ [10, 30], [50, 100], [110, 140] ],
     [ [20, 40], [50, 100], [110, 140] ],
     [ [10, 30], [50, 100], [110, 140] ]
-]
+];
 
 
 let promises = [];

@@ -4,7 +4,7 @@ import { Button, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-re
 import Highlight from './Highlight';
 import Instructions from '../common/Instructions';
 import { submitTask } from '../../../actions/taskActions';
-import mergePatches from '../../../utils/aggregation/mergePatches';
+import merge from '../../../util/aggregation/merge';
 
 const excerptHeight = 400;
 const highlightMenuHeight = 170;
@@ -65,7 +65,7 @@ class Find extends React.Component {
   }
 
   getHighlightedText() {
-    let original = this.props.excerpt.excerpt;
+    let original = this.props.excerpt.body;
     let pairs = this.state.pairs.slice();
 
     // If there are no pairs, just return the unhighlighted original text
@@ -118,7 +118,7 @@ class Find extends React.Component {
       priorRange.setEnd(range.startContainer, range.startOffset);
       start = priorRange.toString().length;
       end = start + range.toString().length;
-      end = Math.min(end, this.props.excerpt.excerpt.length);
+      end = Math.min(end, this.props.excerpt.body.length);
 
       // add it to the array of pairs
       //
@@ -127,7 +127,7 @@ class Find extends React.Component {
 
       // merge overlapping pairs
       //
-      let merged = mergePatches(pairArray);
+      let merged = merge(pairArray);
 
       this.setState({ pairs: merged });
       window.getSelection().removeAllRanges();
@@ -160,7 +160,7 @@ class Find extends React.Component {
     e.preventDefault();
     this.props.submitTask({ 
       excerptId: this.props.excerpt.id, 
-      excerpt: this.props.excerpt.excerpt, 
+      excerpt: this.props.excerpt.body, 
       pairs: this.state.pairs, 
       taskType: "find" 
     })
@@ -188,7 +188,7 @@ class Find extends React.Component {
       highlights = (
         <Item.Group divided style={styles.itemGroup}>
           {this.state.pairs.map((pair, index) => {
-            let text = this.props.excerpt.excerpt.slice(pair[0], pair[1]);
+            let text = this.props.excerpt.body.slice(pair[0], pair[1]);
             return <Highlight 
                       key={index} 
                       id={index} 

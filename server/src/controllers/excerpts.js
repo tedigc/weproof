@@ -30,7 +30,7 @@ router.get('/:excerptId/min', authenticate, (req, res) => {
   Excerpt
     .query({
       where  : { id: req.params.excerptId },
-      select : [ 'id', 'excerpt', 'stage' ]
+      select : [ 'id', 'body', 'stage' ]
     })
     .fetch()
     .then((excerpt) => {
@@ -91,14 +91,14 @@ router.get('/', authenticate, (req, res) => {
 router.post('/', authenticate, (req, res) => {
 
   let title = req.body.title;
-  let excerpt = req.body.excerpt;
-  let heatmap = new Array(excerpt.excerpt.length).fill(0);
+  let body  = req.body.body;
+  let heatmap = new Array(excerpt.body.length).fill(0);
 
   // Write the excerpt to the database
   Excerpt
     .forge({
       title    : title,
-      excerpt  : excerpt,
+      body     : body,
       owner_id : req.currentUser.attributes.id,
       heatmap
     }, { hasTimestamps: true })

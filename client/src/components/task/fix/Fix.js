@@ -36,7 +36,7 @@ class Fix extends React.Component {
     super(props);
 
     let { excerpt, pair } = this.props;
-    let correction = excerpt.excerpt.slice(pair[0], pair[1]);
+    let correction = excerpt.body.slice(pair[0], pair[1]);
     this.state = { correction };
 
     this.getHighlightedText = this.getHighlightedText.bind(this);
@@ -47,7 +47,7 @@ class Fix extends React.Component {
 
   getHighlightedText() {
     let { excerpt, pair } = this.props;
-    let originalText = excerpt.excerpt;
+    let originalText = excerpt.body;
     return (
       <div id="excerpt">
         {originalText.slice(0, pair[0])}
@@ -72,7 +72,7 @@ class Fix extends React.Component {
     let { correction } = this.state;
     this.props.submitTask({
       excerptId  : excerpt.id, 
-      excerpt    : excerpt.excerpt,
+      excerpt    : excerpt.body,
       chosenEdit : chosenEdit,
       correction : correction, 
       taskType   : "fix" 
@@ -86,7 +86,7 @@ class Fix extends React.Component {
   restoreDefault(e) {
     e.preventDefault();
     let { pair, excerpt } = this.props;
-    let correction = excerpt.excerpt.slice(pair[0], pair[1]);
+    let correction = excerpt.body.slice(pair[0], pair[1]);
     this.setState({ correction });
   }
 

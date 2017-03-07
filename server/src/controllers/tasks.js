@@ -2,6 +2,7 @@ import express from 'express';
 import authenticate from '../middlewares/authenticate';
 import { Excerpt, Task, TaskFind, TaskFix } from '../db/models';
 import { submitFindTask, submitFixTask, submitVerifyTask } from './util/tasksubmit';
+import aggregate from '../util/aggregation/aggregate';
 
 var router = express.Router();
 
@@ -18,7 +19,7 @@ router.get('/:filter', authenticate, (req, res) => {
     })
     .fetchAll({
       withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'title', 'excerpt', 'status'); 
+        qb.column('id', 'title', 'body', 'status'); 
       }}],
     })
     .then(tasks => {
@@ -48,7 +49,7 @@ router.post('/', authenticate, (req, res) => {
   Excerpt
     .query({
       where: { id: excerptId },
-      select: ['id', 'title', 'excerpt', 'heatmap']
+      select: ['id', 'title', 'body', 'heatmap']
     })
     .fetch()
     .then((excerpt) => {
@@ -130,7 +131,7 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
     })
     .fetchAll({
       withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'excerpt', 'status', 'recommended_edits'); 
+        qb.column('id', 'body', 'status', 'recommended_edits'); 
       }}],
     })
     .then(tasks => {
@@ -176,7 +177,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
     })
     .fetchAll({
       withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'excerpt', 'status', 'recommended_edits'); 
+        qb.column('id', 'body', 'status', 'recommended_edits'); 
       }}],
     })
     .then(tasks => {
@@ -216,7 +217,7 @@ router.post('/aggregate', (req, res) => {
   Excerpt
     .query({
       where: { id: excerptId },
-      select: ['id', 'title', 'excerpt', 'heatmap']
+      select: ['id', 'title', 'body', 'heatmap']
     })
     .fetch()
     .then((excerpt) => {
@@ -224,85 +225,8 @@ router.post('/aggregate', (req, res) => {
         res.status(500).json({ error: "No such excerpt" });
       } else {
 
-        let attributes = excerpt.attributes;
-
-        let heatmap = excerpt.attributes.heatmap;
-        let maxHeat = Math.max.apply(Math, heatmap);
-        let nSubmissions = 10;
-        let cutoff = nSubmissions * 0.2;
-
-        if(maxHeat >= cutoff) {
-
-          // find rough patches
-          let roughPatches = [];
-          let leftIdx  = -1;
-          let rightIdx = -1;
-
-          console.info('> calculating rough patches');
-
-          for(let i=0; i<attributes.excerpt.length; i++) {
-            if(heatmap[i] >= cutoff) {
-              if(leftIdx < 0) leftIdx = i;    // if starting a new patch, set the left index
-              else continue;                  // else, just continue searching for the end of the patch
-            } else {
-              if(leftIdx < 0) continue;       // if we weren't mid-patch, just continue
-              else {                          // else end the patch
-
-                // set and push the patch
-                rightIdx = i-1;
-                roughPatches.push([leftIdx, rightIdx]);
-
-                // reset the indices, so we're ready to search for the next batch
-                leftIdx  = -1;
-                rightIdx = -1;
-
-              }
-            }
-          }
-          
-          console.log(roughPatches);
-
-          if(roughPatches.length >= 2) {
-            // calculate final patches
-            // simply march from either end of the rough patches until you find a space
-            let finalPatches = [];
-            for(let patch of roughPatches) {
-
-              // march left
-              let leftIdx  = patch[0];
-              let char = attributes.excerpt[leftIdx];
-              while(char !== ' ' && leftIdx > 0) {
-                leftIdx--;
-                char = attributes.excerpt[leftIdx];
-              }
-              if(char === ' ') leftIdx++;
-
-              // march rightIdx
-              let rightIdx = patch[1];
-              char = attributes.excerpt[rightIdx];
-              while(char !== ' ' && rightIdx < attributes.excerpt.length) {
-                rightIdx++;
-                char = attributes.excerpt[rightIdx];
-              }
-              if(char === ' ') rightIdx--;
-
-              finalPatches.push([leftIdx, rightIdx]);
-            }
-
-            console.log(finalPatches);
-            console.log(mergePatches(finalPatches));
-            
-            // merge final patches if necessary
-
-            // progress to fix stage
-          } else {
-            // return to 'find' stage
-          }
-        } else {
-          // return to 'find' stage
-        }
-
-        res.json({ heatmap });
+        let patches = aggregate(excerpt.attributes);
+        res.json({ patches });
 
       }
     });
@@ -310,30 +234,3 @@ router.post('/aggregate', (req, res) => {
 });
 
 export default router;
-
-function mergePatches(patches) {
-  
-  function comparator(a, b) {
-    if(a[0] < b[0]) return -1;
-    if(a[0] > b[0]) return  1;
-    else return 0;
-  }
-
-  // sort patches based on left index
-  patches = patches.sort(comparator);
-
-  let merged = [];
-  let currentPair = patches[0];
-  for(let i=0; i<patches.length; i++) {
-    if(currentPair[1] >= patches[i][0]) {
-      // pairs overlap
-      currentPair[1] = Math.max(currentPair[1], patches[i][1]);
-    } else {
-      merged.push(currentPair);
-      currentPair = patches[i];
-    }
-  }
-  merged.push(currentPair);
-
-  return patches;
-}

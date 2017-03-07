@@ -87,7 +87,7 @@ class Work extends React.Component {
                                           key={index}
                                           id={task.id}
                                           stage={task.stage}
-                                          excerpt={task.excerpt}
+                                          body={task.body}
                                           created={task.created_at}
                                         />;
                           })}
