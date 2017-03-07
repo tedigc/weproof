@@ -69,8 +69,7 @@ for(let i=0; i<excerpts.length; i++) {
         }
       }
     }
-    let recommended_edits = aggregateTest(excerpt.body, excerpt.heatmap);
-    console.log(recommended_edits);
+    let recommended_edits = aggregateTest(excerpt.body, heatmap);
   }
   
   promises.push(new Promise((resolve, reject) => {
