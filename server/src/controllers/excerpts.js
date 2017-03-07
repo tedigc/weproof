@@ -90,15 +90,17 @@ router.get('/', authenticate, (req, res) => {
 //
 router.post('/', authenticate, (req, res) => {
 
-  var title = req.body.title;
-  var excerpt = req.body.excerpt;
+  let title = req.body.title;
+  let excerpt = req.body.excerpt;
+  let heatmap = new Array(excerpt.excerpt.length).fill(0);
 
   // Write the excerpt to the database
   Excerpt
     .forge({
-      title  : title,
-      excerpt: excerpt,
-      owner_id: req.currentUser.attributes.id
+      title    : title,
+      excerpt  : excerpt,
+      owner_id : req.currentUser.attributes.id,
+      heatmap
     }, { hasTimestamps: true })
     .save(null, { method: 'insert'})
     .then((user) => {

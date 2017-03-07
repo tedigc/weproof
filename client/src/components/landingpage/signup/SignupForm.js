@@ -44,17 +44,17 @@ function validateInput(data) {
 
 class SignupForm extends React.Component {
 
+  state = {
+    'email'           : '',
+    'username'        : '',
+    'password'        : '',
+    'passwordConfirm' : '',
+    'isLoading'       : false,
+    'errors'          : {}
+  }
+
   constructor(props) {
     super(props);
-    this.state = {
-      'email'           : '',
-      'username'        : '',
-      'password'        : '',
-      'passwordConfirm' : '',
-      'isLoading'       : false,
-      'errors'          : {}
-    }
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }

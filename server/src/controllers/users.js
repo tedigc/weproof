@@ -1,13 +1,13 @@
 import express from 'express';
 import bcrypt  from 'bcrypt';
 import isEmpty from 'lodash/isEmpty';
-import commonValidations from '../shared/validations/signup';
+import commonValidations from '../util/validation/signup';
 import { User } from '../db/models';
 
 var router = express.Router();
 
 function validateInput(data, otherValidations) {
-  var validation = otherValidations(data);
+  let validation = otherValidations(data);
   return User
     .query({
       where  : { username: data.username },
@@ -34,10 +34,10 @@ router.post('/', (req, res) => {
   validateInput(req.body, commonValidations)
     .then((validation) => {
       if(validation.isValid) {
-        var username = req.body.username;
-        var email    = req.body.email;
-        var password = req.body.password;
-        var password_digest = bcrypt.hashSync(password, 10);
+        let username = req.body.username;
+        let email    = req.body.email;
+        let password = req.body.password;
+        let password_digest = bcrypt.hashSync(password, 10);
 
         User
           .forge({

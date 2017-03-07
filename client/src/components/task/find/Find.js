@@ -4,6 +4,7 @@ import { Button, Form, Grid, Header, Item, Label, Segment } from 'semantic-ui-re
 import Highlight from './Highlight';
 import Instructions from '../common/Instructions';
 import { submitTask } from '../../../actions/taskActions';
+import mergePatches from '../../../utils/aggregation/mergePatches';
 
 const excerptHeight = 400;
 const highlightMenuHeight = 170;
@@ -124,29 +125,9 @@ class Find extends React.Component {
       let pairArray = this.state.pairs.slice();
       pairArray.push([start, end]);
 
-      // sort the array of pairs by their left hand index
-      //
-      function comparator(a, b) {
-        if(a[0] < b[0]) return -1;
-        if(a[0] > b[0]) return  1;
-        else return 0;
-      }
-      pairArray = pairArray.sort(comparator);
-
       // merge overlapping pairs
       //
-      let merged = [];
-      let currentPair = pairArray[0];
-      for(let i=0; i<pairArray.length; i++) {
-        if(currentPair[1] >= pairArray[i][0]) {
-          // pairs overlap
-          currentPair[1] = Math.max(currentPair[1], pairArray[i][1]);
-        } else {
-          merged.push(currentPair);
-          currentPair = pairArray[i];
-        }
-      }
-      merged.push(currentPair);
+      let merged = mergePatches(pairArray);
 
       this.setState({ pairs: merged });
       window.getSelection().removeAllRanges();
@@ -257,6 +238,7 @@ class Find extends React.Component {
                   </div>
                 </div>
               </div>
+              
             </Grid.Column>
 
           </Grid.Row>

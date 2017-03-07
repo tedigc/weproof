@@ -50,13 +50,14 @@ let promises = [];
 //
 for(let i=0; i<excerpts.length; i++) {
   let excerpt = excerpts[i];
+  let heatmap = new Array(excerpt.excerpt.length).fill(0);
   promises.push(new Promise((resolve, reject) => {
-
     return Excerpt
       .forge({
         title    : excerpt.title,
         excerpt  : excerpt.excerpt,
         owner_id : excerpt.owner_id,
+        heatmap
       }, { hasTimestamps: true })
       .save(null, { method: 'insert' })
       .then(data => {

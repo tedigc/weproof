@@ -48,7 +48,7 @@ router.post('/', authenticate, (req, res) => {
   Excerpt
     .query({
       where: { id: excerptId },
-      select: ['id', 'title', 'excerpt']
+      select: ['id', 'title', 'excerpt', 'heatmap']
     })
     .fetch()
     .then((excerpt) => {
@@ -61,6 +61,10 @@ router.post('/', authenticate, (req, res) => {
         if(taskType === "verify") submitVerifyTask(req, res, excerpt);
 
       }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json(err);
     });
 
 });
@@ -212,7 +216,7 @@ router.post('/aggregate', (req, res) => {
   Excerpt
     .query({
       where: { id: excerptId },
-      select: ['id', 'title', 'excerpt']
+      select: ['id', 'title', 'excerpt', 'heatmap']
     })
     .fetch()
     .then((excerpt) => {
@@ -220,55 +224,85 @@ router.post('/aggregate', (req, res) => {
         res.status(500).json({ error: "No such excerpt" });
       } else {
 
-      // Find all other task submissions, and calculate whether or not there are sufficient overlapping
-      // highlights to proceed to the fix stage
-      TaskFind
-        .query({
-          where  : { excerpt_id : req.body.excerptId },
-          select : ['id', 'pairs'] 
-        })
-        .fetchAll()
-        .then(allTaskSubmissions => {
+        let attributes = excerpt.attributes;
 
-          let stage = 'find';
-          let recommended_edits;
+        let heatmap = excerpt.attributes.heatmap;
+        let maxHeat = Math.max.apply(Math, heatmap);
+        let nSubmissions = 10;
+        let cutoff = nSubmissions * 0.2;
 
-          // find all highlights
-          // sort by left index
-          // check for overlaps
-          // remember that two basic (unmerged) pairs *must* be from different user submissions
+        if(maxHeat >= cutoff) {
 
-          // rather than merging two pairs, save the intersection between them
-          // for each pass, increment some counter indicating the depth
+          // find rough patches
+          let roughPatches = [];
+          let leftIdx  = -1;
+          let rightIdx = -1;
 
-          // with the final intersections, move the ends of each pair to the beginning and end of the word so they appear sensible
+          console.info('> calculating rough patches');
 
-          let allPairs = [];
-          for(let i=0; i<allTaskSubmissions.models.length; i++) {
-            console.log(allTaskSubmissions.models[i].attributes);
+          for(let i=0; i<attributes.excerpt.length; i++) {
+            if(heatmap[i] >= cutoff) {
+              if(leftIdx < 0) leftIdx = i;    // if starting a new patch, set the left index
+              else continue;                  // else, just continue searching for the end of the patch
+            } else {
+              if(leftIdx < 0) continue;       // if we weren't mid-patch, just continue
+              else {                          // else end the patch
+
+                // set and push the patch
+                rightIdx = i-1;
+                roughPatches.push([leftIdx, rightIdx]);
+
+                // reset the indices, so we're ready to search for the next batch
+                leftIdx  = -1;
+                rightIdx = -1;
+
+              }
+            }
           }
+          
+          console.log(roughPatches);
 
-          res.json(allTaskSubmissions);
+          if(roughPatches.length >= 2) {
+            // calculate final patches
+            // simply march from either end of the rough patches until you find a space
+            let finalPatches = [];
+            for(let patch of roughPatches) {
 
-          // update the excerpt's stage and recommended edits
-          // excerpt
-          //   .save({
-          //     stage,
-          //     recommended_edits
-          //   })
-          //   .then(result => {
-          //     res.json(result);
-          //   })
-          //   .catch(err => {
-          //     console.error(err);
-          //     res.status(500).json(err);
-          //   });
+              // march left
+              let leftIdx  = patch[0];
+              let char = attributes.excerpt[leftIdx];
+              while(char !== ' ' && leftIdx > 0) {
+                leftIdx--;
+                char = attributes.excerpt[leftIdx];
+              }
+              if(char === ' ') leftIdx++;
 
-        })
-        .catch(err => {
-          console.error(err);
-          res.status(500).json(err);
-        });
+              // march rightIdx
+              let rightIdx = patch[1];
+              char = attributes.excerpt[rightIdx];
+              while(char !== ' ' && rightIdx < attributes.excerpt.length) {
+                rightIdx++;
+                char = attributes.excerpt[rightIdx];
+              }
+              if(char === ' ') rightIdx--;
+
+              finalPatches.push([leftIdx, rightIdx]);
+            }
+
+            console.log(finalPatches);
+            console.log(mergePatches(finalPatches));
+            
+            // merge final patches if necessary
+
+            // progress to fix stage
+          } else {
+            // return to 'find' stage
+          }
+        } else {
+          // return to 'find' stage
+        }
+
+        res.json({ heatmap });
 
       }
     });
@@ -276,3 +310,30 @@ router.post('/aggregate', (req, res) => {
 });
 
 export default router;
+
+function mergePatches(patches) {
+  
+  function comparator(a, b) {
+    if(a[0] < b[0]) return -1;
+    if(a[0] > b[0]) return  1;
+    else return 0;
+  }
+
+  // sort patches based on left index
+  patches = patches.sort(comparator);
+
+  let merged = [];
+  let currentPair = patches[0];
+  for(let i=0; i<patches.length; i++) {
+    if(currentPair[1] >= patches[i][0]) {
+      // pairs overlap
+      currentPair[1] = Math.max(currentPair[1], patches[i][1]);
+    } else {
+      merged.push(currentPair);
+      currentPair = patches[i];
+    }
+  }
+  merged.push(currentPair);
+
+  return patches;
+}

@@ -9,51 +9,46 @@ export function submitFindTask(req, res, excerpt) {
         pairs      : req.body.pairs
       }, { hasTimestamps: true })
     .save(null, { method: 'insert' })
-    .then((data) => {
+    .then((task) => {
 
-      // Find all other task submissions, and calculate whether or not there are sufficient overlapping
-      // highlights to proceed to the fix stage
-      TaskFind
-        .query({
-          where  : { excerpt_id : req.body.excerptId },
-          select : ['id', 'pairs'] 
+      let pairs = task.attributes.pairs;
+      let stage = 'find';
+      let recommended_edits;
+      let heatmap = excerpt.attributes.heatmap;
+
+      // for each patch the user has submitted, increment the heatmap within the patch's range
+      for(let i=0; i<pairs.length; i++) {
+        let pair = pairs[i];
+        for(let j=pair[0]; j<pair[1]; j++) {
+          heatmap[j]++;
+        }
+      }
+
+      // here, check if it is time to move onto the fix stage
+
+      // . . .
+
+      // update the excerpt's stage and recommended edits
+      excerpt
+        .save({
+          stage,
+          recommended_edits
         })
-        .fetchAll()
-        .then(allTaskSubmissions => {
-
-          let stage = 'find';
-          let recommended_edits;
-
-          // find all highlights
-          // sort by left index
-          // 
-
-          // update the excerpt's stage and recommended edits
-          excerpt
-            .save({
-              stage,
-              recommended_edits
-            })
-            .then(result => {
-              res.json(result);
-            })
-            .catch(err => {
-              console.error(err);
-              res.status(500).json(err);
-            });
-
+        .then(result => {
+          res.json(result);
         })
         .catch(err => {
           console.error(err);
           res.status(500).json(err);
         });
+
     })
     .catch((err) => {
       console.error(err);
       res.status(500).json({ error: err });
     });
 
-};
+}
 
 export function submitFixTask(req, res, excerpt) {
 
@@ -82,9 +77,13 @@ export function submitFixTask(req, res, excerpt) {
           res.status(500).json(err);
         });
 
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json(err);
     });
 
-};
+}
 
 export function submitVerifyTask(req, res, excerpt) {
 
@@ -103,4 +102,4 @@ export function submitVerifyTask(req, res, excerpt) {
 
     });
 
-};
+}
