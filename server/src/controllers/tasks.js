@@ -130,58 +130,72 @@ router.get('/available/:filter', authenticate, (req, res) => {
 //
 router.get('/:excerptId/fix', authenticate, (req, res) => {
 
-  /**
-   * 
-   * HERE is where changes need to be made. The test data is in the database
-   * and now you just need to set up the algorithm for choosing one of the recommended recommended_edits
-   * and sending it to the client for the fix task.
-   * 
-   * This may be wrong, but at first glance, it looks like you will need both the TaskFind query AND an Excerpt query
-   * 
-   * Excerpt - needed to get access to the recommended edits. Can be done with a 'withRelated' join (already there)
-   * 
-   * TaskFind (maybe TaskFix instead) - to see which recommended edits already have contributions, so we can ask users to contribute
-   * towards recommended_edits with fewer.
-   * 
-   */
-
-
-  TaskFind
+  TaskFix
     .query({
-      where  : { excerpt_id : req.params.excerptId }
+      where : { excerpt_id : req.params.excerptId }
     })
-    .fetchAll({
-      withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'body', 'status', 'recommended_edits'); 
-      }}],
-    })
+    .fetchAll()
     .then(tasks => {
 
-      // let chosenEdit = -1;
-      // let correction = '';
-      // for each (model in tasks.models) {
-      //
-      //   /* here is where the chosen_edit and correction would be made */
-      // 
-      // }
+      Excerpt
+        .query({
+          where : { id : req.params.excerptId },
+          select: [ 'id', 'body', 'recommended_edits' ]
+        })
+        .fetch()
+        .then(excerpt => {
 
-      console.log(tasks);
+          let chosenEdit = 0;
+          let attributes, relations;
 
-      let attributes = tasks.models[0].attributes;
-      let relations  = tasks.models[0].relations;
+          /* algorithm for determining chosen edits */
+          if(tasks.models.length === 0) {
+            // if there are no fix tasks submitted yet, just choose a random patch to edit
+            chosenEdit = Math.floor(Math.random() * excerpt.attributes.recommended_edits.length);
+          } else {
+            // if edits exist, then choose the edit with the least submissions
 
-      // here, use an algorithm to determine which recommended edit to use.
-      let chosenEdit = 1;
-      let pair = relations.excerpt.attributes.recommended_edits[chosenEdit];
-      let excerpt = relations.excerpt.attributes;
+            // count the number of submissions for each chosen edit
+            let submissionCounter = new Array(excerpt.attributes.recommended_edits.length).fill(0);
+            for(let task of tasks.models) {
+              let idx = task.attributes.chosen_edit;
+              submissionCounter[idx]++;
+            }
 
-      let taskInfo = {
-        chosenEdit,
-        pair,
-        excerpt
-      };
+            // choose the one with the least
+            let minIdx = -1;
+            let minCount = Number.MAX_SAFE_INTEGER;
+            let allValuesTheSame = true;
+            for(let i=0; i<submissionCounter.length; i++) {
+              let count = submissionCounter[i];
 
-      res.json({ taskInfo });
+              // check if a different value appears.
+              if(allValuesTheSame) {
+                allValuesTheSame = count === submissionCounter[0];
+              }
+
+              if(count < minCount) {
+                minCount = count;
+                minIdx = i;
+              }
+            }
+
+            chosenEdit = (allValuesTheSame) ? Math.floor(Math.random() * excerpt.attributes.recommended_edits.length) : minIdx;
+          }
+
+          let pair    = excerpt.attributes.recommended_edits[chosenEdit];
+          let taskInfo = {
+            chosenEdit,
+            pair,
+            excerpt : excerpt.attributes
+          };
+
+          res.json({ taskInfo });
+        })
+        .catch(err => {
+          res.status(500).json(err);
+        });
+
     })
     .catch(err => {
       console.error(err);
@@ -204,15 +218,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
       }}],
     })
     .then(tasks => {
-
-      // let chosenEdit = -1;
-      // let correction = '';
-      // for each (model in tasks.models) {
-      //
-      //   /* here is where the chosen_edit and correction would be made */
-      // 
-      // }
-
+      
       let attributes = tasks.models[0].attributes;
       let relations  = tasks.models[0].relations;
 

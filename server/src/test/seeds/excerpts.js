@@ -45,6 +45,7 @@ const excerpts = [
 ];
 
 let promises = [];
+
 let allTestPatches = [
   [ [10, 30], [80, 120] ],
   [ [20, 40] ],
@@ -66,6 +67,7 @@ for(let i=0; i<excerpts.length; i++) {
   let recommended_edits;
   let heatmap = new Array(excerpt.body.length).fill(0);
   let stage   = 'find';
+  
   // if(i === 0) {
   //   stage = 'fix';
   //   // build test heatmap for first excerpt

@@ -36,11 +36,6 @@ export function submitFindTask(req, res, excerpt) {
           }
 
           recommended_edits = aggregate(nTasks, body, heatmap);
-
-          console.log(heatmap);
-          console.log(recommended_edits);
-
-
           if(recommended_edits.length > 0) stage = 'fix';
 
           // update the excerpt's stage and recommended edits
@@ -83,9 +78,11 @@ export function submitFixTask(req, res, excerpt) {
       // only move onto verify stage once some criteria has been met
       // e.g. at least 3 corrections for each error
 
+      let stage = 'fix';
+
       excerpt
         .save({
-          stage : 'verify'
+          stage
         })
         .then(result => {
           res.json(result);
