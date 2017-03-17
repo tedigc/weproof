@@ -4,6 +4,11 @@ import { Excerpt, Task, TaskFind, TaskFix } from '../db/models';
 import { submitFindTask, submitFixTask, submitVerifyTask } from './util/tasksubmit';
 import aggregate from '../util/aggregation/aggregate';
 
+import knex from 'knex';
+import config from '../db/knexfile';
+
+let db = knex(config.development);
+
 var router = express.Router();
 
 // Fetch all tasks submitted by the current user
@@ -125,6 +130,22 @@ router.get('/available/:filter', authenticate, (req, res) => {
 //
 router.get('/:excerptId/fix', authenticate, (req, res) => {
 
+  /**
+   * 
+   * HERE is where changes need to be made. The test data is in the database
+   * and now you just need to set up the algorithm for choosing one of the recommended recommended_edits
+   * and sending it to the client for the fix task.
+   * 
+   * This may be wrong, but at first glance, it looks like you will need both the TaskFind query AND an Excerpt query
+   * 
+   * Excerpt - needed to get access to the recommended edits. Can be done with a 'withRelated' join (already there)
+   * 
+   * TaskFind (maybe TaskFix instead) - to see which recommended edits already have contributions, so we can ask users to contribute
+   * towards recommended_edits with fewer.
+   * 
+   */
+
+
   TaskFind
     .query({
       where  : { excerpt_id : req.params.excerptId }
@@ -144,11 +165,13 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
       // 
       // }
 
+      console.log(tasks);
+
       let attributes = tasks.models[0].attributes;
       let relations  = tasks.models[0].relations;
 
       // here, use an algorithm to determine which recommended edit to use.
-      let chosenEdit = 0;
+      let chosenEdit = 1;
       let pair = relations.excerpt.attributes.recommended_edits[chosenEdit];
       let excerpt = relations.excerpt.attributes;
 
@@ -225,12 +248,65 @@ router.post('/aggregate', (req, res) => {
         res.status(500).json({ error: "No such excerpt" });
       } else {
 
-        let patches = aggregate(excerpt.attributes);
-        res.json({ patches });
+        let { body, heatmap } = excerpt.attributes;
+        let patches = aggregate(10, body, heatmap);
+
+        let patch1Rough  = body.slice(patches.roughPatches[0][0], patches.roughPatches[0][1]);
+        let patch1Merged = body.slice(patches.mergedPatches[0][0], patches.mergedPatches[0][1]);
+
+        let patch2Rough  = body.slice(patches.roughPatches[1][0], patches.roughPatches[1][1]);
+        let patch2Merged = body.slice(patches.mergedPatches[1][0], patches.mergedPatches[1][1]);
+        
+
+        res.json({ patch1Rough, patch1Merged, patch2Rough, patch2Merged });
 
       }
     });
 
 });
+
+
+
+
+router.post('/testsubmit', (req, res) => {
+
+  let excerptId = req.body.excerptId;
+  let taskType = req.body.taskType;
+
+  req.currentUser = { attributes : { id : req.body.userID }};
+
+  console.log(excerptId);
+  console.log(taskType);
+  console.log(req.currentUser);
+
+  Excerpt
+    .query({
+      where: { id: excerptId },
+      select: ['id', 'title', 'body', 'heatmap']
+    })
+    .fetch()
+    .then((excerpt) => {
+      if(!excerpt) {
+        res.status(500).json({ error: "No such excerpt" });
+      } else {
+
+        if(taskType === "find")   submitFindTask(req, res, excerpt);
+        if(taskType === "fix")    submitFixTask(req, res, excerpt);
+        if(taskType === "verify") submitVerifyTask(req, res, excerpt);
+
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json(err);
+    });
+
+}); 
+
+
+
+
+
+
 
 export default router;

@@ -1,8 +1,13 @@
 import merge from './merge';
 
+const MINIMUM_SUBMISSIONS_REQUIRED = 10;
+
 // calculate rough, unadjusted patches. these may start or end in the middle of words
 export function calculateRoughPatches(heatmap, cutoff) {
   let maxHeat = Math.max.apply(Math, heatmap);
+
+  console.log("max heat : " + maxHeat);
+  console.log("cutoff   : " + cutoff);
 
   if(maxHeat < cutoff) {
     return [];
@@ -44,33 +49,33 @@ export function calculateFinalPatches(body, roughPatches) {
       leftIdx--;
       char = body[leftIdx];
     }
-    if(char === ' ') leftIdx++;
+    if(char === ' ') leftIdx;
 
     // march rightIdx
-    let rightIdx = patch[1];
+    let rightIdx = patch[1]-1;
     char = body[rightIdx];
     while(char !== ' ' && rightIdx < body.length) {
       rightIdx++;
       char = body[rightIdx];
     }
-    if(char === ' ') rightIdx--;
+    if(char === ' ') rightIdx++;
 
     finalPatches.push([leftIdx, rightIdx]);
   }
   return finalPatches;
 }
 
-export default function(excerpt) {
-  let { body, heatmap } = excerpt;
+export default function(nTasks, body, heatmap) {
 
-  let nTasks = 10;
-  let cutoff = nTasks * 0.2;
+  if(nTasks < MINIMUM_SUBMISSIONS_REQUIRED) return [];
+
+  let cutoff = nTasks * 0.2;  // 20% of users should agree on patches
 
   let roughPatches = calculateRoughPatches(heatmap, cutoff);
 
   if(roughPatches.length >= 2) {
     let finalPatches = calculateFinalPatches(body, roughPatches);
-    let mergedPatches = merge(roughPatches);
+    let mergedPatches = merge(finalPatches);
     return mergedPatches;
   } else {
     return [];
