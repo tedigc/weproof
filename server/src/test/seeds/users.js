@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { User } from '../../db/models';
 
-const N_EXTRA_USERS = 20;
+const N_EXTRA_USERS = 40;
 const PASSWORD_DIGEST = bcrypt.hashSync("test", 10);
 
 const users = [

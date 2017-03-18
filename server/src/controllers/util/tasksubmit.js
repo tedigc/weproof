@@ -6,9 +6,11 @@ import config from '../../db/knexfile';
 
 let db = knex(config.development);
 
+const MINIMUM_FIX_TASK_SUBMISSIONS = 5;
+
 export function submitFindTask(req, res, excerpt) {
 
-  TaskFind
+  return TaskFind
     .forge({
         excerpt_id : req.body.excerptId,
         owner_id   : req.currentUser.attributes.id,
@@ -17,7 +19,7 @@ export function submitFindTask(req, res, excerpt) {
     .save(null, { method: 'insert' })
     .then((task) => {
 
-      db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
+      return db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
         .then(result => {
 
           let recommended_edits;
@@ -39,7 +41,7 @@ export function submitFindTask(req, res, excerpt) {
           if(recommended_edits.length > 0) stage = 'fix';
 
           // update the excerpt's stage and recommended edits
-          excerpt
+          return excerpt
             .save({
               stage,
               recommended_edits,
@@ -65,7 +67,7 @@ export function submitFindTask(req, res, excerpt) {
 
 export function submitFixTask(req, res, excerpt) {
 
-  TaskFix
+  return TaskFix
     .forge({
       excerpt_id : req.body.excerptId,
       owner_id   : req.currentUser.attributes.id,
@@ -73,22 +75,40 @@ export function submitFixTask(req, res, excerpt) {
       correction : req.body.correction
     }, { hasTimestamps: true })
     .save(null, { method: 'insert' })
-    .then(data => {
+    .then(submittedTask => {
 
-      // only move onto verify stage once some criteria has been met
-      // e.g. at least 3 corrections for each error
+      console.log('> 0');
 
-      let stage = 'fix';
-
-      excerpt
-        .save({
-          stage
+      return TaskFix
+        .query({
+          where : { excerpt_id : req.body.excerptId },
+          select: [ 'id', 'chosen_edit' ]
         })
-        .then(result => {
-          res.json(result);
+        .fetchAll()
+        .then(tasks => {
+
+          // count the number of submissions for each recommended edits
+          let submissionCounter = new Array(excerpt.attributes.recommended_edits.length).fill(0);
+          for(let task of tasks.models) {
+            let idx = task.attributes.chosen_edit;
+            submissionCounter[idx]++;
+          }
+          
+          // if there are at least N fixes for each recommended edit, progress to the 'verify' stage
+          let minCount = Math.min.apply(Math, submissionCounter);
+          let stage = (minCount >= MINIMUM_FIX_TASK_SUBMISSIONS) ? 'verify' : 'fix';
+          
+          return excerpt
+            .save({ stage })
+            .then(result => {
+              res.json(result);
+            })
+            .catch(err => {
+              console.error(err);
+              res.status(500).json(err);
+            });
         })
         .catch(err => {
-          console.error(err);
           res.status(500).json(err);
         });
 

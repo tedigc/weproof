@@ -54,7 +54,7 @@ router.post('/', authenticate, (req, res) => {
   Excerpt
     .query({
       where: { id: excerptId },
-      select: ['id', 'title', 'body', 'heatmap']
+      select: ['id', 'title', 'body', 'heatmap', 'recommended_edits']
     })
     .fetch()
     .then((excerpt) => {
@@ -62,9 +62,9 @@ router.post('/', authenticate, (req, res) => {
         res.status(500).json({ error: "No such excerpt" });
       } else {
 
-        if(taskType === "find")   submitFindTask(req, res, excerpt);
-        if(taskType === "fix")    submitFixTask(req, res, excerpt);
-        if(taskType === "verify") submitVerifyTask(req, res, excerpt);
+        if(taskType === "find")   return submitFindTask(req, res, excerpt);
+        if(taskType === "fix")    return submitFixTask(req, res, excerpt);
+        if(taskType === "verify") return submitVerifyTask(req, res, excerpt);
 
       }
     })
@@ -100,6 +100,7 @@ router.get('/available/:filter', authenticate, (req, res) => {
 
       Excerpt
         .query((qb) => {
+
           if(stage !== undefined) {
             qb
               .where('id', 'not in', submittedTaskExcerptIDs)
@@ -137,7 +138,7 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
     .fetchAll()
     .then(tasks => {
 
-      Excerpt
+      return Excerpt
         .query({
           where : { id : req.params.excerptId },
           select: [ 'id', 'body', 'recommended_edits' ]
@@ -146,7 +147,6 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
         .then(excerpt => {
 
           let chosenEdit = 0;
-          let attributes, relations;
 
           /* algorithm for determining chosen edits */
           if(tasks.models.length === 0) {
@@ -218,7 +218,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
       }}],
     })
     .then(tasks => {
-      
+
       let attributes = tasks.models[0].attributes;
       let relations  = tasks.models[0].relations;
 
@@ -238,41 +238,38 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
 
 });
 
-router.post('/aggregate', (req, res) => {
+// router.post('/aggregate', (req, res) => {
 
-  let excerptId = req.body.excerptId;
-  let taskType = req.body.taskType;
+//   let excerptId = req.body.excerptId;
+//   let taskType = req.body.taskType;
 
-  Excerpt
-    .query({
-      where: { id: excerptId },
-      select: ['id', 'title', 'body', 'heatmap']
-    })
-    .fetch()
-    .then((excerpt) => {
-      if(!excerpt) {
-        res.status(500).json({ error: "No such excerpt" });
-      } else {
+//   Excerpt
+//     .query({
+//       where: { id: excerptId },
+//       select: ['id', 'title', 'body', 'heatmap']
+//     })
+//     .fetch()
+//     .then((excerpt) => {
+//       if(!excerpt) {
+//         res.status(500).json({ error: "No such excerpt" });
+//       } else {
 
-        let { body, heatmap } = excerpt.attributes;
-        let patches = aggregate(10, body, heatmap);
+//         let { body, heatmap } = excerpt.attributes;
+//         let patches = aggregate(10, body, heatmap);
 
-        let patch1Rough  = body.slice(patches.roughPatches[0][0], patches.roughPatches[0][1]);
-        let patch1Merged = body.slice(patches.mergedPatches[0][0], patches.mergedPatches[0][1]);
+//         let patch1Rough  = body.slice(patches.roughPatches[0][0], patches.roughPatches[0][1]);
+//         let patch1Merged = body.slice(patches.mergedPatches[0][0], patches.mergedPatches[0][1]);
 
-        let patch2Rough  = body.slice(patches.roughPatches[1][0], patches.roughPatches[1][1]);
-        let patch2Merged = body.slice(patches.mergedPatches[1][0], patches.mergedPatches[1][1]);
+//         let patch2Rough  = body.slice(patches.roughPatches[1][0], patches.roughPatches[1][1]);
+//         let patch2Merged = body.slice(patches.mergedPatches[1][0], patches.mergedPatches[1][1]);
         
 
-        res.json({ patch1Rough, patch1Merged, patch2Rough, patch2Merged });
+//         res.json({ patch1Rough, patch1Merged, patch2Rough, patch2Merged });
 
-      }
-    });
+//       }
+//     });
 
-});
-
-
-
+// });
 
 router.post('/testsubmit', (req, res) => {
 
@@ -280,10 +277,6 @@ router.post('/testsubmit', (req, res) => {
   let taskType = req.body.taskType;
 
   req.currentUser = { attributes : { id : req.body.userID }};
-
-  console.log(excerptId);
-  console.log(taskType);
-  console.log(req.currentUser);
 
   Excerpt
     .query({
@@ -308,11 +301,5 @@ router.post('/testsubmit', (req, res) => {
     });
 
 }); 
-
-
-
-
-
-
 
 export default router;
