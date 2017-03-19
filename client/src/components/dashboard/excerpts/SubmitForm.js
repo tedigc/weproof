@@ -46,14 +46,14 @@ class SubmitForm extends React.Component {
 
   render() {
     // Colour the span based on characters remaining
-    var charColour = 'gray';
-    var remaining = maxExcerptLength - this.state.excerpt.length;
+    let charColour = 'gray';
+    let remaining = maxExcerptLength - this.state.excerpt.length;
     if(remaining <= 20) {
       charColour = 'red';
     } else if(remaining <= 80) {
       charColour = 'orange';
     }
-    var spanStyle = { color: charColour }
+    let spanStyle = { color: charColour }
 
     if(this.state.submitted) {
       return (

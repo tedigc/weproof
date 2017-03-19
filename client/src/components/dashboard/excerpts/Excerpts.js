@@ -56,7 +56,7 @@ class Excerpts extends React.Component {
   }
 
   render() {
-    var self = this;
+    let self = this;
     return (
       <div>
 
@@ -84,7 +84,7 @@ class Excerpts extends React.Component {
 
           {/* Item list of excerpts */}
           {Object.keys(self.state.excerpts).map(function(key) {
-            var item = self.state.excerpts[key];
+            let item = self.state.excerpts[key];
             return <SingleExcerpt
                     key={item.id}
                     id={item.id}

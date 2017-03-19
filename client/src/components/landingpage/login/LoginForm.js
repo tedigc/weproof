@@ -6,7 +6,7 @@ import Validator from 'validator';
 import { Button, Card, Form, Message } from 'semantic-ui-react';
 
 function validateInput(data) {
-  var errors = {};
+  let errors = {};
 
   // Identifier validation
   if(Validator.isEmpty(data.identifier)) {
@@ -63,7 +63,7 @@ class LoginForm extends React.Component {
   }
 
   isValid() {
-    var validation = validateInput(this.state);
+    let validation = validateInput(this.state);
     if(!validation.isValid) {
       this.setState({ errors : validation.errors });
     }

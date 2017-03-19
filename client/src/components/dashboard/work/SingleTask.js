@@ -15,7 +15,7 @@ class SingleTask extends React.Component {
 
   render() {
 
-    var cornerIcon;
+    let cornerIcon;
     switch(this.props.stage) {
       case 'find':
         cornerIcon = 'search';

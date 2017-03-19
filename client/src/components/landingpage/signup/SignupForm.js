@@ -8,7 +8,7 @@ const errorMessageStyle = {
 };
 
 function validateInput(data) {
-  var errors = {};
+  let errors = {};
 
   // Username validation
   if(Validator.isEmpty(data.username)) {
@@ -90,7 +90,7 @@ class SignupForm extends React.Component {
   }
 
   isValid() {
-    var validation = validateInput(this.state);
+    let validation = validateInput(this.state);
     if(!validation.isValid) {
       this.setState({ errors : validation.errors });
     }
