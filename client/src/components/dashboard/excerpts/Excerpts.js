@@ -85,6 +85,7 @@ class Excerpts extends React.Component {
           {/* Item list of excerpts */}
           {Object.keys(self.state.excerpts).map(function(key) {
             let item = self.state.excerpts[key];
+            console.log(item.stage);
             return <SingleExcerpt
                     key={item.id}
                     id={item.id}

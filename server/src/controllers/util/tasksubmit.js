@@ -7,6 +7,7 @@ import config from '../../db/knexfile';
 let db = knex(config.development);
 
 const MINIMUM_FIX_TASK_SUBMISSIONS = 3;
+const MINIMUM_VERIFICATIONS_NEEDED = 1;
 
 export function submitFindTask(req, res, excerpt) {
 
@@ -108,6 +109,7 @@ export function submitFixTask(req, res, excerpt) {
 
         })
         .catch(err => {
+          console.error(err);
           res.status(500).json(err);
         });
 
@@ -131,7 +133,43 @@ export function submitVerifyTask(req, res, excerpt) {
     .save(null, { method: 'insert' })
     .then(() => {
 
-      res.json({ success : true });
+      return TaskFix
+        .query({
+          where : { excerpt_id : req.body.excerptId }
+        })
+        .fetchAll({
+          withRelated: ['verifications']
+        })
+        .then(tasks => {
+
+          // check if all the other
+          let allCorrectionsVerified = true;
+          for(let task of tasks.models) {
+            let verifications = task.relations.verifications;
+            if(verifications.length < MINIMUM_VERIFICATIONS_NEEDED) {
+              allCorrectionsVerified = false;
+              break;
+            }
+          }
+
+          if(allCorrectionsVerified) {
+            // close contributions
+            return excerpt
+              .save({ stage : 'complete' })
+              .then()
+              .error(err => {
+                console.error(err);
+                res.status(500).json(err);
+              });
+          }
+
+          res.json({ success : true });
+
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).json(err);
+        });
 
     });
 

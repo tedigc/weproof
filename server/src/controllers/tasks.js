@@ -100,15 +100,17 @@ router.get('/available/:filter', authenticate, (req, res) => {
       Excerpt
         .query((qb) => {
 
-          if(stage !== undefined) {
+          if(stage === undefined) {
             qb
               .where('id', 'not in', submittedTaskExcerptIDs)
               .andWhere('owner_id', '!=', req.currentUser.id )
-              .andWhere('stage', stage);
+              .andWhere('stage', '<>', 'complete');
           } else {
             qb
               .where('id', 'not in', submittedTaskExcerptIDs)
-              .andWhere('owner_id', '!=', req.currentUser.id );
+              .andWhere('owner_id', '!=', req.currentUser.id )
+              .andWhere('stage', stage)
+              .andWhere('stage', '<>', 'complete');
           }
           
         })
@@ -266,7 +268,7 @@ router.post('/testsubmit', (req, res) => {
   Excerpt
     .query({
       where: { id: excerptId },
-      select: ['id', 'title', 'body', 'heatmap']
+      select: ['id', 'title', 'body', 'heatmap', 'recommended_edits']
     })
     .fetch()
     .then((excerpt) => {

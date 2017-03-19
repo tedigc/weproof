@@ -17,7 +17,7 @@ exports.up = function(knex, Promise) {
     //
     knex.schema.table('excerpts', function(table) {
       table.enu('status', ['accepted', 'rejected', 'pending']).defaultTo('pending');
-      table.enu('stage', ['find', 'fix', 'verify']).defaultTo('find');
+      table.enu('stage', ['find', 'fix', 'verify', 'complete']).defaultTo('find');
     })
 
   ]);

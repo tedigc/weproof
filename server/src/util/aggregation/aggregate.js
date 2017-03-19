@@ -5,10 +5,7 @@ const MINIMUM_SUBMISSIONS_REQUIRED = 10;
 // calculate rough, unadjusted patches. these may start or end in the middle of words
 export function calculateRoughPatches(heatmap, cutoff) {
   let maxHeat = Math.max.apply(Math, heatmap);
-
-  console.log("max heat : " + maxHeat);
-  console.log("cutoff   : " + cutoff);
-
+  
   if(maxHeat < cutoff) {
     return [];
   } else {
