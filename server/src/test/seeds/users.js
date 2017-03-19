@@ -54,33 +54,36 @@ for(let i=0; i<users.length; i++) {
   }));
 }
 
-for(let i=0; i<N_EXTRA_USERS; i++) {
+// save extra no-name users for testing
+//
+for(let i=0; i<=N_EXTRA_USERS; i++) {
+
   let user = {
     username : 'user' + i,
     email    : 'user' + i + '@test.com',
     password : PASSWORD_DIGEST
   };
 
-    promises.push(new Promise((resolve, reject) => {
+  promises.push(new Promise((resolve, reject) => {
 
-    return User
-      .forge({
-        username        : user.username,
-        email           : user.email,
-        password_digest : PASSWORD_DIGEST
-      }, { hasTimestamps: true })
-      .save(null, { method: 'insert' })
-      .then(data => {
-        console.log('[user] ' + user.username + ' saved to database.');
-        resolve();
-      })
-      .catch(err => {
-        console.error(err);
-        reject();
-      });
+  return User
+    .forge({
+      username        : user.username,
+      email           : user.email,
+      password_digest : PASSWORD_DIGEST
+    }, { hasTimestamps: true })
+    .save(null, { method: 'insert' })
+    .then(data => {
+      console.log('[user] ' + user.username + ' saved to database.');
+      resolve();
+    })
+    .catch(err => {
+      console.error(err);
+      reject();
+    });
 
   }));
 }
 
 Promise.all(promises)
-  .then(() => { process.exit() });
+  .then(() => { process.exit(); });

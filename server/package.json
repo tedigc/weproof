@@ -8,8 +8,7 @@
     "db:rollback"  : "knex migrate:rollback --knexfile ./src/db/knexfile.js",
     "seed:users"   : "babel-node src/test/seeds/users.js",
     "seed:excerpts": "babel-node src/test/seeds/excerpts.js",
-    "seed:tasks"   : "babel-node src/test/seeds/tasks.js",
-    "seed:all"     : "npm run seed:users && npm run seed:excerpts && npm run seed:tasks",
+    "seed:all"     : "npm run seed:users && npm run seed:excerpts",
     "db:reset"     : "npm run db:rollback && npm run db:migrate && npm run seed:all",
     "test"         : "./node_modules/.bin/mocha src/test --compilers js:babel-core/register"
   },

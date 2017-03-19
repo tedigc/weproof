@@ -13,8 +13,8 @@ import auth     from './controllers/auth';
 import excerpts from './controllers/excerpts';
 import tasks    from './controllers/tasks';
 
-var port = process.env.PORT || 8888; 
-var app  = express();
+let port = process.env.PORT || 8888; 
+let app  = express();
 
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, '../../client/build')));
@@ -33,12 +33,12 @@ app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, '../../client/build/index.html'));
 });
 
-var server = app.listen(port, (err) => {
+let server = app.listen(port, (err) => {
   if(err) {
     console.error(err);
   } else {
-    var host = server.address().address;
-    var port = server.address().port;
+    let host = server.address().address;
+    let port = server.address().port;
     console.info("🌎  Server listening at http://%s:%s", host, port);
   }
 });

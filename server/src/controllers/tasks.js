@@ -87,8 +87,8 @@ router.get('/available/:filter', authenticate, (req, res) => {
     .fetchAll()
     .then((taskSubmissions) => {
 
-      var submittedTaskExcerptIDs = [];
-      for(var j=0; j<taskSubmissions.models.length; j++) {
+      let submittedTaskExcerptIDs = [];
+      for(let j=0; j<taskSubmissions.models.length; j++) {
         submittedTaskExcerptIDs.push(taskSubmissions.models[j].attributes.excerpt_id);
       }
 
@@ -115,8 +115,8 @@ router.get('/available/:filter', authenticate, (req, res) => {
         .fetchAll()
         .then((excerpts) => {
 
-          var tasks = [];
-          for(var i=0; i<excerpts.models.length; i++) {
+          let tasks = [];
+          for(let i=0; i<excerpts.models.length; i++) {
             tasks.push(excerpts.models[i].attributes);
           }
           res.status(200).json(tasks);
@@ -226,6 +226,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
       // check which task has the least verifications
       let fewestVerifications = Number.MAX_SAFE_INTEGER;
       let selectedTask = null;
+
       for(let task of tasks.models) {
         let nVerifications = task.relations.verifications.models.length;
         if(nVerifications < fewestVerifications) {

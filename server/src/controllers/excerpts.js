@@ -2,7 +2,7 @@ import express from 'express';
 import authenticate from '../middlewares/authenticate';
 import { Excerpt, Task } from '../db/models';
 
-var router = express.Router();
+let router = express.Router();
 
 // Get all excerpts for the logged in user
 //
@@ -77,8 +77,8 @@ router.get('/', authenticate, (req, res) => {
     .where({owner_id: req.currentUser.id})
     .fetchAll()
     .then((results) => {
-      var excerpts = [];
-      for(var i=0; i<results.models.length; i++) {
+      let excerpts = [];
+      for(let i=0; i<results.models.length; i++) {
         excerpts.push(results.models[i].attributes);
       }
       res.status(200).json(excerpts);

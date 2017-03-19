@@ -4,7 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 import commonValidations from '../util/validation/signup';
 import { User } from '../db/models';
 
-var router = express.Router();
+let router = express.Router();
 
 function validateInput(data, otherValidations) {
   let validation = otherValidations(data);
@@ -34,6 +34,7 @@ router.post('/', (req, res) => {
   validateInput(req.body, commonValidations)
     .then((validation) => {
       if(validation.isValid) {
+
         let username = req.body.username;
         let email    = req.body.email;
         let password = req.body.password;

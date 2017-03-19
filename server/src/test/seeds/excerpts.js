@@ -46,19 +46,6 @@ const excerpts = [
 
 let promises = [];
 
-let allTestPatches = [
-  [ [10, 30], [80, 120] ],
-  [ [20, 40] ],
-  [ [60, 90], [110, 130] ],
-  [ [15, 45], [100, 140] ],
-  [ [10, 20] ],
-  [ [50, 60] ],
-  [ [60, 90], [110, 130] ],
-  [ [15, 45], [100, 140] ],
-  [ [10, 20] ],
-  [ [50, 60] ]
-];
-
 // Save excerpts
 //
 for(let i=0; i<excerpts.length; i++) {
@@ -67,19 +54,6 @@ for(let i=0; i<excerpts.length; i++) {
   let recommended_edits;
   let heatmap = new Array(excerpt.body.length).fill(0);
   let stage   = 'find';
-  
-  // if(i === 0) {
-  //   stage = 'fix';
-  //   // build test heatmap for first excerpt
-  //   for(let setOfPatches of allTestPatches) {
-  //     for(let patch of setOfPatches) {
-  //       for(let j=patch[0]; j<patch[1]; j++) {
-  //         heatmap[j] += 1;
-  //       }
-  //     }
-  //   }
-  //   let recommended_edits = aggregateTest(excerpt.body, heatmap);
-  // }
   
   promises.push(new Promise((resolve, reject) => {
     return Excerpt

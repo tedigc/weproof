@@ -2,11 +2,11 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import { User } from '../db/models';
 
-var jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
+let jwtSecret = process.env.JWT_SECRET || config.jwtSecret;
 
 export default function(req, res, next) {
   const authorizationHeader = req.headers.authorization;
-  var token;
+  let token;
   if(authorizationHeader) {
     token = authorizationHeader.split(' ')[1];
   }
