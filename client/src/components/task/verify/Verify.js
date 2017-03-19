@@ -85,15 +85,14 @@ class Verify extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     this.props.submitTask({
-      excerptId  : this.props.excerpt.id, 
-      chosenEdit : this.state.chosenEdit,
-      correction : this.state.correction, 
+      excerptId  : this.props.excerpt.id,
       taskType   : "verify",
-      accepted   : this.state.acceptReject === 'accept'
+      accepted   : this.state.acceptReject === 'accept',
+      taskFixId  : this.props.taskFixId
     })
       .then(
         res => { this.context.router.push('/dashboard/home'); },
-        err => { console.log(err); }
+        err => { console.error(err); }
       );
   }
 
@@ -152,6 +151,7 @@ Verify.propTypes = {
   chosenEdit : React.PropTypes.number.isRequired,
   correction : React.PropTypes.string.isRequired,
   pair       : React.PropTypes.array.isRequired,
+  taskFixId  : React.PropTypes.number.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };
 

@@ -6,10 +6,9 @@ import aggregate from '../util/aggregation/aggregate';
 
 import knex from 'knex';
 import config from '../db/knexfile';
-
 let db = knex(config.development);
 
-var router = express.Router();
+let router = express.Router();
 
 // Fetch all tasks submitted by the current user
 //
@@ -210,19 +209,36 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
 
   TaskFix
     .query({
-      where  : { excerpt_id : req.params.excerptId }
+      where  : { 
+        excerpt_id : req.params.excerptId,
+      }
     })
     .fetchAll({
-      withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'body', 'status', 'recommended_edits'); 
-      }}],
+      withRelated: [
+        {'excerpt' : qb => {
+          qb.column('id', 'body', 'status', 'recommended_edits'); 
+        }},
+        'verifications'
+      ],
     })
     .then(tasks => {
 
-      let attributes = tasks.models[0].attributes;
-      let relations  = tasks.models[0].relations;
+      // check which task has the least verifications
+      let fewestVerifications = Number.MAX_SAFE_INTEGER;
+      let selectedTask = null;
+      for(let task of tasks.models) {
+        let nVerifications = task.relations.verifications.models.length;
+        if(nVerifications < fewestVerifications) {
+          fewestVerifications = nVerifications;
+          selectedTask = task;
+        }
+      }
+
+      let attributes = selectedTask.attributes;
+      let relations  = selectedTask.relations;
 
       let taskInfo = {
+        taskFixId  : attributes.id,
         chosenEdit : attributes.chosen_edit,
         correction : attributes.correction,
         excerpt    : relations.excerpt,
@@ -230,6 +246,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
       };
 
       res.json({ taskInfo });
+
     })
     .catch(err => {
       console.error(err);
@@ -238,43 +255,10 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
 
 });
 
-// router.post('/aggregate', (req, res) => {
-
-//   let excerptId = req.body.excerptId;
-//   let taskType = req.body.taskType;
-
-//   Excerpt
-//     .query({
-//       where: { id: excerptId },
-//       select: ['id', 'title', 'body', 'heatmap']
-//     })
-//     .fetch()
-//     .then((excerpt) => {
-//       if(!excerpt) {
-//         res.status(500).json({ error: "No such excerpt" });
-//       } else {
-
-//         let { body, heatmap } = excerpt.attributes;
-//         let patches = aggregate(10, body, heatmap);
-
-//         let patch1Rough  = body.slice(patches.roughPatches[0][0], patches.roughPatches[0][1]);
-//         let patch1Merged = body.slice(patches.mergedPatches[0][0], patches.mergedPatches[0][1]);
-
-//         let patch2Rough  = body.slice(patches.roughPatches[1][0], patches.roughPatches[1][1]);
-//         let patch2Merged = body.slice(patches.mergedPatches[1][0], patches.mergedPatches[1][1]);
-        
-
-//         res.json({ patch1Rough, patch1Merged, patch2Rough, patch2Merged });
-
-//       }
-//     });
-
-// });
-
 router.post('/testsubmit', (req, res) => {
 
   let excerptId = req.body.excerptId;
-  let taskType = req.body.taskType;
+  let taskType  = req.body.taskType;
 
   req.currentUser = { attributes : { id : req.body.userID }};
 
@@ -289,9 +273,9 @@ router.post('/testsubmit', (req, res) => {
         res.status(500).json({ error: "No such excerpt" });
       } else {
 
-        if(taskType === "find")   submitFindTask(req, res, excerpt);
-        if(taskType === "fix")    submitFixTask(req, res, excerpt);
-        if(taskType === "verify") submitVerifyTask(req, res, excerpt);
+        if(taskType === "find")   return submitFindTask(req, res, excerpt);
+        if(taskType === "fix")    return submitFixTask(req, res, excerpt);
+        if(taskType === "verify") return submitVerifyTask(req, res, excerpt);
 
       }
     })

@@ -6,7 +6,7 @@ import config from '../../db/knexfile';
 
 let db = knex(config.development);
 
-const MINIMUM_FIX_TASK_SUBMISSIONS = 5;
+const MINIMUM_FIX_TASK_SUBMISSIONS = 3;
 
 export function submitFindTask(req, res, excerpt) {
 
@@ -69,15 +69,13 @@ export function submitFixTask(req, res, excerpt) {
 
   return TaskFix
     .forge({
-      excerpt_id : req.body.excerptId,
-      owner_id   : req.currentUser.attributes.id,
-      chosen_edit: req.body.chosenEdit,
-      correction : req.body.correction
+      excerpt_id  : req.body.excerptId,
+      owner_id    : req.currentUser.attributes.id,
+      chosen_edit : req.body.chosenEdit,
+      correction  : req.body.correction
     }, { hasTimestamps: true })
     .save(null, { method: 'insert' })
     .then(submittedTask => {
-
-      console.log('> 0');
 
       return TaskFix
         .query({
@@ -107,6 +105,7 @@ export function submitFixTask(req, res, excerpt) {
               console.error(err);
               res.status(500).json(err);
             });
+
         })
         .catch(err => {
           res.status(500).json(err);
@@ -122,16 +121,15 @@ export function submitFixTask(req, res, excerpt) {
 
 export function submitVerifyTask(req, res, excerpt) {
 
-  TaskVerify
+  return TaskVerify
     .forge({
-      excerpt_id  : req.body.excerptId,
-      owner_id    : req.currentUser.attributes.id,
-      chosen_edit : req.body.chosenEdit,
-      correction  : req.body.correction,
-      accepted    : req.body.accepted
+      excerpt_id   : req.body.excerptId,
+      owner_id     : req.currentUser.attributes.id,
+      tasks_fix_id : req.body.taskFixId,
+      accepted     : req.body.accepted
     }, { hasTimestamps: true })
     .save(null, { method: 'insert' })
-    .then(data => {
+    .then(() => {
 
       res.json({ success : true });
 

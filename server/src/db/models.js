@@ -41,6 +41,9 @@ let TaskFix = bookshelf.Model.extend({
   },
   excerpt: function() {
     return this.belongsTo(Excerpt, 'excerpt_id');
+  },
+  verifications: function() {
+    return this.hasMany(TaskVerify);
   }
 });
 
@@ -51,6 +54,9 @@ let TaskVerify = bookshelf.Model.extend({
   },
   excerpt: function() {
     return this.belongsTo(Excerpt, 'excerpt_id');
+  },
+  taskFix: function() {
+    return this.belongsTo(TaskFix);
   }
 });
 

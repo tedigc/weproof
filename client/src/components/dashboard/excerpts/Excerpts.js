@@ -89,7 +89,7 @@ class Excerpts extends React.Component {
                     key={item.id}
                     id={item.id}
                     title={item.title}
-                    excerpt={item.excerpt}
+                    excerpt={item.body}
                     ownerId={parseInt(item.owner_id, 10)}
                     created={item.created_at}
                   />

@@ -6,9 +6,9 @@ exports.up = function(knex, Promise) {
     //
     knex.schema.createTable('tasks', function(table) {
       table.increments();
-      table.specificType('pairs', 'int[][]');
       table.bigInteger('owner_id').unsigned().index().references('id').inTable('users');
       table.bigInteger('excerpt_id').unsigned().index().references('id').inTable('excerpts');
+      table.specificType('pairs', 'int[][]');
       table.enu('type', ['find', 'fix', 'verify']);
       table.timestamps();
     }),
