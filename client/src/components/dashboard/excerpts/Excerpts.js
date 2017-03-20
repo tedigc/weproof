@@ -8,6 +8,7 @@ import SubmitForm from './SubmitForm';
 import { fetchExcerpts } from '../../../actions/excerptActions';
 import SingleExcerpt from './SingleExcerpt';
 import Error from '../../error/Error';
+import ExcerptSummary from './ExcerptSummary';
 
 class Excerpts extends React.Component {
 

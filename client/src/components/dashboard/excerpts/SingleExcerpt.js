@@ -1,7 +1,30 @@
 import React from 'react';
 import { Button, Table } from 'semantic-ui-react';
+import ExcerptSummary from './ExcerptSummary';
 
 class SingleExcerpt extends React.Component {
+
+  state = {
+    modalOpen : false
+  }
+
+  constructor(props) {
+    super(props);
+    this.handleOpen  = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  handleOpen(e) {
+    this.setState({
+      modalOpen: true
+    });
+  }
+
+  handleClose(e) {
+    this.setState({
+      modalOpen: false
+    });
+  }
 
   render() {
     let { title, body, created, stage, status } = this.props;
@@ -19,8 +42,16 @@ class SingleExcerpt extends React.Component {
         <Table.Cell collapsing>{stage}</Table.Cell>
         <Table.Cell collapsing>{status}</Table.Cell>
         <Table.Cell collapsing>
-          <Button content='View' icon='search'  style={ stage === 'complete' ? completedStyle : undefined}/>
+          <Button content='View' icon='search' onClick={this.handleOpen} style={ stage === 'complete' ? completedStyle : undefined}/>
         </Table.Cell>
+
+        <ExcerptSummary
+          isOpen={this.state.modalOpen}
+          title={title}
+          body={body}
+          created={created}
+          close={this.handleClose}
+        />
 
       </Table.Row>
     );
