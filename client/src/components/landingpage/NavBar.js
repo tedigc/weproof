@@ -16,7 +16,7 @@ class NavBar extends React.Component {
         </Menu.Item>
 
         <Menu.Item header>
-          Individual Project
+          <span style={{ fontWeight: 100, fontStyle: 'italic' }}>We</span>Proof
         </Menu.Item>
 
         <Menu.Menu position="right">
