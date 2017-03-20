@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Container, Divider, Grid, Header, Icon} from 'semantic-ui-react';
 
+
 class Greetings extends React.Component {
 
   render() {
@@ -16,9 +17,9 @@ class Greetings extends React.Component {
               Harness the power of the crowd and improve your written English
             </Header.Subheader>
 
-            <Button animated content='Get Started' style={{ position: 'relative', top: 120, width: 140 }}>
-              <Button.Content visible>Get Started</Button.Content>
-              <Button.Content hidden>
+            <Button animated content='Get Started' size='massive' style={{ position: 'relative', top: 130 }}>
+              <Button.Content visible>GET STARTED</Button.Content>
+              <Button.Content hidden style={{ fontWeight: 100 }}>
                 &nbsp; &nbsp; Sign Up <Icon name='right arrow' />
               </Button.Content>
             </Button>
@@ -32,7 +33,7 @@ class Greetings extends React.Component {
           <br/>
           <br/>
 
-          <p style={{ fontSize: 18, color: "#666666", lineHeight: '35px', textAlign: 'justify' }}>
+          <p style={{ fontSize: 18, color: "#666666", lineHeight: '35px', textAlign: 'center' }}>
             WeProof is a web application made that uses the power of crowdsourcing to help non-native English speakers proof-read their written English, be it in the form of essays, reports or dissertations. This project endeavors to take advantage of the untapped crowdsourcing potential of Universities, in the form of students and staff, and provide much needed assistance to the international and non-native English speaking student populations at Universities around the country."
           </p>
 
@@ -48,10 +49,10 @@ class Greetings extends React.Component {
               <Grid.Column>
                 <Header as='h2' icon textAlign='center'>
                   <Icon name='write' circular />
-                  <Header.Content>
+                  <Header.Content style={{ marginTop: 10 }}>
                     Submit
                   </Header.Content>
-                  <Header.Subheader>
+                  <Header.Subheader style={{ marginTop: 10 }}>
                     Submit excerpts from your report or dissertation
                   </Header.Subheader>
                 </Header>
@@ -60,10 +61,10 @@ class Greetings extends React.Component {
               <Grid.Column>
                 <Header as='h2' icon textAlign='center'>
                   <Icon name='users' circular />
-                  <Header.Content>
+                  <Header.Content style={{ marginTop: 10 }}>
                     Correct
                   </Header.Content>
-                  <Header.Subheader>
+                  <Header.Subheader style={{ marginTop: 10 }}>
                     Let other users find errors and make corrections to your work
                   </Header.Subheader>
                 </Header>
@@ -72,10 +73,10 @@ class Greetings extends React.Component {
               <Grid.Column>
                 <Header as='h2' icon textAlign='center'>
                   <Icon name='check' circular />
-                  <Header.Content>
+                  <Header.Content style={{ marginTop: 10 }}>
                     Reward
                   </Header.Content>
-                  <Header.Subheader>
+                  <Header.Subheader style={{ marginTop: 10 }}>
                     Enjoy your improved report, and reward those who helped you
                   </Header.Subheader>
                 </Header>
