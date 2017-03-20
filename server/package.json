@@ -4,13 +4,13 @@
   "main": "index.js",
   "scripts": {
     "start": "export NODE_ENV=development && nodemon src/index.js --variables --exec babel-node",
-    "db:migrate"   : "knex migrate:latest --knexfile ./src/db/knexfile.js",
-    "db:rollback"  : "knex migrate:rollback --knexfile ./src/db/knexfile.js",
-    "seed:users"   : "babel-node src/test/seeds/users.js",
+    "db:migrate": "knex migrate:latest --knexfile ./src/db/knexfile.js",
+    "db:rollback": "knex migrate:rollback --knexfile ./src/db/knexfile.js",
+    "seed:users": "babel-node src/test/seeds/users.js",
     "seed:excerpts": "babel-node src/test/seeds/excerpts.js",
-    "seed:all"     : "npm run seed:users && npm run seed:excerpts",
-    "db:reset"     : "npm run db:rollback && npm run db:migrate && npm run seed:all",
-    "test"         : "./node_modules/.bin/mocha src/test --compilers js:babel-core/register"
+    "seed:all": "npm run seed:users && npm run seed:excerpts",
+    "db:reset": "npm run db:rollback && npm run db:migrate && npm run seed:all",
+    "test": "./node_modules/.bin/mocha src/test --compilers js:babel-core/register"
   },
   "author": "tedigc",
   "license": "ISC",
@@ -30,6 +30,7 @@
     "knex": "^0.12.6",
     "lodash": "^4.16.6",
     "mocha": "^3.2.0",
+    "moment": "^2.18.0",
     "morgan": "^1.7.0",
     "nodemon": "^1.11.0",
     "pg": "^6.1.0",

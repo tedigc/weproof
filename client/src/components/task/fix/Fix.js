@@ -79,7 +79,7 @@ class Fix extends React.Component {
     })
       .then(
         res => { this.context.router.push('/dashboard/home'); },
-        err => { console.log(err); }
+        err => { console.error(err); }
       );
   }
 

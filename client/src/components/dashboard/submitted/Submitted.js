@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import PageHeader from '../PageHeader';
 import { Button, Divider, Dimmer, Icon, Loader, Menu, Table } from 'semantic-ui-react';
 import { fetchTasks } from '../../../actions/taskActions';
@@ -76,12 +77,14 @@ class Submitted extends React.Component {
                           {/* Item list of available tasks */}
                           <Table.Body>
                           {self.state.tasks.map((task, index) => {
+                            let { id, excerpt, created_at } = task;
+                            let createdAtObj = moment(created_at).toDate();
                             return <SingleSubmission
                                       key={index}
-                                      id={task.id}
-                                      status={task.excerpt.status}
-                                      excerpt={task.excerpt.body}
-                                      created={task.created_at}
+                                      id={id}
+                                      status={excerpt.status}
+                                      excerpt={excerpt.body}
+                                      created={createdAtObj.toDateString()}
                                     />;
                           })}
                           </Table.Body>

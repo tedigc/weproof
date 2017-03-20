@@ -12,7 +12,7 @@ class SubmitForm extends React.Component {
     super(props);
     this.state = {
       title     : "",
-      excerpt   : "",
+      body      : "",
       loading   : false,
       submitted : false,
       errors    : {}
@@ -23,8 +23,8 @@ class SubmitForm extends React.Component {
   }
 
   handleChange(e) {
-    if(e.target.name === 'excerpt' && e.target.value.length <= maxExcerptLength) {
-      this.setState({ excerpt: e.target.value });
+    if(e.target.name === 'body' && e.target.value.length <= maxExcerptLength) {
+      this.setState({ body: e.target.value });
     }
     if(e.target.name === 'title' && e.target.value.length <= maxTitleLength) {
       this.setState({ title: e.target.value });
@@ -34,7 +34,7 @@ class SubmitForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     this.setState({ errors: {}, loading: true });
-    this.props.createExcerpt({title: this.state.title, excerpt: this.state.excerpt})
+    this.props.createExcerpt({title: this.state.title, body: this.state.body})
       .then(
         (res) => {
           this.setState({ loading: false, submitted: true});
@@ -47,7 +47,7 @@ class SubmitForm extends React.Component {
   render() {
     // Colour the span based on characters remaining
     let charColour = 'gray';
-    let remaining = maxExcerptLength - this.state.excerpt.length;
+    let remaining = maxExcerptLength - this.state.body.length;
     if(remaining <= 20) {
       charColour = 'red';
     } else if(remaining <= 80) {
@@ -69,9 +69,9 @@ class SubmitForm extends React.Component {
       return (
         <Form loading={this.state.loading} onSubmit={this.handleSubmit}> 
           <Form.Input name="title" placeholder="Title" value={this.state.title} onChange={this.handleChange} />
-          <Form.TextArea name="excerpt" placeholder="Write your excerpt here..." value={this.state.excerpt} onChange={this.handleChange} />
+          <Form.TextArea name="body" placeholder="Write your excerpt here..." value={this.state.body} onChange={this.handleChange} />
           <Button floated="right" type='submit' primary>Submit</Button>
-          <span style={spanStyle} >Characters remaining: {maxExcerptLength - this.state.excerpt.length}</span>
+          <span style={spanStyle} >Characters remaining: {maxExcerptLength - this.state.body.length}</span>
         </Form>
       );
     }

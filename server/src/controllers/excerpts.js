@@ -6,6 +6,56 @@ let router = express.Router();
 
 // Get all excerpts for the logged in user
 //
+router.get('/', authenticate, (req, res) => {
+
+  Excerpt
+    .where({owner_id: req.currentUser.id})
+    .fetchAll({ withRelated: ['tasks_verify'] })
+    .then((results) => {
+      let excerpts = [];
+      for(let i=0; i<results.models.length; i++) {
+
+        let singleExcerpt = {
+          attributes  : results.models[i].attributes,
+          tasksVerify : results.models[i].relations.tasks_verify
+        };
+
+        excerpts.push(singleExcerpt);
+      }
+      res.status(200).json(excerpts);
+    });
+
+});
+
+// Submit an excerpt and write it to the database
+//
+router.post('/', authenticate, (req, res) => {
+
+  let title = req.body.title;
+  let body  = req.body.body;
+  let heatmap = new Array(req.body.length).fill(0);
+
+  // Write the excerpt to the database
+  Excerpt
+    .forge({
+      title    : title,
+      body     : body,
+      owner_id : req.currentUser.attributes.id,
+      heatmap
+    }, { hasTimestamps: true })
+    .save(null, { method: 'insert'})
+    .then((user) => {
+      res.json({ success: true });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: err });
+    });
+
+});
+
+// Get all excerpts for the logged in user
+//
 router.get('/:excerptId', authenticate, (req, res) => {
 
   Excerpt
@@ -47,11 +97,11 @@ router.get('/:excerptId/min', authenticate, (req, res) => {
             }
           })
           .fetchAll()
-          .then((taskSubmissions) => {
+          .then(tasks => {
             
             // If there exists a submission for this excerpt with the current user's ID, let the client know they
             // have already contributed.
-            let contributed = taskSubmissions.models.length > 0; 
+            let contributed = tasks.models.length > 0; 
             if(contributed) {
               res.status(403).json({
                 contributed
@@ -65,50 +115,6 @@ router.get('/:excerptId/min', authenticate, (req, res) => {
           });
 
       }
-    });
-
-});
-
-// Get all excerpts for the logged in user
-//
-router.get('/', authenticate, (req, res) => {
-
-  Excerpt
-    .where({owner_id: req.currentUser.id})
-    .fetchAll()
-    .then((results) => {
-      let excerpts = [];
-      for(let i=0; i<results.models.length; i++) {
-        excerpts.push(results.models[i].attributes);
-      }
-      res.status(200).json(excerpts);
-    });
-
-});
-
-// Submit an excerpt and write it to the database
-//
-router.post('/', authenticate, (req, res) => {
-
-  let title = req.body.title;
-  let body  = req.body.body;
-  let heatmap = new Array(excerpt.body.length).fill(0);
-
-  // Write the excerpt to the database
-  Excerpt
-    .forge({
-      title    : title,
-      body     : body,
-      owner_id : req.currentUser.attributes.id,
-      heatmap
-    }, { hasTimestamps: true })
-    .save(null, { method: 'insert'})
-    .then((user) => {
-      res.json({ success: true });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: err });
     });
 
 });

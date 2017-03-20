@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Button, Dimmer, Divider, Icon, Loader, Menu, Table } from 'semantic-ui-react';
 import PageHeader from '../PageHeader';
 import SingleTask from './SingleTask';
@@ -82,14 +83,19 @@ class Work extends React.Component {
                           {/* Item list of available tasks */}
                           <Table.Body>
                           {self.state.tasks.map((task, index) => {
-                            if(self.state.filter !== 'all' && self.state.filter !== task.stage) return undefined
-                            else return <SingleTask
+                            if(self.state.filter !== 'all' && self.state.filter !== task.stage) {
+                              return undefined
+                            } else { 
+                              let { id, stage, body, created_at } = task;
+                              let createdAtObj = moment(created_at).toDate();
+                              return <SingleTask
                                           key={index}
-                                          id={task.id}
-                                          stage={task.stage}
-                                          body={task.body}
-                                          created={task.created_at}
+                                          id={id}
+                                          stage={stage}
+                                          body={body}
+                                          created={createdAtObj.toDateString()}
                                         />;
+                            }
                           })}
                           </Table.Body>
                         </Dimmer.Dimmable>

@@ -85,14 +85,14 @@ router.get('/available/:filter', authenticate, (req, res) => {
       select: [ 'excerpt_id' ]
     })
     .fetchAll()
-    .then((taskSubmissions) => {
+    .then(tasks => {
 
       let submittedTaskExcerptIDs = [];
-      for(let j=0; j<taskSubmissions.models.length; j++) {
-        submittedTaskExcerptIDs.push(taskSubmissions.models[j].attributes.excerpt_id);
+      for(let j=0; j<tasks.models.length; j++) {
+        submittedTaskExcerptIDs.push(tasks.models[j].attributes.excerpt_id);
       }
 
-      // exclude any excerpts that the user has already submitted a task for
+      // exclude any excerpts that the user has already submitted a task for, and exclude tasks that are completed
 
       let filter = req.params.filter;
       let stage = (filter === 'all') ? undefined : filter;
@@ -115,13 +115,13 @@ router.get('/available/:filter', authenticate, (req, res) => {
           
         })
         .fetchAll()
-        .then((excerpts) => {
+        .then(excerpts => {
 
-          let tasks = [];
+          let taskAttributes = [];
           for(let i=0; i<excerpts.models.length; i++) {
-            tasks.push(excerpts.models[i].attributes);
+            taskAttributes.push(excerpts.models[i].attributes);
           }
-          res.status(200).json(tasks);
+          res.status(200).json(taskAttributes);
 
         });
 

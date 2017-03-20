@@ -41,6 +41,8 @@ export function submitFindTask(req, res, excerpt) {
           recommended_edits = aggregate(nTasks, body, heatmap);
           if(recommended_edits.length > 0) stage = 'fix';
 
+          console.log(recommended_edits);
+
           // update the excerpt's stage and recommended edits
           return excerpt
             .save({
@@ -87,6 +89,7 @@ export function submitFixTask(req, res, excerpt) {
         .then(tasks => {
 
           // count the number of submissions for each recommended edits
+
           let submissionCounter = new Array(excerpt.attributes.recommended_edits.length).fill(0);
           for(let task of tasks.models) {
             let idx = task.attributes.chosen_edit;
