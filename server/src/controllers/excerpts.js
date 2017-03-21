@@ -25,9 +25,10 @@ router.get('/', authenticate, (req, res) => {
           tasksFix    : results.models[i].relations.tasks_fix,
           tasksVerify : results.models[i].relations.tasks_verify
         };
-
+        
         excerpts.push(singleExcerpt);
       }
+
       res.status(200).json(excerpts);
     });
 

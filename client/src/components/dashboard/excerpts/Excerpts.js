@@ -149,7 +149,7 @@ class Excerpts extends React.Component {
                               let { id, title, body, owner_id, created_at, heatmap, stage, status } = item.attributes;
                               let tasks = {
                                 tasksFind   : item.tasksFind,
-                                tasksFix    : item.tasksVerify,
+                                tasksFix    : item.tasksFix,
                                 tasksVerify : item.tasksVerify
                               };
                               let createdAtObj = moment(created_at).toDate();

@@ -16,19 +16,34 @@ const styles = {
 class ExcerptSummary extends React.Component {
 
   state = {
-    activeItem : 'summary'
+    activeItem         : 'summary',
+    selectedCorrection : -1
   }
 
   constructor(props) {
     super(props);
     this.setMenuItem = this.setMenuItem.bind(this);
+    this.close = this.close.bind(this);
+    this.handleSelectCorrection = this.handleSelectCorrection.bind(this);
   }
 
   setMenuItem(activeItem) {
     this.setState({ activeItem });
   }
 
+  close() {
+    this.setMenuItem('summary');
+    this.props.close();
+  }  
+
+  handleSelectCorrection(selectedCorrection) {
+    this.setState({ selectedCorrection });
+  }                   
+
   render() {
+
+    console.log(this.handleSelectCorrection);
+
     let { isOpen, close, title, body, created, stage, status, tasks } = this.props;
     let { activeItem } = this.state;
     let { tasksFind, tasksFix, tasksVerify } = tasks;
@@ -45,7 +60,11 @@ class ExcerptSummary extends React.Component {
     let sideMenuComponent;
     switch(activeItem) {
       case 'corrections':
-        sideMenuComponent = <Corrections/>
+        sideMenuComponent = <Corrections
+                              accepted={status === 'accepted'}
+                              tasksFix={tasksFix}
+                              setSelectedCorrectionParent={this.handleSelectCorrection}
+                            />
         break;
       case 'heatmap':
         break;
@@ -61,13 +80,10 @@ class ExcerptSummary extends React.Component {
                             />;
     }
 
-                            
-
-
     return (
       <Modal 
         open={isOpen}
-        onClose={close}
+        onClose={this.close}
         closeIcon='close'>
         <Header>{title} <span style={{ color : '#9B9B9B', fontWeight: 100}}> - {created} </span></Header>
         <Modal.Content>
@@ -100,7 +116,7 @@ class ExcerptSummary extends React.Component {
                   </Menu>
 
                   {/* Menu Item on display */}
-                  <Segment attached='bottom' style={{ height: EXCERPT_HEIGHT - MENU_BAR_HEIGHT }}>
+                  <Segment attached='bottom' style={{ height: EXCERPT_HEIGHT - MENU_BAR_HEIGHT, overflowY: 'auto', overflowX: 'hidden' }}>
                     {sideMenuComponent}
                   </Segment>
 
