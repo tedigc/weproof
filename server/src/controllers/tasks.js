@@ -184,10 +184,10 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
             chosenEdit = (allValuesTheSame) ? Math.floor(Math.random() * excerpt.attributes.recommended_edits.length) : minIdx;
           }
 
-          let pair    = excerpt.attributes.recommended_edits[chosenEdit];
+          let patch    = excerpt.attributes.recommended_edits[chosenEdit];
           let taskInfo = {
             chosenEdit,
-            pair,
+            patch,
             excerpt : excerpt.attributes
           };
 
@@ -245,7 +245,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
         chosenEdit : attributes.chosen_edit,
         correction : attributes.correction,
         excerpt    : relations.excerpt,
-        pair       : relations.excerpt.attributes.recommended_edits[attributes.chosen_edit]
+        patch       : relations.excerpt.attributes.recommended_edits[attributes.chosen_edit]
       };
 
       res.json({ taskInfo });

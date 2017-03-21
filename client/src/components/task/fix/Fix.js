@@ -35,8 +35,8 @@ class Fix extends React.Component {
   constructor(props) {
     super(props);
 
-    let { excerpt, pair } = this.props;
-    let correction = excerpt.body.slice(pair[0], pair[1]);
+    let { excerpt, patch } = this.props;
+    let correction = excerpt.body.slice(patch[0], patch[1]);
     this.state = { correction };
 
     this.getHighlightedText = this.getHighlightedText.bind(this);
@@ -46,15 +46,15 @@ class Fix extends React.Component {
   }
 
   getHighlightedText() {
-    let { excerpt, pair } = this.props;
+    let { excerpt, patch } = this.props;
     let originalText = excerpt.body;
     return (
       <div id="excerpt">
-        {originalText.slice(0, pair[0])}
+        {originalText.slice(0, patch[0])}
         <mark className="highlight" style={styles.highlight}>
           {this.state.correction}
         </mark>
-        {originalText.slice(pair[1], originalText.length)}
+        {originalText.slice(patch[1], originalText.length)}
       </div>
     );
   }
@@ -85,8 +85,8 @@ class Fix extends React.Component {
 
   restoreDefault(e) {
     e.preventDefault();
-    let { pair, excerpt } = this.props;
-    let correction = excerpt.body.slice(pair[0], pair[1]);
+    let { patch, excerpt } = this.props;
+    let correction = excerpt.body.slice(patch[0], patch[1]);
     this.setState({ correction });
   }
 
@@ -127,7 +127,7 @@ class Fix extends React.Component {
 Fix.propTypes = {
   excerpt    : React.PropTypes.object.isRequired,
   chosenEdit : React.PropTypes.number.isRequired,
-  pair       : React.PropTypes.array.isRequired,
+  patch       : React.PropTypes.array.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };
 

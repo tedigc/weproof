@@ -18,7 +18,7 @@ class VerifyPropWrapper extends React.Component {
     loading    : true,
     chosenEdit : -1,
     correction : '',
-    pair       : [],
+    patch       : [],
     taskFixId  : -1
   }
 
@@ -28,13 +28,13 @@ class VerifyPropWrapper extends React.Component {
     fetchVerifyTask(excerpt.id)
       .then(
         res => {
-          let { chosenEdit, correction, pair, taskFixId } = res.data.taskInfo;
+          let { chosenEdit, correction, patch, taskFixId } = res.data.taskInfo;
 
           this.setState({
             loading : false,
             chosenEdit,
             correction,
-            pair,
+            patch,
             taskFixId
           });
 
@@ -51,7 +51,7 @@ class VerifyPropWrapper extends React.Component {
                             excerpt={this.props.excerpt} 
                             chosenEdit={this.state.chosenEdit} 
                             correction={this.state.correction}
-                            pair={this.state.pair}
+                            patch={this.state.patch}
                             taskFixId={this.state.taskFixId}
                           />
     return (this.state.loading) ? <div>Loading...</div> : verifyComponent;

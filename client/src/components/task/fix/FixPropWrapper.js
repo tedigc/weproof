@@ -5,7 +5,7 @@ import { fetchFixTask } from '../../../actions/taskActions';
 
 /**
  *
- * This class is for fetching the chosen edit and respective pair to be used
+ * This class is for fetching the chosen edit and respective patch to be used
  * for the Fix task. The information is collected here and passed
  * down as props, because they should NOT change in the same way that the state
  * changes through user interaction.
@@ -17,7 +17,7 @@ class FixPropWrapper extends React.Component {
   state = {
     loading    : true,
     chosenEdit : -1,
-    pair       : []
+    patch      : []
   }
 
   componentWillMount() {
@@ -26,11 +26,11 @@ class FixPropWrapper extends React.Component {
     fetchFixTask(excerpt.id)
       .then(
         res => {
-          let { chosenEdit, pair } = res.data.taskInfo;
+          let { chosenEdit, patch } = res.data.taskInfo;
           this.setState({
             loading : false,
             chosenEdit,
-            pair
+            patch
           });
         },
         err => {
@@ -43,7 +43,7 @@ class FixPropWrapper extends React.Component {
     let fixComponent = <Fix 
                           excerpt={this.props.excerpt} 
                           chosenEdit={this.state.chosenEdit} 
-                          pair={this.state.pair}
+                          patch={this.state.patch}
                         />
     return (this.state.loading) ? <div>Loading...</div> : fixComponent;
   }

@@ -1,7 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import { Grid, Header, Icon, Label, Menu, Modal, Segment } from 'semantic-ui-react';
-import Summary from './summary/Summary';
+import Summary from './sidemenu/Summary';
+import Corrections from './sidemenu/Corrections';
 
 const EXCERPT_HEIGHT = 400;
 const MENU_BAR_HEIGHT = 40;
@@ -40,6 +41,29 @@ class ExcerptSummary extends React.Component {
       completedString = moment(lastVerifyTask.created_at).toDate().toDateString();
     }
 
+    // Side Menu Items
+    let sideMenuComponent;
+    switch(activeItem) {
+      case 'corrections':
+        sideMenuComponent = <Corrections/>
+        break;
+      case 'heatmap':
+        break;
+      default:
+        sideMenuComponent = <Summary
+                              complete={stage === 'complete'}
+                              dateCreated={created}
+                              dateCompleted={completedString}
+                              length={body.length}
+                              nTasksFind={tasksFind.length}
+                              nTasksFix={tasksFix.length}
+                              nTasksVerify={tasksVerify.length}
+                            />;
+    }
+
+                            
+
+
     return (
       <Modal 
         open={isOpen}
@@ -77,15 +101,7 @@ class ExcerptSummary extends React.Component {
 
                   {/* Menu Item on display */}
                   <Segment attached='bottom' style={{ height: EXCERPT_HEIGHT - MENU_BAR_HEIGHT }}>
-                    <Summary
-                      complete={stage === 'complete'}
-                      dateCreated={created}
-                      dateCompleted={completedString}
-                      length={body.length}
-                      nTasksFind={tasksFind.length}
-                      nTasksFix={tasksFix.length}
-                      nTasksVerify={tasksVerify.length}
-                    />
+                    {sideMenuComponent}
                   </Segment>
 
                 </Grid.Column>

@@ -1,4 +1,4 @@
-// a comparator that sorts arrays of pairs based on their left index
+// a comparator that sorts arrays of patches based on their left index
 function comparator(a, b) {
   if(a[0] < b[0]) return -1;
   if(a[0] > b[0]) return  1;
@@ -15,7 +15,7 @@ export default function(patches) {
   let currentPair = patches[0];
   for(let i=0; i<patches.length; i++) {
     if(currentPair[1] >= patches[i][0]) {
-      // pairs overlap
+      // patches overlap
       currentPair[1] = Math.max(currentPair[1], patches[i][1]);
     } else {
       merged.push(currentPair);

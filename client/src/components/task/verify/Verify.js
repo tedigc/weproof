@@ -52,17 +52,17 @@ class Verify extends React.Component {
 
   getHighlightedText() {
     let excerpt = this.props.excerpt.body;
-    let pair = this.props.pair;
-    let original = excerpt.slice(pair[0], pair[1]);
+    let patch = this.props.patch;
+    let original = excerpt.slice(patch[0], patch[1]);
     let highlight = (this.state.showOriginal) ? original : this.props.correction;
     let style     = (this.state.showOriginal) ? styles.highlightOriginal : styles.highlight;
     return (
       <div id="excerpt">
-        {excerpt.slice(0, pair[0])}
+        {excerpt.slice(0, patch[0])}
         <mark className="highlight" style={style}>
           {highlight}
         </mark>
-        {excerpt.slice(pair[1], excerpt.length)}
+        {excerpt.slice(patch[1], excerpt.length)}
       </div>
     );
   }
@@ -150,7 +150,7 @@ Verify.propTypes = {
   excerpt    : React.PropTypes.object.isRequired,
   chosenEdit : React.PropTypes.number.isRequired,
   correction : React.PropTypes.string.isRequired,
-  pair       : React.PropTypes.array.isRequired,
+  patch       : React.PropTypes.array.isRequired,
   taskFixId  : React.PropTypes.number.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };

@@ -52,7 +52,7 @@ class Find extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pairs: [],
+      patches: [],
       currentlySelected: -1
     };
     this.getHighlightedText = this.getHighlightedText.bind(this);
@@ -66,33 +66,33 @@ class Find extends React.Component {
 
   getHighlightedText() {
     let original = this.props.excerpt.body;
-    let pairs = this.state.pairs.slice();
+    let patches = this.state.patches.slice();
 
-    // If there are no pairs, just return the unhighlighted original text
-    if(pairs.length === 0) return <div id="excerpt">{original}</div>;
+    // If there are no patches, just return the unhighlighted original text
+    if(patches.length === 0) return <div id="excerpt">{original}</div>;
 
     let self = this;
     function highlight() {
       let components = [];
 
-      for(let i=0; i<pairs.length; i++) {
+      for(let i=0; i<patches.length; i++) {
         let highlightStyle = (i === self.state.currentlySelected) ? styles.highlightSelected : styles.highlight;
         components.push(
           <mark key={i} className="highlight" style={highlightStyle}>
-            {original.slice(pairs[i][0], pairs[i][1])}
+            {original.slice(patches[i][0], patches[i][1])}
           </mark>
         );
-        if(i === pairs.length-1) break;
-        components.push(original.slice(pairs[i][1], pairs[i+1][0]));
+        if(i === patches.length-1) break;
+        components.push(original.slice(patches[i][1], patches[i+1][0]));
       }
       return components;
     }
 
     return (
       <div id="excerpt">
-        {original.slice(0, pairs[0][0])}
+        {original.slice(0, patches[0][0])}
         {highlight()}
-        {original.slice(pairs[pairs.length-1][1], original.length)}
+        {original.slice(patches[patches.length-1][1], original.length)}
       </div>
     );
   }
@@ -120,30 +120,30 @@ class Find extends React.Component {
       end = start + range.toString().length;
       end = Math.min(end, this.props.excerpt.body.length);
 
-      // add it to the array of pairs
+      // add it to the array of patches
       //
-      let pairArray = this.state.pairs.slice();
+      let pairArray = this.state.patches.slice();
       pairArray.push([start, end]);
 
-      // merge overlapping pairs
+      // merge overlapping patches
       //
       let merged = merge(pairArray);
 
-      this.setState({ pairs: merged });
+      this.setState({ patches: merged });
       window.getSelection().removeAllRanges();
     }
   }
 
   handleRemoveHighlight(highlightIndex, e) {
     e.preventDefault();
-    let pairsEdit = this.state.pairs.slice();
+    let pairsEdit = this.state.patches.slice();
     pairsEdit.splice(highlightIndex, 1);
-    this.setState({ pairs: pairsEdit });
+    this.setState({ patches: pairsEdit });
   }
 
   handleClear(e) {
     e.preventDefault();
-    this.setState({ pairs: [] });
+    this.setState({ patches: [] });
   }
 
   handleHighlightMouseEnter(highlightIndex, e) {
@@ -161,7 +161,7 @@ class Find extends React.Component {
     this.props.submitTask({ 
       excerptId: this.props.excerpt.id, 
       excerpt: this.props.excerpt.body, 
-      pairs: this.state.pairs, 
+      patches: this.state.patches, 
       taskType: "find" 
     })
       .then(
@@ -173,7 +173,7 @@ class Find extends React.Component {
   render() {
 
     let highlights;
-    if(this.state.pairs.length === 0) {
+    if(this.state.patches.length === 0) {
       highlights = (
         <Header textAlign="center" as='h4'>
           <Header.Content>
@@ -187,8 +187,8 @@ class Find extends React.Component {
     } else {
       highlights = (
         <Item.Group divided style={styles.itemGroup}>
-          {this.state.pairs.map((pair, index) => {
-            let text = this.props.excerpt.body.slice(pair[0], pair[1]);
+          {this.state.patches.map((patch, index) => {
+            let text = this.props.excerpt.body.slice(patch[0], patch[1]);
             return <Highlight 
                       key={index} 
                       id={index} 

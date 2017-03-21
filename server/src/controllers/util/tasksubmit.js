@@ -15,7 +15,7 @@ export function submitFindTask(req, res, excerpt) {
     .forge({
         excerpt_id : req.body.excerptId,
         owner_id   : req.currentUser.attributes.id,
-        pairs      : req.body.pairs
+        patches      : req.body.patches
       }, { hasTimestamps: true })
     .save(null, { method: 'insert' })
     .then((task) => {
@@ -24,16 +24,16 @@ export function submitFindTask(req, res, excerpt) {
         .then(result => {
 
           let recommended_edits;
-          let pairs   = task.attributes.pairs;
+          let patches   = task.attributes.patches;
           let stage   = 'find';
           let heatmap = excerpt.attributes.heatmap;
           let body    = excerpt.attributes.body;
           let nTasks  = parseInt(result[0].count);
 
           // for each patch the user has submitted, increment the heatmap within the patch's range
-          for(let i=0; i<pairs.length; i++) {
-            let pair = pairs[i];
-            for(let j=pair[0]; j<pair[1]; j++) {
+          for(let i=0; i<patches.length; i++) {
+            let patch = patches[i];
+            for(let j=patch[0]; j<patch[1]; j++) {
               heatmap[j]++;
             }
           }
