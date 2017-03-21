@@ -22,6 +22,10 @@ export function calculateRoughPatches(heatmap, cutoff) {
         else {                            // else end the patch
           // set and push the patch
           rightIdx = i-1;
+
+          if(leftIdx < 0) leftIdx = 0;
+          if(rightIdx > heatmap.length) rightIdx = heatmap.length;
+
           roughPatches.push([leftIdx, rightIdx]);
 
           // reset the indices, so we're ready to search for the next patch
@@ -65,9 +69,7 @@ export function calculateFinalPatches(body, roughPatches) {
 export default function(nTasks, body, heatmap) {
 
   if(nTasks < MINIMUM_SUBMISSIONS_REQUIRED) return [];
-
   let cutoff = nTasks * 0.2;  // 20% of users should agree on patches
-
   let roughPatches = calculateRoughPatches(heatmap, cutoff);
 
   if(roughPatches.length >= 2) {

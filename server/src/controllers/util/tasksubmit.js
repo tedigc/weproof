@@ -41,8 +41,6 @@ export function submitFindTask(req, res, excerpt) {
           recommended_edits = aggregate(nTasks, body, heatmap);
           if(recommended_edits.length > 0) stage = 'fix';
 
-          console.log(recommended_edits);
-
           // update the excerpt's stage and recommended edits
           return excerpt
             .save({
@@ -102,7 +100,7 @@ export function submitFixTask(req, res, excerpt) {
           
           return excerpt
             .save({ stage })
-            .then(result => {
+            .then((result) => {
               res.json(result);
             })
             .catch(err => {

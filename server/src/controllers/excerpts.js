@@ -39,7 +39,7 @@ router.post('/', authenticate, (req, res) => {
 
   let title = req.body.title;
   let body  = req.body.body;
-  let heatmap = new Array(req.body.length).fill(0);
+  let heatmap = new Array(req.body.body.length).fill(0);
 
   // Write the excerpt to the database
   Excerpt
