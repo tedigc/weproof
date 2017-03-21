@@ -61,65 +61,6 @@ class Excerpts extends React.Component {
     });
   }
 
-  /*render() {
-    let self = this;
-    return (
-      <div>
-
-        <PageHeader 
-          title="Excerpts" 
-          description="Create and view passages of text for correction." 
-          icon="folder open"
-        />
-
-        <Button onClick={this.handleOpen}><Icon name='plus'/>Create New</Button>
-
-        <Menu secondary>
-          <Menu.Item name="all"/>
-          <Menu.Item name="complete"/>
-          <Menu.Item name="pending"/>
-          <Menu.Item name="refresh" position="right" as={Button} onClick={this.refreshExcerpts} icon="refresh" />
-        </Menu>
-
-        <Dimmer.Dimmable as={Item.Group} divided dimmed={this.state.loading}>
-          <Dimmer active={this.state.loading} inverted>
-            <Loader inverted>Loading</Loader>
-          </Dimmer>
-
-          {Object.keys(self.state.excerpts).map(function(key, idx) {
-            let item = self.state.excerpts[key];
-            let { id, title, body, owner_id, created_at } = item.attributes;
-            let tasksVerify = item.tasksVerify;
-              
-            console.log(item);
-
-            return <SingleExcerpt
-                    key={idx}
-                    id={id}
-                    title={title}
-                    excerpt={body}
-                    ownerId={parseInt(owner_id, 10)}
-                    created={created_at}
-                    tasksVerify={tasksVerify}
-                  />
-          })}
-
-        </Dimmer.Dimmable>
-        
-        <Modal 
-          open={this.state.modalOpen}
-          onClose={this.handleClose}
-          closeIcon='close'>
-          <Header icon='write' content='Submit New Excerpt' />
-          <Modal.Content>
-            <SubmitForm/>
-          </Modal.Content>
-        </Modal>
-
-      </div>
-    );
-  }*/
-
   render() {
     let self = this;
     let { filter, error } = this.state;
@@ -146,7 +87,7 @@ class Excerpts extends React.Component {
                           <Table.Body>
                             {Object.keys(self.state.excerpts).map(function(key, idx) {
                               let item = self.state.excerpts[key];
-                              let { id, title, body, owner_id, created_at, heatmap, stage, status } = item.attributes;
+                              let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, status } = item.attributes;
                               let tasks = {
                                 tasksFind   : item.tasksFind,
                                 tasksFix    : item.tasksFix,
@@ -161,6 +102,7 @@ class Excerpts extends React.Component {
                                       body={body}
                                       ownerId={parseInt(owner_id, 10)}
                                       created={createdAtObj.toDateString()}
+                                      recommendedEdits={recommended_edits}
                                       heatmap={heatmap}
                                       stage={stage}
                                       status={status}

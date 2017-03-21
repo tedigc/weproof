@@ -42,11 +42,11 @@ class ExcerptSummary extends React.Component {
 
   render() {
 
-    console.log(this.handleSelectCorrection);
-
-    let { isOpen, close, title, body, created, stage, status, tasks } = this.props;
-    let { activeItem } = this.state;
+    let { isOpen, close, title, body, created, recommendedEdits, heatmap, stage, status, tasks } = this.props;
+    let { activeItem, selectedCorrection } = this.state;
     let { tasksFind, tasksFix, tasksVerify } = tasks;
+
+    console.log(recommendedEdits);
     
     let completedString;
     if(stage !== 'complete') {
@@ -80,6 +80,28 @@ class ExcerptSummary extends React.Component {
                             />;
     }
 
+    // excerpt text
+    let excerptText = body;
+    if( activeItem === 'corrections' && selectedCorrection !== -1) {
+      let selectedTaskFix = tasksFix[selectedCorrection];
+      let patch = recommendedEdits[selectedTaskFix.chosen_edit];
+
+      let preEdit    = body.slice(0, patch[0]);
+      let old        = body.slice(patch[0], patch[1]);
+      let correction = selectedTaskFix.correction;
+      let postEdit   = body.slice(patch[1], body.length-1);
+
+      excerptText = (
+        <div>
+          {preEdit}
+          <span style={{ background: '#ffc4d3', color: '#992340', textDecoration: 'line-through' }}>{old}</span>
+          <span style={{ background: '#c1d5ff', color: '#283f70' }}>{correction}</span>
+          {postEdit}
+        </div>
+      );
+
+    }
+
     return (
       <Modal 
         open={isOpen}
@@ -94,7 +116,7 @@ class ExcerptSummary extends React.Component {
                 {/* Excerpt segment */}
                 <Grid.Column width={11}>
                   <Segment size="large" style={styles.excerpt}>
-                    {body}      
+                    {excerptText}      
                     <Label attached='bottom left'>Excerpt</Label>          
                   </Segment>
                 </Grid.Column>
@@ -137,6 +159,8 @@ ExcerptSummary.propTypes = {
   title   : React.PropTypes.string.isRequired,
   body    : React.PropTypes.string.isRequired,
   created : React.PropTypes.string.isRequired,
+  recommendedEdits : React.PropTypes.array.isRequired,
+  heatmap          : React.PropTypes.array.isRequired,
   stage   : React.PropTypes.string.isRequired,
   status  : React.PropTypes.string.isRequired,
   close   : React.PropTypes.func.isRequired,

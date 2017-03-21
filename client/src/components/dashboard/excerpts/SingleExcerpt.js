@@ -27,7 +27,7 @@ class SingleExcerpt extends React.Component {
   }
 
   render() {
-    let { title, body, created, stage, status, tasks } = this.props;
+    let { title, body, created, recommendedEdits, heatmap, stage, status, tasks } = this.props;
     let completedStyle = {
       backgroundColor : '#4096BE',
       color           : '#FFFFFF'
@@ -49,7 +49,9 @@ class SingleExcerpt extends React.Component {
           isOpen={this.state.modalOpen}
           title={title}
           body={body}
-          created={created}s
+          created={created}
+          recommendedEdits={recommendedEdits}
+          heatmap={heatmap}
           stage={stage}
           status={status}
           close={this.handleClose}
@@ -63,14 +65,16 @@ class SingleExcerpt extends React.Component {
 }
 
 SingleExcerpt.propTypes ={
-  id      : React.PropTypes.number.isRequired,
-  title   : React.PropTypes.string.isRequired,
-  body    : React.PropTypes.string.isRequired,
-  ownerId : React.PropTypes.number.isRequired,
-  created : React.PropTypes.string.isRequired,
-  stage   : React.PropTypes.string.isRequired,
-  status  : React.PropTypes.string.isRequired,
-  tasks   : React.PropTypes.object.isRequired
+  id               : React.PropTypes.number.isRequired,
+  title            : React.PropTypes.string.isRequired,
+  body             : React.PropTypes.string.isRequired,
+  ownerId          : React.PropTypes.number.isRequired,
+  created          : React.PropTypes.string.isRequired,
+  recommendedEdits : React.PropTypes.array.isRequired,
+  heatmap          : React.PropTypes.array.isRequired,
+  stage            : React.PropTypes.string.isRequired,
+  status           : React.PropTypes.string.isRequired,
+  tasks            : React.PropTypes.object.isRequired
 };
 
 export default SingleExcerpt;
