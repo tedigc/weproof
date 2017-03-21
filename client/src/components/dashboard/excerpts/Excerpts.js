@@ -146,8 +146,12 @@ class Excerpts extends React.Component {
                           <Table.Body>
                             {Object.keys(self.state.excerpts).map(function(key, idx) {
                               let item = self.state.excerpts[key];
-                              let { id, title, body, owner_id, created_at, stage, status } = item.attributes;
-                              let tasksVerify = item.tasksVerify;
+                              let { id, title, body, owner_id, created_at, heatmap, stage, status } = item.attributes;
+                              let tasks = {
+                                tasksFind   : item.tasksFind,
+                                tasksFix    : item.tasksVerify,
+                                tasksVerify : item.tasksVerify
+                              };
                               let createdAtObj = moment(created_at).toDate();
 
                               return <SingleExcerpt
@@ -157,9 +161,10 @@ class Excerpts extends React.Component {
                                       body={body}
                                       ownerId={parseInt(owner_id, 10)}
                                       created={createdAtObj.toDateString()}
+                                      heatmap={heatmap}
                                       stage={stage}
                                       status={status}
-                                      tasksVerify={tasksVerify}
+                                      tasks={tasks}
                                     />
                             })}
                           </Table.Body>

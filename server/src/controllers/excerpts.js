@@ -10,13 +10,19 @@ router.get('/', authenticate, (req, res) => {
 
   Excerpt
     .where({owner_id: req.currentUser.id})
-    .fetchAll({ withRelated: ['tasks_verify'] })
+    .fetchAll({ withRelated: [
+      'tasks_find',
+      'tasks_fix',
+      'tasks_verify'
+    ]})
     .then((results) => {
       let excerpts = [];
       for(let i=0; i<results.models.length; i++) {
 
         let singleExcerpt = {
-          attributes  : results.models[i].attributes,
+          attributes : results.models[i].attributes,
+          tasksFind   : results.models[i].relations.tasks_find,
+          tasksFix    : results.models[i].relations.tasks_fix,
           tasksVerify : results.models[i].relations.tasks_verify
         };
 

@@ -27,7 +27,7 @@ class SingleExcerpt extends React.Component {
   }
 
   render() {
-    let { title, body, created, stage, status } = this.props;
+    let { title, body, created, stage, status, tasks } = this.props;
     let completedStyle = {
       backgroundColor : '#4096BE',
       color           : '#FFFFFF'
@@ -49,8 +49,11 @@ class SingleExcerpt extends React.Component {
           isOpen={this.state.modalOpen}
           title={title}
           body={body}
-          created={created}
+          created={created}s
+          stage={stage}
+          status={status}
           close={this.handleClose}
+          tasks={tasks}
         />
 
       </Table.Row>
@@ -60,14 +63,14 @@ class SingleExcerpt extends React.Component {
 }
 
 SingleExcerpt.propTypes ={
-  id          : React.PropTypes.number.isRequired,
-  title       : React.PropTypes.string.isRequired,
-  body        : React.PropTypes.string.isRequired,
-  ownerId     : React.PropTypes.number.isRequired,
-  created     : React.PropTypes.string.isRequired,
-  stage       : React.PropTypes.string.isRequired,
-  status      : React.PropTypes.string.isRequired,
-  tasksVerify : React.PropTypes.array.isRequired
+  id      : React.PropTypes.number.isRequired,
+  title   : React.PropTypes.string.isRequired,
+  body    : React.PropTypes.string.isRequired,
+  ownerId : React.PropTypes.number.isRequired,
+  created : React.PropTypes.string.isRequired,
+  stage   : React.PropTypes.string.isRequired,
+  status  : React.PropTypes.string.isRequired,
+  tasks   : React.PropTypes.object.isRequired
 };
 
 export default SingleExcerpt;
