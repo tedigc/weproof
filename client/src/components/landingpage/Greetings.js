@@ -34,7 +34,7 @@ class Greetings extends React.Component {
           <br/>
 
           <p style={{ fontSize: 18, color: "#666666", lineHeight: '35px', textAlign: 'center' }}>
-            WeProof is a web application made that uses the power of crowdsourcing to help non-native English speakers proof-read their written English, be it in the form of essays, reports or dissertations. This project endeavors to take advantage of the untapped crowdsourcing potential of Universities, in the form of students and staff, and provide much needed assistance to the international and non-native English speaking student populations at Universities around the country."
+            <span style={{ fontWeight : 10, fontStyle : 'italic' }}>We</span><b>Proof</b> is a web application that uses the power of crowdsourcing to help non-native English speakers proof-read their written English, be it in the form of essays, reports or dissertations. This project endeavors to take advantage of the untapped crowdsourcing potential of Universities, in the form of students and staff, and provide much needed assistance to the international and non-native English speaking student populations at Universities around the country.
           </p>
 
           <br/>
