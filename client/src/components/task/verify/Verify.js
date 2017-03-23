@@ -84,6 +84,7 @@ class Verify extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    console.log('submitty');
     this.props.submitTask({
       excerptId  : this.props.excerpt.id,
       taskType   : "verify",
@@ -150,7 +151,7 @@ Verify.propTypes = {
   excerpt    : React.PropTypes.object.isRequired,
   chosenEdit : React.PropTypes.number.isRequired,
   correction : React.PropTypes.string.isRequired,
-  patch       : React.PropTypes.array.isRequired,
+  patch      : React.PropTypes.array.isRequired,
   taskFixId  : React.PropTypes.number.isRequired,
   submitTask : React.PropTypes.func.isRequired
 };

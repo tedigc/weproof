@@ -224,7 +224,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
     .fetchAll({
       withRelated: [
         {'excerpt' : qb => {
-          qb.column('id', 'body', 'status', 'recommended_edits'); 
+          qb.column('id', 'body', 'accepted', 'recommended_edits'); 
         }},
         'verifications'
       ],
@@ -251,7 +251,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
         chosenEdit : attributes.chosen_edit,
         correction : attributes.correction,
         excerpt    : relations.excerpt,
-        patch       : relations.excerpt.attributes.recommended_edits[attributes.chosen_edit]
+        patch      : relations.excerpt.attributes.recommended_edits[attributes.chosen_edit]
       };
 
       res.json({ taskInfo });
