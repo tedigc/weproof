@@ -23,3 +23,9 @@ export function fetchSingleExcerptMin(id) {
     return axios.get('/api/excerpts/' + id + '/min');
   };
 };
+
+export function acceptExcerpt(id) {
+  return dispatch => {
+    return axios.post('/api/excerpts/accept', id);
+  };
+};

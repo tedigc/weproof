@@ -70,6 +70,7 @@ class ExcerptSummary extends React.Component {
       default:
         sideMenuComponent = <Summary
                               complete={stage === 'complete'}
+                              accepted={status === 'accepted'}
                               dateCreated={created}
                               dateCompleted={completedString}
                               length={body.length}
@@ -85,6 +86,8 @@ class ExcerptSummary extends React.Component {
     if( activeItem === 'corrections' && selectedCorrection !== -1) {
       let selectedTaskFix = tasksFix[selectedCorrection];
       let patch = recommendedEdits[selectedTaskFix.chosen_edit];
+
+      console.log(recommendedEdits);
 
       let preEdit    = body.slice(0, patch[0]);
       let old        = body.slice(patch[0], patch[1]);
@@ -102,7 +105,7 @@ class ExcerptSummary extends React.Component {
 
     }
 
-    let accepted = (status === 'complete');
+    let accepted = (status === 'accepted');
     let disabledStyle = { pointerEvents : 'none', color : '#BBBBBB' };
 
     return (

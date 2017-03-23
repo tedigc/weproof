@@ -4,7 +4,7 @@ import { Button, Dimmer, Divider, Header, Icon, Loader, Menu, Modal, Table } fro
 import moment from 'moment';
 import PageHeader from '../PageHeader';
 import SubmitForm from './SubmitForm';
-import { fetchExcerpts } from '../../../actions/excerptActions';
+import { fetchExcerpts, acceptExcerpt } from '../../../actions/excerptActions';
 import SingleExcerpt from './SingleExcerpt';
 import Error from '../../error/Error';
 import ExcerptSummary from './ExcerptSummary';
@@ -20,9 +20,10 @@ class Excerpts extends React.Component {
 
   constructor(props) {
     super(props);
-    this.refreshExcerpts = this.refreshExcerpts.bind(this);
-    this.handleOpen      = this.handleOpen.bind(this);
-    this.handleClose     = this.handleClose.bind(this);
+    this.refreshExcerpts          = this.refreshExcerpts.bind(this);
+    this.handleOpen               = this.handleOpen.bind(this);
+    this.handleClose              = this.handleClose.bind(this);
+    this.acceptExcerptCorrections = this.acceptExcerptCorrections.bind(this);
   }
 
   componentWillMount() {
@@ -61,8 +62,23 @@ class Excerpts extends React.Component {
   }
   
   acceptExcerptCorrections(excerptIndex, excerptId) {
+
+    console.log('> accepting excerpt ' + excerptId);
     console.log(excerptIndex);
     console.log(excerptId);
+
+    this.props.acceptExcerpt({ excerptId })
+      .then(
+        res => {
+          let excerpts = this.state.excerpts;
+          excerpts[excerptIndex] = res.data.excerptToReturn;
+          this.setState(excerpts);
+        },
+        err => {
+          console.error(err);
+        }
+      );
+
   }
 
   render() {
@@ -100,7 +116,7 @@ class Excerpts extends React.Component {
               ownerId : parseInt(owner_id, 10),
               created : moment(created_at).toDate().toDateString(),
               heatmap, 
-              recommended_edits,
+              recommendedEdits : recommended_edits,
               stage, 
               status
             };
@@ -120,7 +136,7 @@ class Excerpts extends React.Component {
           })}
         </Table.Body>
       </Dimmer.Dimmable>
-      );
+    );
 
     return (
       <div>
@@ -167,7 +183,8 @@ class Excerpts extends React.Component {
 }
 
 Excerpts.propTypes ={
-  fetchExcerpts: React.PropTypes.func.isRequired
+  fetchExcerpts : React.PropTypes.func.isRequired,
+  acceptExcerpt : React.PropTypes.func.isRequired
 };
 
-export default connect(null, { fetchExcerpts })(Excerpts);
+export default connect(null, { fetchExcerpts, acceptExcerpt })(Excerpts);

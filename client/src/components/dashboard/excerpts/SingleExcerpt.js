@@ -30,7 +30,6 @@ class SingleExcerpt extends React.Component {
     let { excerpt, tasks, acceptCorrections } = this.props;
     let { title, body, created, stage, status } = excerpt;
     let completedStyle = { backgroundColor : '#4096BE', color : '#FFFFFF' };
-
     return (
       <Table.Row>
 

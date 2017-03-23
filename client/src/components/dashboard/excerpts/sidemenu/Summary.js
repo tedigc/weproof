@@ -10,10 +10,25 @@ const styles = {
 class Summary extends React.Component {
 
   render() {
-    let { complete, dateCreated, dateCompleted, length, nTasksFind, nTasksFix, nTasksVerify } = this.props;
+    let { complete, accepted, dateCreated, dateCompleted, length, nTasksFind, nTasksFix, nTasksVerify } = this.props;
     let nTotalTasks = nTasksFind + nTasksFix + nTasksVerify;
     let cost = '£' + (nTotalTasks * PRICE_PER_TASK).toFixed(2);
     let { rowName, rowValue } = styles;
+
+    console.log(accepted);
+
+    let acceptButton = (
+      <Button 
+        fluid 
+        style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}} 
+        disabled={!complete} 
+        onClick={this.props.acceptCorrections}
+      >
+          Accept
+      </Button>
+    );
+
+    let displayButton = (accepted) ? undefined : acceptButton;
 
     return (
       <div>
@@ -62,14 +77,7 @@ class Summary extends React.Component {
 
         </Table>
 
-        <Button 
-          fluid 
-          style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}} 
-          disabled={!complete} 
-          onClick={this.props.acceptCorrections}
-        >
-            Accept
-        </Button>
+        {displayButton}
 
       </div>
     );
@@ -79,6 +87,7 @@ class Summary extends React.Component {
 
 Summary.propTypes = {
   complete          : React.PropTypes.bool.isRequired,
+  accepted          : React.PropTypes.bool.isRequired,
   dateCreated       : React.PropTypes.string.isRequired,
   dateCompleted     : React.PropTypes.string.isRequired,
   length            : React.PropTypes.number.isRequired,

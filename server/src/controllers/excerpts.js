@@ -126,4 +126,46 @@ router.get('/:excerptId/min', authenticate, (req, res) => {
 
 });
 
+// Set an excerpt's status to accepted
+router.post('/accept', (req, res) => {
+
+  Excerpt
+    .query({
+      where : { id : req.body.excerptId }
+    })
+    .fetch({ withRelated: [
+      'tasks_find',
+      'tasks_fix',
+      'tasks_verify'
+    ]})
+    .then(excerpt => {
+
+      return excerpt
+        .save({ status : 'accepted' })
+        .then(updatedExcerpt => {
+
+          let excerptToReturn = {
+            attributes  : updatedExcerpt.attributes,
+            tasksFind   : excerpt.relations.tasks_find,
+            tasksFix    : excerpt.relations.tasks_fix,
+            tasksVerify : excerpt.relations.tasks_verify
+          };
+
+          console.log(excerptToReturn.tasksFix.models[0].attributes);
+
+          res.status(200).json({ excerptToReturn, success : true });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).json(err);
+        });
+
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).json(err)
+    });
+
+});
+
 export default router;
