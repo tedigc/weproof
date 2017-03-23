@@ -62,7 +62,14 @@ class Summary extends React.Component {
 
         </Table>
 
-        <Button fluid style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}} disabled={!complete}>Accept</Button>
+        <Button 
+          fluid 
+          style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}} 
+          disabled={!complete} 
+          onClick={this.props.acceptCorrections}
+        >
+            Accept
+        </Button>
 
       </div>
     );
@@ -71,13 +78,14 @@ class Summary extends React.Component {
 }
 
 Summary.propTypes = {
-  complete      : React.PropTypes.bool.isRequired,
-  dateCreated   : React.PropTypes.string.isRequired,
-  dateCompleted : React.PropTypes.string.isRequired,
-  length        : React.PropTypes.number.isRequired,
-  nTasksFind    : React.PropTypes.number.isRequired,
-  nTasksFix     : React.PropTypes.number.isRequired,
-  nTasksVerify  : React.PropTypes.number.isRequired
+  complete          : React.PropTypes.bool.isRequired,
+  dateCreated       : React.PropTypes.string.isRequired,
+  dateCompleted     : React.PropTypes.string.isRequired,
+  length            : React.PropTypes.number.isRequired,
+  nTasksFind        : React.PropTypes.number.isRequired,
+  nTasksFix         : React.PropTypes.number.isRequired,
+  nTasksVerify      : React.PropTypes.number.isRequired,
+  acceptCorrections : React.PropTypes.func.isRequired
 };
 
 export default Summary;

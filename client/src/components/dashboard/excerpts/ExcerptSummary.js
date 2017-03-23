@@ -42,7 +42,7 @@ class ExcerptSummary extends React.Component {
 
   render() {
 
-    let { isOpen, close, title, body, created, recommendedEdits, heatmap, stage, status, tasks } = this.props;
+    let { isOpen, close, title, body, created, recommendedEdits, heatmap, stage, status, tasks, acceptCorrections } = this.props;
     let { activeItem, selectedCorrection } = this.state;
     let { tasksFind, tasksFix, tasksVerify } = tasks;
 
@@ -64,7 +64,7 @@ class ExcerptSummary extends React.Component {
                               accepted={status === 'accepted'}
                               tasksFix={tasksFix}
                               setSelectedCorrectionParent={this.handleSelectCorrection}
-                            />
+                            />;
         break;
       case 'heatmap':
         break;
@@ -77,6 +77,7 @@ class ExcerptSummary extends React.Component {
                               nTasksFind={tasksFind.length}
                               nTasksFix={tasksFix.length}
                               nTasksVerify={tasksVerify.length}
+                              acceptCorrections={acceptCorrections}
                             />;
     }
 
@@ -101,6 +102,9 @@ class ExcerptSummary extends React.Component {
       );
 
     }
+
+    let accepted = (status === 'complete');
+    let disabledStyle = { pointerEvents : 'none', color : '#BBBBBB' };
 
     return (
       <Modal 
@@ -129,10 +133,10 @@ class ExcerptSummary extends React.Component {
                     <Menu.Item name='summary'      active={activeItem === 'summary'    } onClick={() => { this.setMenuItem('summary') }} >
                       <Icon name='unordered list'/>
                     </Menu.Item>
-                    <Menu.Item name='corrections'  active={activeItem === 'corrections'} onClick={() => { this.setMenuItem('corrections') }} >
+                    <Menu.Item name='corrections'  style={(accepted) ? undefined : disabledStyle} active={activeItem === 'corrections'} onClick={() => { this.setMenuItem('corrections') }} >
                       <Icon name='checkmark'/>
                     </Menu.Item>
-                    <Menu.Item name='heatmap'      active={activeItem === 'heatmap'    } onClick={() => { this.setMenuItem('heatmap') }} >
+                    <Menu.Item name='heatmap'      style={(accepted) ? undefined : disabledStyle} active={activeItem === 'heatmap'    } onClick={() => { this.setMenuItem('heatmap') }} >
                       <Icon name='fire'/>
                     </Menu.Item>
                   </Menu>
@@ -155,16 +159,17 @@ class ExcerptSummary extends React.Component {
 }
 
 ExcerptSummary.propTypes = {
-  isOpen  : React.PropTypes.bool.isRequired,
-  title   : React.PropTypes.string.isRequired,
-  body    : React.PropTypes.string.isRequired,
-  created : React.PropTypes.string.isRequired,
-  recommendedEdits : React.PropTypes.array.isRequired,
-  heatmap          : React.PropTypes.array.isRequired,
-  stage   : React.PropTypes.string.isRequired,
-  status  : React.PropTypes.string.isRequired,
-  close   : React.PropTypes.func.isRequired,
-  tasks   : React.PropTypes.object.isRequired
+  isOpen            : React.PropTypes.bool.isRequired,
+  title             : React.PropTypes.string.isRequired,
+  body              : React.PropTypes.string.isRequired,
+  created           : React.PropTypes.string.isRequired,
+  recommendedEdits  : React.PropTypes.array.isRequired,
+  heatmap           : React.PropTypes.array.isRequired,
+  stage             : React.PropTypes.string.isRequired,
+  status            : React.PropTypes.string.isRequired,
+  close             : React.PropTypes.func.isRequired,
+  tasks             : React.PropTypes.object.isRequired,
+  acceptCorrections : React.PropTypes.func.isRequired
 };
 
 export default ExcerptSummary;

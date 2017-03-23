@@ -60,6 +60,11 @@ class Excerpts extends React.Component {
       modalOpen: false
     });
   }
+  
+  acceptExcerptCorrections(excerptIndex, excerptId) {
+    console.log(excerptIndex);
+    console.log(excerptId);
+  }
 
   render() {
     let self = this;
@@ -107,6 +112,7 @@ class Excerpts extends React.Component {
                                       stage={stage}
                                       status={status}
                                       tasks={tasks}
+                                      acceptCorrections={self.acceptExcerptCorrections.bind(null, idx, id)}
                                     />
                             })}
                           </Table.Body>

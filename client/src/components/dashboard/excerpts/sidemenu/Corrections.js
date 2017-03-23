@@ -6,7 +6,7 @@ const MAX_PREVIEW_LENGTH = 8;
 class Corrections extends React.Component {
 
   state = {
-    selectedCorrection : 0
+    selectedCorrection : -1
   }
 
   constructor(props) {
@@ -15,7 +15,10 @@ class Corrections extends React.Component {
   }
 
   componentWillMount() {
-    if(this.props.tasksFix.length > 0) this.setSelectedCorrection(0);
+    let { accepted, tasksFix } = this.props;
+    if(accepted && tasksFix.length > 0) {
+      this.setSelectedCorrection(0);
+    }
   }
 
   componentWillUnmount() {
@@ -29,23 +32,24 @@ class Corrections extends React.Component {
 
   render() {
     let { selectedCorrection } = this.state;
-    let { tasksFix }     = this.props;
+    let { accepted, tasksFix } = this.props;
+
     return (
       <div>
         <Header content='Corrections'/>
         <Menu vertical secondary>
-        {tasksFix.map((task, idx) => {
-          let correctionPreview = (task.correction.length > MAX_PREVIEW_LENGTH) ? task.correction.slice(0, MAX_PREVIEW_LENGTH) + '...' : task.correction;
-          return (
-            <Menu.Item 
-              key={idx} 
-              active={idx === selectedCorrection} 
-              onClick={() => { this.setSelectedCorrection(idx); }}
-            >
-              {correctionPreview}
-            </Menu.Item>
-          );
-        })}
+          {tasksFix.map((task, idx) => {
+            let correctionPreview = (task.correction.length > MAX_PREVIEW_LENGTH) ? task.correction.slice(0, MAX_PREVIEW_LENGTH) + '...' : task.correction;
+            return (
+              <Menu.Item 
+                key={idx} 
+                active={idx === selectedCorrection} 
+                onClick={() => { this.setSelectedCorrection(idx); }}
+              >
+                {correctionPreview}
+              </Menu.Item>
+            );
+          })}
         </Menu>
       </div>
     );
