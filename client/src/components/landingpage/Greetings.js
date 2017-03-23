@@ -17,7 +17,7 @@ class Greetings extends React.Component {
               Harness the power of the crowd and improve your written English
             </Header.Subheader>
 
-            <Button animated content='Get Started' size='massive' style={{ position: 'relative', top: 130 }}>
+            <Button animated size='massive' style={{ position: 'relative', top: 130 }}>
               <Button.Content visible>GET STARTED</Button.Content>
               <Button.Content hidden style={{ fontWeight: 100 }}>
                 &nbsp; &nbsp; Sign Up <Icon name='right arrow' />

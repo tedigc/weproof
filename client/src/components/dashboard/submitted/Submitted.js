@@ -28,7 +28,7 @@ class Submitted extends React.Component {
   refreshTasks() {
     this.props.fetchTasks(this.state.filter)
       .then(
-        res => {
+        res => {          
           let error = undefined;
           if(res.data.tasksFiltered.length === 0) {
             error = {};
@@ -82,8 +82,8 @@ class Submitted extends React.Component {
                             return <SingleSubmission
                                       key={index}
                                       id={id}
-                                      status={excerpt.status}
-                                      excerpt={excerpt.body}
+                                      accepted={excerpt.accepted}
+                                      body={excerpt.body}
                                       created={createdAtObj.toDateString()}
                                     />;
                           })}

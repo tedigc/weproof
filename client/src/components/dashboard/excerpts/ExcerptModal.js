@@ -13,7 +13,7 @@ const styles = {
     lineHeight: "30px"
   },
 };
-class ExcerptSummary extends React.Component {
+class ExcerptModal extends React.Component {
 
   state = {
     activeItem         : 'summary',
@@ -42,8 +42,8 @@ class ExcerptSummary extends React.Component {
 
   render() {
 
-    let { excerpt, tasks, isOpen, close, acceptCorrections } = this.props;
-    let { title, body, stage, status, created, recommendedEdits } = excerpt;
+    let { excerpt, tasks, isOpen, acceptCorrections } = this.props;
+    let { title, body, stage, accepted, created, recommendedEdits } = excerpt;
     let { activeItem, selectedCorrection } = this.state;
     let { tasksFind, tasksFix, tasksVerify } = tasks;
     
@@ -60,7 +60,7 @@ class ExcerptSummary extends React.Component {
     switch(activeItem) {
       case 'corrections':
         sideMenuComponent = <Corrections
-                              accepted={status === 'accepted'}
+                              accepted={accepted}
                               tasksFix={tasksFix}
                               setSelectedCorrectionParent={this.handleSelectCorrection}
                             />;
@@ -70,7 +70,7 @@ class ExcerptSummary extends React.Component {
       default:
         sideMenuComponent = <Summary
                               complete={stage === 'complete'}
-                              accepted={status === 'accepted'}
+                              accepted={accepted}
                               dateCreated={created}
                               dateCompleted={completedString}
                               length={body.length}
@@ -86,8 +86,6 @@ class ExcerptSummary extends React.Component {
     if( activeItem === 'corrections' && selectedCorrection !== -1) {
       let selectedTaskFix = tasksFix[selectedCorrection];
       let patch = recommendedEdits[selectedTaskFix.chosen_edit];
-
-      console.log(recommendedEdits);
 
       let preEdit    = body.slice(0, patch[0]);
       let old        = body.slice(patch[0], patch[1]);
@@ -105,7 +103,6 @@ class ExcerptSummary extends React.Component {
 
     }
 
-    let accepted = (status === 'accepted');
     let disabledStyle = { pointerEvents : 'none', color : '#BBBBBB' };
 
     return (
@@ -174,7 +171,7 @@ class ExcerptSummary extends React.Component {
 
 }
 
-ExcerptSummary.propTypes = {
+ExcerptModal.propTypes = {
   excerpt           : React.PropTypes.object.isRequired,
   tasks             : React.PropTypes.object.isRequired,
   isOpen            : React.PropTypes.bool.isRequired,
@@ -182,4 +179,4 @@ ExcerptSummary.propTypes = {
   acceptCorrections : React.PropTypes.func.isRequired
 };
 
-export default ExcerptSummary;
+export default ExcerptModal;

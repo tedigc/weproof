@@ -1,4 +1,6 @@
 import express from 'express';
+import bookshelf from 'bookshelf';
+import when from 'when';
 import authenticate from '../middlewares/authenticate';
 import { Excerpt, Task } from '../db/models';
 
@@ -61,7 +63,7 @@ router.post('/', authenticate, (req, res) => {
 
 });
 
-// Get all excerpts for the logged in user
+// Get an excerpt by its ID
 //
 router.get('/:excerptId', authenticate, (req, res) => {
 
@@ -82,6 +84,7 @@ router.get('/:excerptId', authenticate, (req, res) => {
 
 });
 
+// Get an excerpt by its ID and select the bare minimum attributes needed for a task
 router.get('/:excerptId/min', authenticate, (req, res) => {
 
   Excerpt
@@ -126,7 +129,7 @@ router.get('/:excerptId/min', authenticate, (req, res) => {
 
 });
 
-// Set an excerpt's status to accepted
+// Set an excerpt's 'accepted' status to 'true'
 router.post('/accept', (req, res) => {
 
   Excerpt
@@ -141,7 +144,7 @@ router.post('/accept', (req, res) => {
     .then(excerpt => {
 
       return excerpt
-        .save({ status : 'accepted' })
+        .save({ accepted : true })
         .then(updatedExcerpt => {
 
           let excerptToReturn = {
@@ -150,8 +153,6 @@ router.post('/accept', (req, res) => {
             tasksFix    : excerpt.relations.tasks_fix,
             tasksVerify : excerpt.relations.tasks_verify
           };
-
-          console.log(excerptToReturn.tasksFix.models[0].attributes);
 
           res.status(200).json({ excerptToReturn, success : true });
         })

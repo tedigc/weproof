@@ -5,9 +5,8 @@ import moment from 'moment';
 import PageHeader from '../PageHeader';
 import SubmitForm from './SubmitForm';
 import { fetchExcerpts, acceptExcerpt } from '../../../actions/excerptActions';
-import SingleExcerpt from './SingleExcerpt';
+import ExcerptRow from './ExcerptRow';
 import Error from '../../error/Error';
-import ExcerptSummary from './ExcerptSummary';
 
 class Excerpts extends React.Component {
 
@@ -88,7 +87,7 @@ class Excerpts extends React.Component {
     // if(error) {
     //   tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
     // } else {
-      tableComponent = (
+    tableComponent = (
       <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
         <Dimmer active={self.state.loading} inverted>
           <Loader inverted>Loading</Loader>
@@ -108,7 +107,7 @@ class Excerpts extends React.Component {
         <Table.Body>
           {Object.keys(self.state.excerpts).map(function(key, idx) {
             let item = self.state.excerpts[key];
-            let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, status } = item.attributes;
+            let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, accepted } = item.attributes;
             let excerpt = {
               id, 
               title, 
@@ -118,7 +117,7 @@ class Excerpts extends React.Component {
               heatmap, 
               recommendedEdits : recommended_edits,
               stage, 
-              status
+              accepted
             };
 
             let tasks = {
@@ -127,7 +126,7 @@ class Excerpts extends React.Component {
               tasksVerify : item.tasksVerify
             };
 
-            return <SingleExcerpt
+            return <ExcerptRow
                     key={idx}
                     excerpt={excerpt}
                     tasks={tasks}

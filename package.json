@@ -8,11 +8,11 @@
   "repository": "https://github.com/tedigc/individual-project",
   "main": "server/src/index.js",
   "scripts": {
-    "start"  : "concurrently \"npm run server\" \"npm run client\"",
-    "server" : "cd server && npm start",
-    "client" : "cd client && npm start",
-    "build"  : "cd client && npm run build",
-    "deploy" : "npm run build && git push heroku master --force"
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "deploy": "npm run build && git push heroku master --force"
   },
   "author": "tedigc",
   "license": "ISC",
@@ -36,7 +36,8 @@
     "react-redux": "^5.0.1",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
-    "validator": "^6.2.1"
+    "validator": "^6.2.1",
+    "when": "^3.7.8"
   },
   "devDependencies": {
     "concurrently": "^3.1.0",

@@ -17,23 +17,31 @@ router.get('/:filter', authenticate, (req, res) => {
   let filter = req.params.filter;
   let status = (filter === 'all') ? undefined : filter;
 
+  if(filter === 'all')      status = undefined;
+  if(filter === 'accepted') status = true;
+  if(filter === 'pending')  status = false;
+
   Task
     .query({
       where: { owner_id: req.currentUser.attributes.id }
     })
     .fetchAll({
       withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'title', 'body', 'status'); 
+        qb.column('id', 'title', 'body', 'accepted'); 
       }}],
     })
     .then(tasks => {
+      
       let tasksFiltered = [];
       for(let i=0; i<tasks.models.length; i++) {
         let item = tasks.models[i];
-        if(filter === 'all' || item.relations.excerpt.attributes.status === status) {
+        if(filter === 'all' || item.relations.excerpt.attributes.accepted === status) {
           tasksFiltered.push(item);
         }
       }
+
+      console.log(tasksFiltered);
+
       res.json({ tasksFiltered });
     })
     .catch(err => {

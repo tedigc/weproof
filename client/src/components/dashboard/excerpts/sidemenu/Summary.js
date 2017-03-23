@@ -15,8 +15,6 @@ class Summary extends React.Component {
     let cost = '£' + (nTotalTasks * PRICE_PER_TASK).toFixed(2);
     let { rowName, rowValue } = styles;
 
-    console.log(accepted);
-
     let acceptButton = (
       <Button 
         fluid 
