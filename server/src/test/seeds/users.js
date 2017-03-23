@@ -66,21 +66,21 @@ for(let i=0; i<=N_EXTRA_USERS; i++) {
 
   promises.push(new Promise((resolve, reject) => {
 
-  return User
-    .forge({
-      username        : user.username,
-      email           : user.email,
-      password_digest : PASSWORD_DIGEST
-    }, { hasTimestamps: true })
-    .save(null, { method: 'insert' })
-    .then(data => {
-      console.log('[user] ' + user.username + ' saved to database.');
-      resolve();
-    })
-    .catch(err => {
-      console.error(err);
-      reject();
-    });
+    return User
+      .forge({
+        username        : user.username,
+        email           : user.email,
+        password_digest : PASSWORD_DIGEST
+      }, { hasTimestamps: true })
+      .save(null, { method: 'insert' })
+      .then(data => {
+        console.log('[user] ' + user.username + ' saved to database.');
+        resolve();
+      })
+      .catch(err => {
+        console.error(err);
+        reject();
+      });
 
   }));
 }

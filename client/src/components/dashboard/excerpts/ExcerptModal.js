@@ -87,6 +87,8 @@ class ExcerptModal extends React.Component {
       let selectedTaskFix = tasksFix[selectedCorrection];
       let patch = recommendedEdits[selectedTaskFix.chosen_edit];
 
+      console.log(recommendedEdits);
+
       let preEdit    = body.slice(0, patch[0]);
       let old        = body.slice(patch[0], patch[1]);
       let correction = selectedTaskFix.correction;

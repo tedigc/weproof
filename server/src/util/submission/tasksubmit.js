@@ -1,9 +1,9 @@
+import bookshelf from '../../db/bookshelf';
 import { Excerpt, Task, TaskFind, TaskFix, TaskVerify } from '../../db/models';
 import aggregate from '../../util/aggregation/aggregate';
 import merge from '../../util/aggregation/merge';
 import knex from 'knex';
 import config from '../../db/knexfile';
-
 let db = knex(config.development);
 
 const MINIMUM_FIX_TASK_SUBMISSIONS = 3;
@@ -11,58 +11,137 @@ const MINIMUM_VERIFICATIONS_NEEDED = 1;
 
 export function submitFindTask(req, res, excerpt) {
 
-  return TaskFind
-    .forge({
+  // bookshelf.transaction(function(t) {
+  //   User.forge({id: id})
+  //     .save(userData, {transacting: t})
+  //     .then(function(model){
+  //       return when.all(_.map(model.relations, function(relation) {
+  //         return relation.save(null, {transacting: t}));
+  //       }).then(t.commit, t.rollback).yield(model);
+  //     });
+  // }).then(function(model) {
+  //   // wee
+  // })
+  // .otherwise(function(error){
+  //   // :(
+  // });
+
+  return bookshelf.transaction(t => {
+
+    return TaskFind
+      .forge({
         excerpt_id : req.body.excerptId,
         owner_id   : req.currentUser.attributes.id,
-        patches      : req.body.patches
+        patches    : req.body.patches
       }, { hasTimestamps: true })
-    .save(null, { method: 'insert' })
-    .then((task) => {
+      .save(null, { transacting : t, method: 'insert' })
+      .then(task => {
 
-      return db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
-        .then(result => {
+        return new Promise((resolve, reject) => {
 
-          let recommended_edits;
-          let patches   = task.attributes.patches;
-          let stage   = 'find';
-          let heatmap = excerpt.attributes.heatmap;
-          let body    = excerpt.attributes.body;
-          let nTasks  = parseInt(result[0].count);
+            return db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
+                .then(result => {
 
-          // for each patch the user has submitted, increment the heatmap within the patch's range
-          for(let i=0; i<patches.length; i++) {
-            let patch = patches[i];
-            for(let j=patch[0]; j<patch[1]; j++) {
-              heatmap[j]++;
-            }
-          }
+                  let recommended_edits;
+                  let patches = task.attributes.patches;
+                  let stage   = 'find';
+                  let heatmap = excerpt.attributes.heatmap;
+                  let body    = excerpt.attributes.body;
+                  let nTasks  = parseInt(result[0].count) + 1; // add one, because the TaskFind.forge changes haven't been committed
 
-          recommended_edits = aggregate(nTasks, body, heatmap);
-          if(recommended_edits.length > 0) stage = 'fix';
+                  // for each patch the user has submitted, increment the heatmap within the patch's range
+                  for(let i=0; i<patches.length; i++) {
+                    let patch = patches[i];
+                    for(let j=patch[0]; j<patch[1]; j++) {
+                      heatmap[j]++;
+                    }
+                  }
 
-          // update the excerpt's stage and recommended edits
-          return excerpt
-            .save({
-              stage,
-              recommended_edits,
-              heatmap
-            })
-            .then(result => {
-              res.json(result);
-            })
-            .catch(err => {
-              console.error(err);
-              res.status(500).json(err);
-            });
+                  recommended_edits = aggregate(nTasks, body, heatmap);
+                  if(recommended_edits.length > 0) stage = 'fix';
+
+                  console.log(' > recommended_edits ' + recommended_edits);
+
+                  // update the excerpt's stage and recommended edits
+                  return excerpt
+                    .save({
+                      stage,
+                      recommended_edits,
+                      heatmap
+                    }, { transacting : t })
+                    .then(result => {
+                      console.log('ayy lmao');
+                      resolve(result);
+                    })
+                    .catch(err => {
+                      reject(err);
+                    });
+
+                });
 
         });
+      });
+  })
+  .then(model => {
+    res.json({ success : true });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json(err);
+  });
 
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: err });
-    });
+  // return TaskFind
+  //   .forge({
+  //       excerpt_id : req.body.excerptId,
+  //       owner_id   : req.currentUser.attributes.id,
+  //       patches      : req.body.patches
+  //     }, { hasTimestamps: true })
+  //   .save(null, { method: 'insert' })
+  //   .then((task) => {
+
+  //     return db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
+  //       .then(result => {
+
+  //         let recommended_edits;
+  //         let patches   = task.attributes.patches;
+  //         let stage   = 'find';
+  //         let heatmap = excerpt.attributes.heatmap;
+  //         let body    = excerpt.attributes.body;
+  //         let nTasks  = parseInt(result[0].count);
+
+  //         // for each patch the user has submitted, increment the heatmap within the patch's range
+  //         for(let i=0; i<patches.length; i++) {
+  //           let patch = patches[i];
+  //           for(let j=patch[0]; j<patch[1]; j++) {
+  //             heatmap[j]++;
+  //           }
+  //         }
+
+  //         recommended_edits = aggregate(nTasks, body, heatmap);
+  //         if(recommended_edits.length > 0) stage = 'fix';
+
+  //         // update the excerpt's stage and recommended edits
+  //         return excerpt
+  //           .save({
+  //             stage,
+  //             recommended_edits,
+  //             heatmap
+  //           })
+  //           .then(result => {
+  //             res.json(result);
+  //           })
+  //           .catch(err => {
+  //             console.error(err);
+  //             res.status(500).json(err);
+  //           });
+
+  //       });
+
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //     res.status(500).json({ error: err });
+  //   });
 
 }
 
