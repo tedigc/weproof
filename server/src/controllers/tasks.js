@@ -1,7 +1,7 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate';
 import { Excerpt, Task, TaskFind, TaskFix } from '../db/models';
-import { submitFindTask, submitFixTask, submitVerifyTask } from './util/tasksubmit';
+import { submitFindTask, submitFixTask, submitVerifyTask } from '../util/submission/tasksubmit';
 import aggregate from '../util/aggregation/aggregate';
 
 import knex from 'knex';
@@ -31,7 +31,7 @@ router.get('/:filter', authenticate, (req, res) => {
       }}],
     })
     .then(tasks => {
-      
+
       let tasksFiltered = [];
       for(let i=0; i<tasks.models.length; i++) {
         let item = tasks.models[i];
@@ -39,8 +39,6 @@ router.get('/:filter', authenticate, (req, res) => {
           tasksFiltered.push(item);
         }
       }
-
-      console.log(tasksFiltered);
 
       res.json({ tasksFiltered });
     })
