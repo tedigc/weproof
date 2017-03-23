@@ -27,11 +27,9 @@ class SingleExcerpt extends React.Component {
   }
 
   render() {
-    let { title, body, created, recommendedEdits, heatmap, stage, status, tasks, acceptCorrections } = this.props;
-    let completedStyle = {
-      backgroundColor : '#4096BE',
-      color           : '#FFFFFF'
-    };
+    let { excerpt, tasks, acceptCorrections } = this.props;
+    let { title, body, created, stage, status } = excerpt;
+    let completedStyle = { backgroundColor : '#4096BE', color : '#FFFFFF' };
 
     return (
       <Table.Row>
@@ -47,13 +45,7 @@ class SingleExcerpt extends React.Component {
 
         <ExcerptSummary
           isOpen={this.state.modalOpen}
-          title={title}
-          body={body}
-          created={created}
-          recommendedEdits={recommendedEdits}
-          heatmap={heatmap}
-          stage={stage}
-          status={status}
+          excerpt={excerpt}
           close={this.handleClose}
           tasks={tasks}
           acceptCorrections={acceptCorrections}
@@ -65,16 +57,8 @@ class SingleExcerpt extends React.Component {
 
 }
 
-SingleExcerpt.propTypes ={
-  id                : React.PropTypes.number.isRequired,
-  title             : React.PropTypes.string.isRequired,
-  body              : React.PropTypes.string.isRequired,
-  ownerId           : React.PropTypes.number.isRequired,
-  created           : React.PropTypes.string.isRequired,
-  recommendedEdits  : React.PropTypes.array.isRequired,
-  heatmap           : React.PropTypes.array.isRequired,
-  stage             : React.PropTypes.string.isRequired,
-  status            : React.PropTypes.string.isRequired,
+SingleExcerpt.propTypes = {
+  excerpt           : React.PropTypes.object.isRequired,
   tasks             : React.PropTypes.object.isRequired,
   acceptCorrections : React.PropTypes.func.isRequired
 };

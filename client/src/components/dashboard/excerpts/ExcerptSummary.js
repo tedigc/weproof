@@ -42,11 +42,10 @@ class ExcerptSummary extends React.Component {
 
   render() {
 
-    let { isOpen, close, title, body, created, recommendedEdits, heatmap, stage, status, tasks, acceptCorrections } = this.props;
+    let { excerpt, tasks, isOpen, close, acceptCorrections } = this.props;
+    let { title, body, stage, status, created, recommendedEdits } = excerpt;
     let { activeItem, selectedCorrection } = this.state;
     let { tasksFind, tasksFix, tasksVerify } = tasks;
-
-    console.log(recommendedEdits);
     
     let completedString;
     if(stage !== 'complete') {
@@ -110,47 +109,61 @@ class ExcerptSummary extends React.Component {
       <Modal 
         open={isOpen}
         onClose={this.close}
-        closeIcon='close'>
+        closeIcon='close'
+      >
         <Header>{title} <span style={{ color : '#9B9B9B', fontWeight: 100}}> - {created} </span></Header>
         <Modal.Content>
+          <Grid>
+          <Grid.Row>
 
-            <Grid>
-              <Grid.Row>
+            {/* Excerpt segment */}
+            <Grid.Column width={11}>
+              <Segment size="large" style={styles.excerpt}>
+                {excerptText}      
+                <Label attached='bottom left'>Excerpt</Label>          
+              </Segment>
+            </Grid.Column>
 
-                {/* Excerpt segment */}
-                <Grid.Column width={11}>
-                  <Segment size="large" style={styles.excerpt}>
-                    {excerptText}      
-                    <Label attached='bottom left'>Excerpt</Label>          
-                  </Segment>
-                </Grid.Column>
+            {/* Side Options */}
+            <Grid.Column width={5}>
 
-                {/* Side Options */}
-                <Grid.Column width={5}>
+              {/* Top Menu Bar */}
+              <Menu compact widths={3} tabular attached='top' style={{ height : MENU_BAR_HEIGHT }}>
+                
+                {/* summary tab */}
+                <Menu.Item name='summary'      active={activeItem === 'summary'    } onClick={() => { this.setMenuItem('summary') }} >
+                  <Icon name='unordered list'/>
+                </Menu.Item>
 
-                  {/* Top Menu Bar */}
-                  <Menu compact widths={3} tabular attached='top' style={{ height : MENU_BAR_HEIGHT }}>
-                    <Menu.Item name='summary'      active={activeItem === 'summary'    } onClick={() => { this.setMenuItem('summary') }} >
-                      <Icon name='unordered list'/>
-                    </Menu.Item>
-                    <Menu.Item name='corrections'  style={(accepted) ? undefined : disabledStyle} active={activeItem === 'corrections'} onClick={() => { this.setMenuItem('corrections') }} >
-                      <Icon name='checkmark'/>
-                    </Menu.Item>
-                    <Menu.Item name='heatmap'      style={(accepted) ? undefined : disabledStyle} active={activeItem === 'heatmap'    } onClick={() => { this.setMenuItem('heatmap') }} >
-                      <Icon name='fire'/>
-                    </Menu.Item>
-                  </Menu>
+                {/* corrections tab */}
+                <Menu.Item name='corrections'  
+                  style={(accepted) ? undefined : disabledStyle} 
+                  active={activeItem === 'corrections'} 
+                  onClick={() => { this.setMenuItem('corrections') }} 
+                >
+                  <Icon name='checkmark'/>
+                </Menu.Item>
 
-                  {/* Menu Item on display */}
-                  <Segment attached='bottom' style={{ height: EXCERPT_HEIGHT - MENU_BAR_HEIGHT, overflowY: 'auto', overflowX: 'hidden' }}>
-                    {sideMenuComponent}
-                  </Segment>
+                {/* heatmap tab */}
+                <Menu.Item name='heatmap'      
+                  style={(accepted) ? undefined : disabledStyle} 
+                  active={activeItem === 'heatmap'} 
+                  onClick={() => { this.setMenuItem('heatmap') }} 
+                >
+                  <Icon name='fire'/>
+                </Menu.Item>
 
-                </Grid.Column>
+              </Menu>
 
-              </Grid.Row>
-            </Grid>
+              {/* Menu Item on display */}
+              <Segment attached='bottom' style={{ height: EXCERPT_HEIGHT - MENU_BAR_HEIGHT, overflowY: 'auto', overflowX: 'hidden' }}>
+                {sideMenuComponent}
+              </Segment>
 
+            </Grid.Column>
+
+          </Grid.Row>
+          </Grid>
         </Modal.Content>
       </Modal>
     );
@@ -159,16 +172,10 @@ class ExcerptSummary extends React.Component {
 }
 
 ExcerptSummary.propTypes = {
-  isOpen            : React.PropTypes.bool.isRequired,
-  title             : React.PropTypes.string.isRequired,
-  body              : React.PropTypes.string.isRequired,
-  created           : React.PropTypes.string.isRequired,
-  recommendedEdits  : React.PropTypes.array.isRequired,
-  heatmap           : React.PropTypes.array.isRequired,
-  stage             : React.PropTypes.string.isRequired,
-  status            : React.PropTypes.string.isRequired,
-  close             : React.PropTypes.func.isRequired,
+  excerpt           : React.PropTypes.object.isRequired,
   tasks             : React.PropTypes.object.isRequired,
+  isOpen            : React.PropTypes.bool.isRequired,
+  close             : React.PropTypes.func.isRequired,
   acceptCorrections : React.PropTypes.func.isRequired
 };
 

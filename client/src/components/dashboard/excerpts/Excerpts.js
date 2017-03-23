@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import { Menu, Button, Modal, Header, Icon, Dimmer, Loader, Item } from 'semantic-ui-react';
 import { Button, Dimmer, Divider, Header, Icon, Loader, Menu, Modal, Table } from 'semantic-ui-react';
 import moment from 'moment';
 import PageHeader from '../PageHeader';
@@ -73,51 +72,55 @@ class Excerpts extends React.Component {
     // if(error) {
     //   tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
     // } else {
-      tableComponent = <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
-                          <Dimmer active={self.state.loading} inverted>
-                            <Loader inverted>Loading</Loader>
-                          </Dimmer>
-                          <Table.Header>
-                            <Table.Row>
-                              <Table.HeaderCell>Title</Table.HeaderCell>
-                              <Table.HeaderCell>Preview</Table.HeaderCell>
-                              <Table.HeaderCell>Created</Table.HeaderCell>
-                              <Table.HeaderCell>Stage</Table.HeaderCell> 
-                              <Table.HeaderCell>Status</Table.HeaderCell>
-                              <Table.HeaderCell></Table.HeaderCell>
-                            </Table.Row>
-                          </Table.Header>
+      tableComponent = (
+      <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
+        <Dimmer active={self.state.loading} inverted>
+          <Loader inverted>Loading</Loader>
+        </Dimmer>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Title</Table.HeaderCell>
+            <Table.HeaderCell>Preview</Table.HeaderCell>
+            <Table.HeaderCell>Created</Table.HeaderCell>
+            <Table.HeaderCell>Stage</Table.HeaderCell> 
+            <Table.HeaderCell>Status</Table.HeaderCell>
+            <Table.HeaderCell></Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
 
-                          {/* Item list of available tasks */}
-                          <Table.Body>
-                            {Object.keys(self.state.excerpts).map(function(key, idx) {
-                              let item = self.state.excerpts[key];
-                              let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, status } = item.attributes;
-                              let tasks = {
-                                tasksFind   : item.tasksFind,
-                                tasksFix    : item.tasksFix,
-                                tasksVerify : item.tasksVerify
-                              };
-                              let createdAtObj = moment(created_at).toDate();
+        {/* Item list of available tasks */}
+        <Table.Body>
+          {Object.keys(self.state.excerpts).map(function(key, idx) {
+            let item = self.state.excerpts[key];
+            let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, status } = item.attributes;
+            let excerpt = {
+              id, 
+              title, 
+              body,
+              ownerId : parseInt(owner_id, 10),
+              created : moment(created_at).toDate().toDateString(),
+              heatmap, 
+              recommended_edits,
+              stage, 
+              status
+            };
 
-                              return <SingleExcerpt
-                                      key={idx}
-                                      id={id}
-                                      title={title}
-                                      body={body}
-                                      ownerId={parseInt(owner_id, 10)}
-                                      created={createdAtObj.toDateString()}
-                                      recommendedEdits={recommended_edits}
-                                      heatmap={heatmap}
-                                      stage={stage}
-                                      status={status}
-                                      tasks={tasks}
-                                      acceptCorrections={self.acceptExcerptCorrections.bind(null, idx, id)}
-                                    />
-                            })}
-                          </Table.Body>
-                        </Dimmer.Dimmable>
-    // }
+            let tasks = {
+              tasksFind   : item.tasksFind,
+              tasksFix    : item.tasksFix,
+              tasksVerify : item.tasksVerify
+            };
+
+            return <SingleExcerpt
+                    key={idx}
+                    excerpt={excerpt}
+                    tasks={tasks}
+                    acceptCorrections={self.acceptExcerptCorrections.bind(null, idx, id)}
+                  />
+          })}
+        </Table.Body>
+      </Dimmer.Dimmable>
+      );
 
     return (
       <div>

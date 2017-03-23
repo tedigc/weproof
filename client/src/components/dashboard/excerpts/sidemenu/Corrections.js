@@ -32,7 +32,7 @@ class Corrections extends React.Component {
 
   render() {
     let { selectedCorrection } = this.state;
-    let { accepted, tasksFix } = this.props;
+    let { tasksFix } = this.props;
 
     return (
       <div>
