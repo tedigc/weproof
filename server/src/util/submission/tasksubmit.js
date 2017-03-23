@@ -60,8 +60,6 @@ export function submitFindTask(req, res, excerpt) {
                   recommended_edits = aggregate(nTasks, body, heatmap);
                   if(recommended_edits.length > 0) stage = 'fix';
 
-                  console.log(' > recommended_edits ' + recommended_edits);
-
                   // update the excerpt's stage and recommended edits
                   return excerpt
                     .save({
@@ -70,7 +68,6 @@ export function submitFindTask(req, res, excerpt) {
                       heatmap
                     }, { transacting : t })
                     .then(result => {
-                      console.log('ayy lmao');
                       resolve(result);
                     })
                     .catch(err => {
@@ -78,11 +75,10 @@ export function submitFindTask(req, res, excerpt) {
                     });
 
                 });
-
         });
       });
   })
-  .then(model => {
+  .then(excerpt => {
     res.json({ success : true });
   })
   .catch(err => {
@@ -90,114 +86,66 @@ export function submitFindTask(req, res, excerpt) {
     res.status(500).json(err);
   });
 
-  // return TaskFind
-  //   .forge({
-  //       excerpt_id : req.body.excerptId,
-  //       owner_id   : req.currentUser.attributes.id,
-  //       patches      : req.body.patches
-  //     }, { hasTimestamps: true })
-  //   .save(null, { method: 'insert' })
-  //   .then((task) => {
-
-  //     return db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
-  //       .then(result => {
-
-  //         let recommended_edits;
-  //         let patches   = task.attributes.patches;
-  //         let stage   = 'find';
-  //         let heatmap = excerpt.attributes.heatmap;
-  //         let body    = excerpt.attributes.body;
-  //         let nTasks  = parseInt(result[0].count);
-
-  //         // for each patch the user has submitted, increment the heatmap within the patch's range
-  //         for(let i=0; i<patches.length; i++) {
-  //           let patch = patches[i];
-  //           for(let j=patch[0]; j<patch[1]; j++) {
-  //             heatmap[j]++;
-  //           }
-  //         }
-
-  //         recommended_edits = aggregate(nTasks, body, heatmap);
-  //         if(recommended_edits.length > 0) stage = 'fix';
-
-  //         // update the excerpt's stage and recommended edits
-  //         return excerpt
-  //           .save({
-  //             stage,
-  //             recommended_edits,
-  //             heatmap
-  //           })
-  //           .then(result => {
-  //             res.json(result);
-  //           })
-  //           .catch(err => {
-  //             console.error(err);
-  //             res.status(500).json(err);
-  //           });
-
-  //       });
-
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //     res.status(500).json({ error: err });
-  //   });
-
 }
 
 export function submitFixTask(req, res, excerpt) {
 
-  return TaskFix
-    .forge({
-      excerpt_id  : req.body.excerptId,
-      owner_id    : req.currentUser.attributes.id,
-      chosen_edit : req.body.chosenEdit,
-      correction  : req.body.correction
-    }, { hasTimestamps: true })
-    .save(null, { method: 'insert' })
-    .then(submittedTask => {
+  return bookshelf.transaction(t => {
+    return TaskFix
+      .forge({
+        excerpt_id  : req.body.excerptId,
+        owner_id    : req.currentUser.attributes.id,
+        chosen_edit : req.body.chosenEdit,
+        correction  : req.body.correction
+      }, { hasTimestamps: true })
+      .save(null, { transacting : t, method: 'insert' })
+      .then(submittedTask => {
 
-      return TaskFix
-        .query({
-          where : { excerpt_id : req.body.excerptId },
-          select: [ 'id', 'chosen_edit' ]
-        })
-        .fetchAll()
-        .then(tasks => {
+        return new Promise((resolve, reject) => {
 
-          // count the number of submissions for each recommended edits
-
-          let submissionCounter = new Array(excerpt.attributes.recommended_edits.length).fill(0);
-          for(let task of tasks.models) {
-            let idx = task.attributes.chosen_edit;
-            submissionCounter[idx]++;
-          }
-          
-          // if there are at least N fixes for each recommended edit, progress to the 'verify' stage
-          let minCount = Math.min.apply(Math, submissionCounter);
-          let stage = (minCount >= MINIMUM_FIX_TASK_SUBMISSIONS) ? 'verify' : 'fix';
-          
-          return excerpt
-            .save({ stage })
-            .then((result) => {
-              res.json(result);
+          return TaskFix
+            .query({
+              where : { excerpt_id : req.body.excerptId },
+              select: [ 'id', 'chosen_edit' ]
             })
-            .catch(err => {
-              console.error(err);
-              res.status(500).json(err);
+            .fetchAll({ transacting : t })
+            .then(tasks => {
+
+              // count the number of submissions for each recommended edits
+
+              let submissionCounter = new Array(excerpt.attributes.recommended_edits.length).fill(0);
+              for(let task of tasks.models) {
+                let idx = task.attributes.chosen_edit;
+                submissionCounter[idx]++;
+              }
+              
+              // if there are at least N fixes for each recommended edit, progress to the 'verify' stage
+              let minCount = Math.min.apply(Math, submissionCounter);
+              let stage = (minCount >= MINIMUM_FIX_TASK_SUBMISSIONS) ? 'verify' : 'fix';
+
+              return excerpt
+                .save({ 
+                  stage 
+                }, { transacting : t })
+                .then(result => {
+                  resolve(result);
+                })
+                .catch(err => {
+                  reject(err);
+                });
+
             });
+        }); // promise
+      }); // forge
 
-        })
-        .catch(err => {
-          console.error(err);
-          res.status(500).json(err);
-        });
-
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json(err);
-    });
+  })
+  .then(excerpt => {
+    res.json({ success : true });
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json(err);
+  });
 
 }
 
