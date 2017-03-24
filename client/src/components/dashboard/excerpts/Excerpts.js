@@ -10,12 +10,13 @@ import Error from '../../error/Error';
 
 class Excerpts extends React.Component {
 
-    state = {
-      excerpts : [],
-      loading  : true,
-      modalOpen: false,
-      error    : {}
-    }
+  state = {
+    excerpts : [],
+    loading  : true,
+    filter   : 'all',
+    modalOpen: false,
+    error    : undefined
+  }
 
   constructor(props) {
     super(props);
@@ -23,6 +24,8 @@ class Excerpts extends React.Component {
     this.handleOpen               = this.handleOpen.bind(this);
     this.handleClose              = this.handleClose.bind(this);
     this.acceptExcerptCorrections = this.acceptExcerptCorrections.bind(this);
+    this.setFilter                = this.setFilter.bind(this);
+    this.excerptTableRows         = this.excerptTableRows.bind(this);
   }
 
   componentWillMount() {
@@ -30,19 +33,21 @@ class Excerpts extends React.Component {
   }
 
   refreshExcerpts() {
-    this.setState({loading: true});
+    this.setState({ loading : true });
     this.props.fetchExcerpts()
       .then(
         (res) => {
           this.setState({
             excerpts: res.data,
-            loading : false
+            loading : false,
+            error   : undefined
           });
         },
         (err) => {
           console.error(err);
           this.setState({
-            loading : false
+            loading : false,
+            error   : err
           });
         }
       );
@@ -62,10 +67,6 @@ class Excerpts extends React.Component {
   
   acceptExcerptCorrections(excerptIndex, excerptId) {
 
-    console.log('> accepting excerpt ' + excerptId);
-    console.log(excerptIndex);
-    console.log(excerptId);
-
     this.props.acceptExcerpt({ excerptId })
       .then(
         res => {
@@ -73,69 +74,99 @@ class Excerpts extends React.Component {
           excerpts[excerptIndex] = res.data.excerptToReturn;
           this.setState(excerpts);
         },
-        err => {
-          console.error(err);
-        }
+        err => { console.error(err); }
       );
 
   }
 
-  render() {
+  setFilter(filter) {
+    this.setState({ filter });
+  }
+
+  excerptTableRows() {
     let self = this;
-    let { filter, error } = this.state;
+    let { excerpts, filter } = this.state;
+    let emptyRowCounter = 0;
+    let tableRows = (
+      Object.keys(excerpts).map(function(key, idx) {
+        let item = excerpts[key];
+        let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, accepted } = item.attributes;
+
+        if(filter !== 'all') {
+          let status = (accepted) ? 'accepted' : 'pending';
+          if(status !== filter) {
+            emptyRowCounter++;            
+            return undefined;
+          }
+        }
+
+        let excerpt = {
+          id, 
+          title, 
+          body,
+          ownerId : parseInt(owner_id, 10),
+          created : moment(created_at).toDate().toDateString(),
+          heatmap, 
+          recommendedEdits : recommended_edits,
+          stage, 
+          accepted
+        };
+
+        let tasks = {
+          tasksFind   : item.tasksFind,
+          tasksFix    : item.tasksFix,
+          tasksVerify : item.tasksVerify
+        };
+
+        return <ExcerptRow
+                key={idx}
+                excerpt={excerpt}
+                tasks={tasks}
+                acceptCorrections={self.acceptExcerptCorrections.bind(null, idx, id)}
+              />;
+      }));
+    
+    // if none of the rows matched the filter, return an empty array so we can display an error message
+    if(tableRows.length === emptyRowCounter) tableRows = [];
+
+    return tableRows;
+  }
+
+  render() {
+    let { excerpts, loading, filter, error } = this.state;
     let tableComponent;
-    // if(error) {
-    //   tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
-    // } else {
-    tableComponent = (
-      <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
-        <Dimmer active={self.state.loading} inverted>
-          <Loader inverted>Loading</Loader>
-        </Dimmer>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Title</Table.HeaderCell>
-            <Table.HeaderCell>Preview</Table.HeaderCell>
-            <Table.HeaderCell>Created</Table.HeaderCell>
-            <Table.HeaderCell>Stage</Table.HeaderCell> 
-            <Table.HeaderCell>Status</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+    let self = this;
 
-        {/* Item list of available tasks */}
-        <Table.Body>
-          {Object.keys(self.state.excerpts).map(function(key, idx) {
-            let item = self.state.excerpts[key];
-            let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, accepted } = item.attributes;
-            let excerpt = {
-              id, 
-              title, 
-              body,
-              ownerId : parseInt(owner_id, 10),
-              created : moment(created_at).toDate().toDateString(),
-              heatmap, 
-              recommendedEdits : recommended_edits,
-              stage, 
-              accepted
-            };
+    let tableRows = this.excerptTableRows();
+    
+    if(error) {
+      tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
+    } else if (tableRows.length === 0) {
+      tableComponent = <Error icon='file outline' header="No Excerpts" message={(filter === 'all') ? 'You currently have no excerpts. Click the button above to create one.' : 'You have no ' + filter + ' excerpts.'} />;
+    } else {
+      tableComponent = (
+        <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={loading}>
+          <Dimmer active={loading} inverted>
+            <Loader inverted>Loading</Loader>
+          </Dimmer>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Title</Table.HeaderCell>
+              <Table.HeaderCell>Preview</Table.HeaderCell>
+              <Table.HeaderCell>Created</Table.HeaderCell>
+              <Table.HeaderCell>Stage</Table.HeaderCell> 
+              <Table.HeaderCell>Status</Table.HeaderCell>
+              <Table.HeaderCell></Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
 
-            let tasks = {
-              tasksFind   : item.tasksFind,
-              tasksFix    : item.tasksFix,
-              tasksVerify : item.tasksVerify
-            };
-
-            return <ExcerptRow
-                    key={idx}
-                    excerpt={excerpt}
-                    tasks={tasks}
-                    acceptCorrections={self.acceptExcerptCorrections.bind(null, idx, id)}
-                  />
-          })}
-        </Table.Body>
-      </Dimmer.Dimmable>
-    );
+          {/* Item list of available tasks */}
+          <Table.Body>
+            {tableRows}
+          </Table.Body>
+        </Dimmer.Dimmable>
+      );
+    }
 
     return (
       <div>
