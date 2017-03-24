@@ -12,14 +12,7 @@ let router = express.Router();
 
 // Fetch all tasks submitted by the current user
 //
-router.get('/:filter', authenticate, (req, res) => {
-
-  let filter = req.params.filter;
-  let status = (filter === 'all') ? undefined : filter;
-
-  if(filter === 'all')      status = undefined;
-  if(filter === 'accepted') status = true;
-  if(filter === 'pending')  status = false;
+router.get('/', authenticate, (req, res) => {
 
   Task
     .query({
@@ -27,20 +20,15 @@ router.get('/:filter', authenticate, (req, res) => {
     })
     .fetchAll({
       withRelated: [{ 'excerpt' : qb => {
-        qb.column('id', 'title', 'body', 'accepted'); 
+        qb.column('id', 'body', 'accepted'); 
       }}],
     })
     .then(tasks => {
 
-      let tasksFiltered = [];
-      for(let i=0; i<tasks.models.length; i++) {
-        let item = tasks.models[i];
-        if(filter === 'all' || item.relations.excerpt.attributes.accepted === status) {
-          tasksFiltered.push(item);
-        }
-      }
+      console.log(tasks);
 
-      res.json({ tasksFiltered });
+      res.json({ tasks });
+
     })
     .catch(err => {
       console.error(err);
@@ -82,7 +70,7 @@ router.post('/', authenticate, (req, res) => {
 
 // Get all tasks available for completion to the logged in user
 //
-router.get('/available/:filter', authenticate, (req, res) => {
+router.get('/available', authenticate, (req, res) => {
 
   // Find all the excerpt ids of task submissions the user has made
   Task
@@ -100,24 +88,13 @@ router.get('/available/:filter', authenticate, (req, res) => {
 
       // exclude any excerpts that the user has already submitted a task for, and exclude tasks that are completed
 
-      let filter = req.params.filter;
-      let stage = (filter === 'all') ? undefined : filter;
-
       Excerpt
         .query((qb) => {
 
-          if(stage === undefined) {
-            qb
-              .where('id', 'not in', submittedTaskExcerptIDs)
-              .andWhere('owner_id', '!=', req.currentUser.id )
-              .andWhere('stage', '<>', 'complete');
-          } else {
-            qb
-              .where('id', 'not in', submittedTaskExcerptIDs)
-              .andWhere('owner_id', '!=', req.currentUser.id )
-              .andWhere('stage', stage)
-              .andWhere('stage', '<>', 'complete');
-          }
+          qb
+            .where('id', 'not in', submittedTaskExcerptIDs)
+            .andWhere('owner_id', '!=', req.currentUser.id )
+            .andWhere('stage', '<>', 'complete');
           
         })
         .fetchAll()

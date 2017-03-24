@@ -86,7 +86,8 @@ class Excerpts extends React.Component {
   excerptTableRows() {
     let self = this;
     let { excerpts, filter } = this.state;
-    let emptyRowCounter = 0;
+
+
     let tableRows = (
       Object.keys(excerpts).map(function(key, idx) {
         let item = excerpts[key];
@@ -133,12 +134,13 @@ class Excerpts extends React.Component {
   }
 
   render() {
-    let { excerpts, loading, filter, error } = this.state;
-    let tableComponent;
+    
     let self = this;
+    let { excerpts, loading, filter, error } = this.state;
 
     let tableRows = this.excerptTableRows();
-    
+    let tableComponent;
+
     if(error) {
       tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
     } else if (tableRows.length === 0) {
@@ -146,9 +148,13 @@ class Excerpts extends React.Component {
     } else {
       tableComponent = (
         <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={loading}>
+
+          {/* Loading icon */}
           <Dimmer active={loading} inverted>
             <Loader inverted>Loading</Loader>
           </Dimmer>
+
+          {/* Table Headers */}
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Title</Table.HeaderCell>
@@ -160,10 +166,11 @@ class Excerpts extends React.Component {
             </Table.Row>
           </Table.Header>
 
-          {/* Item list of available tasks */}
+          {/* Table Rows for each available task */}
           <Table.Body>
             {tableRows}
           </Table.Body>
+
         </Dimmer.Dimmable>
       );
     }
@@ -196,6 +203,7 @@ class Excerpts extends React.Component {
         {/* Table or error message */}
         {tableComponent}
 
+        {/* Modal for Excerpt Submit Form */}
         <Modal 
           open={this.state.modalOpen}
           onClose={this.handleClose}

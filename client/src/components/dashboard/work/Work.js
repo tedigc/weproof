@@ -17,9 +17,12 @@ class Work extends React.Component {
   }
 
   constructor(props) {
+
     super(props);
-    this.refreshTasks = this.refreshTasks.bind(this);
-    this.setFilter = this.setFilter.bind(this);
+    this.refreshTasks  = this.refreshTasks.bind(this);
+    this.setFilter     = this.setFilter.bind(this);
+    this.taskTableRows = this.taskTableRows.bind(this);
+
   }
 
   componentWillMount() {
@@ -29,20 +32,12 @@ class Work extends React.Component {
   refreshTasks(e) {
     if(e !== undefined) e.preventDefault();
     this.setState({ loading : true });
-    this.props.fetchAvailableTasks(this.state.filter)
+    this.props.fetchAvailableTasks()
       .then(
         (res) => {
-          let error = undefined;
-          if(res.data.length === 0) {
-            error = {};
-            error.icon = 'tasks';
-            error.header = 'No tasks';
-            error.message = 'There are no tasks currently available to you. Check back later.';
-          }
           this.setState({ 
             loading : false,
             tasks   : res.data,
-            error
           });
         },
         (err) => {
@@ -56,49 +51,74 @@ class Work extends React.Component {
   }
 
   setFilter(filter) {
-    this.setState({ filter }, () => { this.refreshTasks(); });
+    this.setState({ filter });
+  }
+
+  taskTableRows() {
+
+    let { tasks, filter } = this.state;
+    let tableRows = [];
+
+    tasks.forEach((task, i) => {
+
+      let { id, stage, body, created_at } = task;
+      let createdAtObj = moment(created_at).toDate();
+
+      if(filter === 'all' || filter === stage) {
+        let row = (
+          <SingleTask
+            key={i}
+            id={id}
+            stage={stage}
+            body={body}
+            created={createdAtObj.toDateString()}
+          />
+        );
+        tableRows.push(row);
+      }
+
+    });
+
+    return tableRows;
   }
 
   render() {
     let self = this;
     let { filter, error } = this.state;
     let tableComponent;
+    let tableRows = this.taskTableRows();
+
     if(error) {
       tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
+    } else if(tableRows.length === 0) {
+      tableComponent = <Error icon='tasks' header='No Tasks' message='There are no tasks currently available to you. Check back later.' />;
     } else {
-      tableComponent = <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
-                          <Dimmer active={self.state.loading} inverted>
-                            <Loader inverted>Loading</Loader>
-                          </Dimmer>
-                          <Table.Header>
-                            <Table.Row>
-                              <Table.HeaderCell></Table.HeaderCell>
-                              <Table.HeaderCell>Stage</Table.HeaderCell>
-                              <Table.HeaderCell>Preview</Table.HeaderCell>
-                              <Table.HeaderCell>Created</Table.HeaderCell>
-                              <Table.HeaderCell></Table.HeaderCell>
-                            </Table.Row>
-                          </Table.Header>
+      tableComponent = ( 
+        <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={this.state.loading}>
 
-                          {/* Item list of available tasks */}
-                          <Table.Body>
-                          {self.state.tasks.map((task, index) => {
-                            if(self.state.filter !== 'all' && self.state.filter !== task.stage) {
-                              return undefined
-                            } else { 
-                              let { id, stage, body, created_at } = task;
-                              let createdAtObj = moment(created_at).toDate();
-                              return <SingleTask
-                                          key={index}
-                                          id={id}
-                                          stage={stage}
-                                          body={body}
-                                          created={createdAtObj.toDateString()}
-                                        />;
-                            }
-                          })}
-                          </Table.Body>
-                        </Dimmer.Dimmable>
+          {/* Loading Icon */}
+          <Dimmer active={self.state.loading} inverted>
+            <Loader inverted>Loading</Loader>
+          </Dimmer>
+
+          {/* Table Headers */}
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell></Table.HeaderCell>
+              <Table.HeaderCell>Stage</Table.HeaderCell>
+              <Table.HeaderCell>Preview</Table.HeaderCell>
+              <Table.HeaderCell>Created</Table.HeaderCell>
+              <Table.HeaderCell></Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+
+          {/* Item list of available tasks */}
+          <Table.Body>
+          {tableRows}
+          </Table.Body>
+
+        </Dimmer.Dimmable>
+      );
     }
 
     return (

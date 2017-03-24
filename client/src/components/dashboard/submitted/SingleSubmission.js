@@ -24,8 +24,8 @@ class SingleSubmission extends React.Component {
 SingleSubmission.propTypes = {
   id       : React.PropTypes.number.isRequired,
   body     : React.PropTypes.string.isRequired,
-  accepted : React.PropTypes.string.isRequired,
-  created  : React.PropTypes.string.isRequired
+  created  : React.PropTypes.string.isRequired,
+  accepted : React.PropTypes.bool.isRequired
 };
 
 export default SingleSubmission;

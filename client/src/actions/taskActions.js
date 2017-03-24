@@ -12,15 +12,15 @@ export function fetchSingleTask(id) {
   };
 };
 
-export function fetchAvailableTasks(filter) {
+export function fetchAvailableTasks() {
   return dispatch => {
-    return axios.get('/api/tasks/available/' + filter);
+    return axios.get('/api/tasks/available');
   };
 };
 
-export function fetchTasks(filter) {
+export function fetchTasks() {
   return dispatch => {
-    return axios.get('/api/tasks/' + filter);
+    return axios.get('/api/tasks');
   };
 };
 
