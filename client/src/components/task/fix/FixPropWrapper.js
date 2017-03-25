@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Dimmer, Loader } from 'semantic-ui-react';
 import Fix from './Fix';
 import { fetchFixTask } from '../../../actions/taskActions';
 
@@ -22,7 +23,6 @@ class FixPropWrapper extends React.Component {
 
   componentWillMount() {
     let { excerpt, fetchFixTask } = this.props;
-
     fetchFixTask(excerpt.id)
       .then(
         res => {
@@ -40,18 +40,31 @@ class FixPropWrapper extends React.Component {
   }
 
   render() {
-    let fixComponent = <Fix 
-                          excerpt={this.props.excerpt} 
-                          chosenEdit={this.state.chosenEdit} 
-                          patch={this.state.patch}
-                        />
-    return (this.state.loading) ? <div>Loading...</div> : fixComponent;
+
+    let { loading, chosenEdit, patch } = this.state;
+    let { excerpt } = this.props;
+
+    let fixComponent = (
+      <Fix 
+        excerpt={excerpt} 
+        chosenEdit={chosenEdit} 
+        patch={patch}
+      />
+    );
+
+    let loadingComponent = (
+      <Dimmer active>
+        <Loader />
+      </Dimmer>
+    );
+    
+    return (loading) ? loadingComponent : fixComponent;
   }
 
 }
 
 FixPropWrapper.propTypes = {
-  excerpt         : React.PropTypes.object.isRequired,
+  excerpt      : React.PropTypes.object.isRequired,
   fetchFixTask : React.PropTypes.func.isRequired
 };
 

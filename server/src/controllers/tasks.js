@@ -44,7 +44,7 @@ router.post('/', authenticate, (req, res) => {
   Excerpt
     .query({
       where: { id : excerptId },
-      select: ['id', 'title', 'body', 'heatmap', 'recommended_edits']
+      select: ['id', 'title', 'body', 'stage', 'heatmap', 'recommended_edits']
     })
     .fetch()
     .then(excerpt => {
@@ -52,20 +52,24 @@ router.post('/', authenticate, (req, res) => {
         res.status(500).json({ error : "No such excerpt" });
       } else {
 
-        Task
-          .query({ 
-            where : {
-              owner_id   : req.currentUser.attributes.id,
-              excerpt_id : excerptId
+        // check that the excerpt stage and task type match
+        if(excerpt.attributes.stage !== taskType) {
+          res.status(403).json({ error : 'The excerpt has progressed to the next stage and is no longer accepting ' + taskType + ' tasks.'});
+          return;
+        }
+
+        // check if the user has already submitted a task for this excerpt
+        db('tasks').where('excerpt_id', excerptId).andWhere('owner_id', req.currentUser.attributes.id).countDistinct('id')
+          .then(result => {
+            let nTasks = parseInt(result[0].count);
+            if(nTasks === 0) {
+              if(taskType === "find")   return submitFindTask(req, res, excerpt);
+              if(taskType === "fix")    return submitFixTask(req, res, excerpt);
+              if(taskType === "verify") return submitVerifyTask(req, res, excerpt);
+            } else {
+              res.status(403).json({ error : 'You have already submitted a task for this excerpt' });
+              return;
             }
-          })
-          .fetchAll()
-          .then(tasks => {
-
-            if(taskType === "find")   return submitFindTask(req, res, excerpt);
-            if(taskType === "fix")    return submitFixTask(req, res, excerpt);
-            if(taskType === "verify") return submitVerifyTask(req, res, excerpt);
-
           })
           .catch(err => {
             console.error(err);

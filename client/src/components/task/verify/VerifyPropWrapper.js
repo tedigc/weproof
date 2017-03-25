@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Dimmer, Loader } from 'semantic-ui-react';
 import Verify from './Verify';
 import { fetchVerifyTask } from '../../../actions/taskActions';
 
@@ -23,6 +24,7 @@ class VerifyPropWrapper extends React.Component {
   }
 
   componentWillMount() {
+
     let { excerpt, fetchVerifyTask } = this.props;
 
     fetchVerifyTask(excerpt.id)
@@ -47,14 +49,27 @@ class VerifyPropWrapper extends React.Component {
   }
 
   render() {
-    let verifyComponent = <Verify 
-                            excerpt={this.props.excerpt} 
-                            chosenEdit={this.state.chosenEdit} 
-                            correction={this.state.correction}
-                            patch={this.state.patch}
-                            taskFixId={this.state.taskFixId}
-                          />
-    return (this.state.loading) ? <div>Loading...</div> : verifyComponent;
+
+    let { loading, chosenEdit, correction, patch, taskFixId } = this.state;
+    let { excerpt } = this.props;
+
+    let verifyComponent = (
+      <Verify 
+        excerpt={excerpt} 
+        chosenEdit={chosenEdit} 
+        correction={correction}
+        patch={patch}
+        taskFixId={taskFixId}
+      />
+    );
+
+    let loadingComponent = (
+      <Dimmer active>
+        <Loader />
+      </Dimmer>
+    );
+
+    return (loading) ? loadingComponent : verifyComponent;
   }
 
 }

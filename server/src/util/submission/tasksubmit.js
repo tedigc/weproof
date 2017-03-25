@@ -154,56 +154,55 @@ export function submitVerifyTask(req, res, excerpt) {
   return bookshelf.transaction(t => {
 
     return TaskVerify
-        .forge({
-          excerpt_id   : req.body.excerptId,
-          owner_id     : req.currentUser.attributes.id,
-          tasks_fix_id : req.body.taskFixId,
-          accepted     : req.body.accepted
-        }, { hasTimestamps: true })
-        .save(null, { transacting : t, method: 'insert' })
-        .then(() => {
-          return new Promise((resolve, reject) => {
+      .forge({
+        excerpt_id   : req.body.excerptId,
+        owner_id     : req.currentUser.attributes.id,
+        tasks_fix_id : req.body.taskFixId,
+        accepted     : req.body.accepted
+      }, { hasTimestamps: true })
+      .save(null, { transacting : t, method: 'insert' })
+      .then(() => {
+        return new Promise((resolve, reject) => {
 
-            return TaskFix
-              .query({
-                where : { excerpt_id : req.body.excerptId }
-              })
-              .fetchAll({
-                transacting : t,
-                withRelated : ['verifications']
-              })
-              .then(tasks => {
-                // check if all the other
-                let allCorrectionsVerified = true;
-                for(let task of tasks.models) {
-                  let verifications = task.relations.verifications;
-                  if(verifications.length < MINIMUM_VERIFICATIONS_NEEDED) {
-                    allCorrectionsVerified = false;
-                    break;
-                  }
+          return TaskFix
+            .query({
+              where : { excerpt_id : req.body.excerptId }
+            })
+            .fetchAll({
+              transacting : t,
+              withRelated : ['verifications']
+            })
+            .then(tasks => {
+              // check if all the other
+              let allCorrectionsVerified = true;
+              for(let task of tasks.models) {
+                let verifications = task.relations.verifications;
+                if(verifications.length < MINIMUM_VERIFICATIONS_NEEDED) {
+                  allCorrectionsVerified = false;
+                  break;
                 }
+              }
 
-                if(allCorrectionsVerified) {
+              if(allCorrectionsVerified) {
 
-                  // close contributions
-                  return excerpt
-                    .save({ 
-                      stage : 'complete' 
-                    }, { transacting : t })
-                    .then(updatedExcerpt => { 
-                      resolve(updatedExcerpt) ;
-                    })
-                    .catch(err => { 
-                      reject(err); 
-                    });
-                } else {
-                  resolve(excerpt);
-                }
+                // close contributions
+                return excerpt
+                  .save({ 
+                    stage : 'complete' 
+                  }, { transacting : t })
+                  .then(updatedExcerpt => { 
+                    resolve(updatedExcerpt) ;
+                  })
+                  .catch(err => { 
+                    reject(err); 
+                  });
+              } else {
+                resolve(excerpt);
+              }
 
-              });
+            });
         }); // promise;
       }); // forge;
-
   })
   .then(excerpt => {
     res.json({ success : true });

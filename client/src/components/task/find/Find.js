@@ -49,12 +49,13 @@ const styles = {
 
 class Find extends React.Component {
 
+  state = {
+    patches: [],
+    currentlySelected: -1
+  }
+
   constructor(props) {
     super(props);
-    this.state = {
-      patches: [],
-      currentlySelected: -1
-    };
     this.getHighlightedText = this.getHighlightedText.bind(this);
     this.handleHighlight = this.handleHighlight.bind(this);
     this.handleRemoveHighlight = this.handleRemoveHighlight.bind(this);
@@ -173,7 +174,8 @@ class Find extends React.Component {
   render() {
 
     let highlights;
-    if(this.state.patches.length === 0) {
+    let { patches, currentlySelected } = this.state;
+    if(patches.length === 0) {
       highlights = (
         <Header textAlign="center" as='h4'>
           <Header.Content>
@@ -187,7 +189,7 @@ class Find extends React.Component {
     } else {
       highlights = (
         <Item.Group divided style={styles.itemGroup}>
-          {this.state.patches.map((patch, index) => {
+          {patches.map((patch, index) => {
             let text = this.props.excerpt.body.slice(patch[0], patch[1]);
             return <Highlight 
                       key={index} 
@@ -196,7 +198,7 @@ class Find extends React.Component {
                       remove={this.handleRemoveHighlight.bind(null, index)}
                       mouseEnter={this.handleHighlightMouseEnter.bind(null, index)}
                       mouseLeave={this.handleHighlightMouseLeave.bind(null, index)}
-                      style={ (index === this.state.currentlySelected) ? styles.selected : styles.unselected }
+                      style={ (index === currentlySelected) ? styles.selected : styles.unselected }
                     />
           })}
         </Item.Group>
@@ -234,7 +236,7 @@ class Find extends React.Component {
                       <Button style={styles.highlightButton} content="Highlight" fluid onClick={this.handleHighlight} />
                       <Button basic content="Clear All" fluid onClick={this.handleClear}/>
                     </div>
-                    <Button style={{ marginTop: 15, backgroundColor: '#4096BE' }} fluid type='submit' primary>Submit</Button>
+                    <Button style={{ marginTop : 15, backgroundColor : '#4096BE' }} fluid type='submit' primary>Submit</Button>
                   </div>
                 </div>
               </div>

@@ -45,7 +45,9 @@ class Task extends React.Component {
 
   render() {
     let display;
-    if(this.state.loading) {
+    let { loading, excerpt } = this.state;
+
+    if(loading) {
       display = (
         <Dimmer active> 
           <Loader active inline='centered'/> 
@@ -54,9 +56,9 @@ class Task extends React.Component {
     } else {
       let task;
 
-      if(this.state.excerpt.stage === 'find')   task = <Find   excerpt={this.state.excerpt} />;
-      if(this.state.excerpt.stage === 'fix')    task = <FixPropWrapper    excerpt={this.state.excerpt} />;
-      if(this.state.excerpt.stage === 'verify') task = <VerifyPropWrapper excerpt={this.state.excerpt} />;
+      if(excerpt.stage === 'find')   task = <Find   excerpt={excerpt} />;
+      if(excerpt.stage === 'fix')    task = <FixPropWrapper    excerpt={excerpt} />;
+      if(excerpt.stage === 'verify') task = <VerifyPropWrapper excerpt={excerpt} />;
       
       display = (
         <Container>

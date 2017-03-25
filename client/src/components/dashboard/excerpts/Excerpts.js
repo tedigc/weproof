@@ -134,8 +134,7 @@ class Excerpts extends React.Component {
 
   render() {
     
-    let self = this;
-    let { excerpts, loading, modalOpen, filter, error } = this.state;
+    let { loading, modalOpen, filter, error } = this.state;
 
     let tableRows = this.excerptTableRows();
     let tableComponent;
