@@ -4,7 +4,7 @@ import { Button, Form, Header, Icon } from 'semantic-ui-react';
 import { createExcerpt } from '../../../actions/excerptActions';
 
 const MAX_TITLE_LENGTH   =  40;
-const MAX_EXCERPT_LENGTH = 700;
+const MAX_EXCERPT_LENGTH = 600;
 
 class SubmitForm extends React.Component {
 
@@ -23,7 +23,7 @@ class SubmitForm extends React.Component {
   }
 
   handleChange(e) {
-    if(e.target.name === 'body' && e.target.value.length <= MAX_EXCERPT_LENGTH) {
+    if(e.target.name === 'body') {
       this.setState({ body: e.target.value });
     }
     if(e.target.name === 'title' && e.target.value.length <= MAX_TITLE_LENGTH) {
@@ -45,17 +45,17 @@ class SubmitForm extends React.Component {
   }
 
   render() {
+
+    let { loading, title, body, submitted } = this.state;
+
     // Colour the span based on characters remaining
     let charColour = 'gray';
-    let remaining = MAX_EXCERPT_LENGTH - this.state.body.length;
-    if(remaining <= 20) {
-      charColour = 'red';
-    } else if(remaining <= 80) {
-      charColour = 'orange';
-    }
-    let spanStyle = { color: charColour }
+    let remaining = MAX_EXCERPT_LENGTH - body.length;
+    if     (remaining <= 20) charColour = 'red';
+    else if(remaining <= 80) charColour = 'orange';
+    let spanStyle = { color : charColour }
 
-    if(this.state.submitted) {
+    if(submitted) {
       return (
         <Header as='h2' textAlign="center" icon>
           <Icon name='check' />
@@ -67,11 +67,11 @@ class SubmitForm extends React.Component {
       );
     } else {
       return (
-        <Form loading={this.state.loading} onSubmit={this.handleSubmit}> 
-          <Form.Input name="title" placeholder="Title" value={this.state.title} onChange={this.handleChange} />
-          <Form.TextArea name="body" placeholder="Write your excerpt here..." value={this.state.body} onChange={this.handleChange} />
-          <Button floated="right" type='submit' style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}}>Submit</Button>
-          <span style={spanStyle} >Characters remaining: {MAX_EXCERPT_LENGTH - this.state.body.length}</span>
+        <Form loading={loading} onSubmit={this.handleSubmit}> 
+          <Form.Input name="title" placeholder="Title" value={title} onChange={this.handleChange} />
+          <Form.TextArea name="body" placeholder="Write your excerpt here..." value={body} onChange={this.handleChange} />
+          <Button floated="right" type='submit' style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}} disabled={(remaining < 0)}>Submit</Button>
+          <span style={spanStyle} >Characters remaining: {MAX_EXCERPT_LENGTH - body.length}</span>
         </Form>
       );
     }
