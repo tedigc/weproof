@@ -50,7 +50,7 @@ export function calculateFinalPatches(body, roughPatches) {
       leftIdx--;
       char = body[leftIdx];
     }
-    if(char === ' ') leftIdx;
+    if(char === ' ') leftIdx++;
 
     // march rightIdx
     let rightIdx = patch[1]-1;
@@ -59,7 +59,6 @@ export function calculateFinalPatches(body, roughPatches) {
       rightIdx++;
       char = body[rightIdx];
     }
-    if(char === ' ') rightIdx++;
 
     finalPatches.push([leftIdx, rightIdx]);
   }
