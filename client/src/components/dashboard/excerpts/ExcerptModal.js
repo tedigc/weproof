@@ -3,9 +3,25 @@ import moment from 'moment';
 import { Grid, Header, Icon, Label, Menu, Modal, Segment } from 'semantic-ui-react';
 import Summary from './sidemenu/Summary';
 import Corrections from './sidemenu/Corrections';
+import Heatmap from './sidemenu/Heatmap';
 
 const EXCERPT_HEIGHT = 400;
 const MENU_BAR_HEIGHT = 40;
+
+const COLOUR_GRADIENT = [
+  '#FF1000',
+  '#FF3000',
+  '#FF5000',
+  '#FF7000',
+  '#FF9000',
+  '#FFB000',
+  '#FFD000',
+  '#FFF000',
+  '#F0FF00',
+  '#D0FF00',
+  '#B0FF00',
+  '#90FF00',
+];
 
 const styles = {
   excerpt : {
@@ -38,12 +54,60 @@ class ExcerptModal extends React.Component {
 
   handleSelectCorrection(selectedCorrection) {
     this.setState({ selectedCorrection });
-  }                   
+  }
+
+  excerptCorrected() {
+
+    let { selectedCorrection } = this.state;
+    let { excerpt, tasks } = this.props;
+    let { body, recommendedEdits } = excerpt;
+    let selectedTaskFix = tasks.tasksFix[selectedCorrection];
+    let patch = recommendedEdits[selectedTaskFix.chosen_edit];
+
+    let preEdit    = body.slice(0, patch[0]);
+    let old        = body.slice(patch[0], patch[1]);
+    let correction = selectedTaskFix.correction;
+    let postEdit   = body.slice(patch[1], body.length-1);
+
+    return (
+      <div>
+        {preEdit}
+        <span style={{ background: '#ffc4d3', color: '#992340', textDecoration: 'line-through' }}>{old}</span>
+        <span style={{ background: '#c1d5ff', color: '#283f70' }}>{correction}</span>
+        {postEdit}
+      </div>
+    );
+  }     
+
+  excerptHeatmap() {
+
+    let { excerpt } = this.props;
+    let { body, heatmap } = excerpt;
+
+    let spans = [];
+    let leftIdx = 0;
+    let prevIntensity = heatmap[0];
+
+    for(let i=0; i<heatmap.length; i++) {
+      let currentIntensity = heatmap[i];
+      if(currentIntensity !== prevIntensity) {
+        let colourIdx = COLOUR_GRADIENT.length - 1 - Math.min(COLOUR_GRADIENT.length - 1, prevIntensity);
+        spans.push(<span key={i} style={{ color : COLOUR_GRADIENT[colourIdx] }}>{body.slice(leftIdx, i)}</span>);
+        leftIdx = i;
+      }
+      prevIntensity = currentIntensity;
+    }
+
+    let colourIdx = COLOUR_GRADIENT.length - 1 - Math.min(COLOUR_GRADIENT.length - 1, prevIntensity);
+    spans.push(<span key={spans.length} style={{ color : COLOUR_GRADIENT[colourIdx] }}>{body.slice(leftIdx, body.length)}</span>)
+
+    return spans;
+  }        
 
   render() {
 
     let { excerpt, tasks, isOpen, acceptCorrections } = this.props;
-    let { title, body, stage, accepted, created, recommendedEdits } = excerpt;
+    let { title, body, stage, accepted, created } = excerpt;
     let { activeItem, selectedCorrection } = this.state;
     let { tasksFind, tasksFix, tasksVerify } = tasks;
     
@@ -69,6 +133,7 @@ class ExcerptModal extends React.Component {
         );
         break;
       case 'heatmap':
+        sideMenuComponent = <Heatmap/>
         break;
       default:
         sideMenuComponent = (
@@ -88,24 +153,16 @@ class ExcerptModal extends React.Component {
 
     // excerpt text
     let excerptText = body;
+    let excerptStyle = {}
+    Object.assign(excerptStyle, styles.excerpt);
     if( activeItem === 'corrections' && selectedCorrection !== -1) {
-      let selectedTaskFix = tasksFix[selectedCorrection];
-      let patch = recommendedEdits[selectedTaskFix.chosen_edit];
+      excerptText = this.excerptCorrected();
+      excerptStyle.backgroundColor = '#FFFFFF'
+    }
 
-      let preEdit    = body.slice(0, patch[0]);
-      let old        = body.slice(patch[0], patch[1]);
-      let correction = selectedTaskFix.correction;
-      let postEdit   = body.slice(patch[1], body.length-1);
-
-      excerptText = (
-        <div>
-          {preEdit}
-          <span style={{ background: '#ffc4d3', color: '#992340', textDecoration: 'line-through' }}>{old}</span>
-          <span style={{ background: '#c1d5ff', color: '#283f70' }}>{correction}</span>
-          {postEdit}
-        </div>
-      );
-
+    if(activeItem === 'heatmap') {
+      excerptText = this.excerptHeatmap();
+      excerptStyle.backgroundColor = '#383838'
     }
 
     let disabledStyle = { pointerEvents : 'none', color : '#BBBBBB' };
@@ -123,7 +180,7 @@ class ExcerptModal extends React.Component {
 
             {/* Excerpt segment */}
             <Grid.Column width={11}>
-              <Segment size="large" style={styles.excerpt}>
+              <Segment size="large" style={excerptStyle}>
                 {excerptText}      
                 <Label attached='bottom left'>Excerpt</Label>          
               </Segment>

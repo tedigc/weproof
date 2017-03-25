@@ -71,6 +71,7 @@ class Corrections extends React.Component {
       );
 
       corrections.push(correction);
+      
     });
 
     return corrections;
