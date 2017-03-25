@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import PageHeader from '../PageHeader';
 import { Button, Divider, Dimmer, Icon, Loader, Menu, Table } from 'semantic-ui-react';
-import { fetchTasks } from '../../../actions/taskActions';
+import PageHeader from '../PageHeader';
 import SingleSubmission from './SingleSubmission';
 import Error from '../../error/Error';
+import { fetchTasks } from '../../../actions/taskActions';
 
 class Submitted extends React.Component {
 
@@ -51,9 +51,9 @@ class Submitted extends React.Component {
   submissionTableRows() {
 
     let { tasks, filter } = this.state;
-    let emptyRowCounter;
     let tableRows = [];
 
+    // append all submitted tasks that match the current filter
     tasks.forEach((task, i) => {
 
       let { id, excerpt, created_at } = task;
@@ -87,7 +87,7 @@ class Submitted extends React.Component {
     if(error) {
       tableComponent = <Error icon={error.icon} header={error.header} message={error.message} />;
     } else if(tableRows.length === 0){
-      tableComponent = <Error icon='tasks' header='No Submissions' message='ayy lmao' />
+      tableComponent = <Error icon='tasks' header='No Submissions' message={(filter === 'all') ? 'You\'ve made no submissions. Go to the Work tab and complete some tasks.' : 'You have no ' + filter + ' submissions.'} />
     } else {
       tableComponent =  (
         <Dimmer.Dimmable as={Table} stackable selectable basic="very" dimmed={loading}>
@@ -109,7 +109,7 @@ class Submitted extends React.Component {
 
           {/* Item list of available tasks */}
           <Table.Body>
-          {tableRows}
+            {tableRows}
           </Table.Body>
 
         </Dimmer.Dimmable>
@@ -121,7 +121,7 @@ class Submitted extends React.Component {
         {/* Header */}
         <PageHeader 
           title="Submitted" 
-          description="View the tasks you have completed and submitted in detail" 
+          description="An overview of the tasks you have completed and submitted" 
           icon="tasks"
         />
 

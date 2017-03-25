@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Container, Divider, Grid, Header, Icon} from 'semantic-ui-react';
+import { Link } from 'react-router';
+import { Button, Container, Divider, Grid, Header, Icon } from 'semantic-ui-react';
 
 
 class Greetings extends React.Component {
@@ -17,11 +18,14 @@ class Greetings extends React.Component {
               Harness the power of the crowd and improve your written English
             </Header.Subheader>
 
-            <Button animated size='massive' style={{ position: 'relative', top: 130 }}>
+
+            <Button animated size='massive' style={{ position: 'relative', top: 130 }} as={Link} to='/signup'>
+
               <Button.Content visible>GET STARTED</Button.Content>
               <Button.Content hidden style={{ fontWeight: 100 }}>
                 &nbsp; &nbsp; Sign Up <Icon name='right arrow' />
               </Button.Content>
+
             </Button>
 
           </Header>

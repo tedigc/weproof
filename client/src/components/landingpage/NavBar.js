@@ -25,7 +25,6 @@ class NavBar extends React.Component {
           to='/signup'
           name='signup'
           active={activeItem === '/signup'}
-          onClick={this.handleItemClick}
         >
           Sign up
         </Menu.Item>
@@ -34,7 +33,6 @@ class NavBar extends React.Component {
           to="/login"
           name='login'
           active={activeItem === '/login'}
-          onClick={this.handleItemClick}
         >
           Log in
         </Menu.Item>

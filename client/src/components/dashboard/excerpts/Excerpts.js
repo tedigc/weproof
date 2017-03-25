@@ -86,7 +86,7 @@ class Excerpts extends React.Component {
   excerptTableRows() {
     let self = this;
     let { excerpts, filter } = this.state;
-
+    let emptyRowCounter = 0;
 
     let tableRows = (
       Object.keys(excerpts).map(function(key, idx) {

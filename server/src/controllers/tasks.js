@@ -25,8 +25,6 @@ router.get('/', authenticate, (req, res) => {
     })
     .then(tasks => {
 
-      console.log(tasks);
-
       res.json({ tasks });
 
     })
