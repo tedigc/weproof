@@ -15,20 +15,12 @@ class SingleTask extends React.Component {
 
   render() {
 
+    let { stage, body, created } = this.props;
     let cornerIcon;
-    switch(this.props.stage) {
-      case 'find':
-        cornerIcon = 'search';
-        break;
-      case 'fix':
-        cornerIcon = 'write';
-        break;
-      case 'verify':
-        cornerIcon = 'check';
-        break;
-      default:
-        cornerIcon = 'help';
-    }
+
+    if(stage === 'find')   cornerIcon = 'search';
+    if(stage === 'fix')    cornerIcon = 'write';
+    if(stage === 'verify') cornerIcon = 'check';
 
     return (
       <Table.Row>
@@ -40,9 +32,9 @@ class SingleTask extends React.Component {
           </Icon.Group>
         </Table.Cell>
 
-        <Table.Cell collapsing>{this.props.stage}</Table.Cell>
-        <Table.Cell collapsing>{this.props.body.slice(0, Math.min(100, this.props.body.length))}</Table.Cell>
-        <Table.Cell collapsing>{this.props.created}</Table.Cell>
+        <Table.Cell collapsing>{stage}</Table.Cell>
+        <Table.Cell collapsing>{body.slice(0, Math.min(100, body.length))}</Table.Cell>
+        <Table.Cell collapsing>{created}</Table.Cell>
         <Table.Cell collapsing>
           <Button content='Start' icon='write' onClick={this.handleButtonPress}/>
         </Table.Cell>

@@ -7,7 +7,7 @@ class Error extends React.Component {
     let { icon, header, message } = this.props;
     return (
       <Header as='h2' icon textAlign='center'>
-        <Icon name={icon} />
+        <Icon name={icon}/>
         {header}
         <Header.Subheader>
           {message}
