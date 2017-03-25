@@ -47,7 +47,7 @@ export function submitFindTask(req, res, excerpt) {
                   let stage   = 'find';
                   let heatmap = excerpt.attributes.heatmap;
                   let body    = excerpt.attributes.body;
-                  let nTasks  = parseInt(result[0].count) + 1; // add one, because the TaskFind.forge changes haven't been committed
+                  let nTasks  = parseInt(result[0].count, 10) + 1; // add one, because the TaskFind.forge changes haven't been committed
 
                   // for each patch the user has submitted, increment the heatmap within the patch's range
                   for(let i=0; i<patches.length; i++) {

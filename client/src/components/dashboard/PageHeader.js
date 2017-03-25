@@ -4,13 +4,16 @@ import { Header, Icon } from 'semantic-ui-react';
 class PageHeader extends React.Component {
 
   render() {
+
+    let { icon, title, description } = this.props;
+
     return (
       <Header as='h1'>
-        <Icon name={this.props.icon} />
+        <Icon name={icon} />
         <Header.Content>
-          {this.props.title}
+          {title}
           <Header.Subheader>
-            {this.props.description}
+            {description}
           </Header.Subheader>
         </Header.Content>
       </Header>

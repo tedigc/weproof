@@ -61,7 +61,7 @@ router.post('/', authenticate, (req, res) => {
         // check if the user has already submitted a task for this excerpt
         db('tasks').where('excerpt_id', excerptId).andWhere('owner_id', req.currentUser.attributes.id).countDistinct('id')
           .then(result => {
-            let nTasks = parseInt(result[0].count);
+            let nTasks = parseInt(result[0].count, 10);
             if(nTasks === 0) {
               if(taskType === "find")   return submitFindTask(req, res, excerpt);
               if(taskType === "fix")    return submitFixTask(req, res, excerpt);

@@ -59,26 +59,31 @@ class ExcerptModal extends React.Component {
     let sideMenuComponent;
     switch(activeItem) {
       case 'corrections':
-        sideMenuComponent = <Corrections
-                              accepted={accepted}
-                              tasksFix={tasksFix}
-                              setSelectedCorrectionParent={this.handleSelectCorrection}
-                            />;
+        sideMenuComponent = (
+          <Corrections
+            accepted={accepted}
+            tasksFix={tasksFix}
+            tasksVerify={tasksVerify}
+            setSelectedCorrectionParent={this.handleSelectCorrection}
+          />
+        );
         break;
       case 'heatmap':
         break;
       default:
-        sideMenuComponent = <Summary
-                              complete={stage === 'complete'}
-                              accepted={accepted}
-                              dateCreated={created}
-                              dateCompleted={completedString}
-                              length={body.length}
-                              nTasksFind={tasksFind.length}
-                              nTasksFix={tasksFix.length}
-                              nTasksVerify={tasksVerify.length}
-                              acceptCorrections={acceptCorrections}
-                            />;
+        sideMenuComponent = (
+          <Summary
+            complete={stage === 'complete'}
+            accepted={accepted}
+            dateCreated={created}
+            dateCompleted={completedString}
+            length={body.length}
+            nTasksFind={tasksFind.length}
+            nTasksFix={tasksFix.length}
+            nTasksVerify={tasksVerify.length}
+            acceptCorrections={acceptCorrections}
+          />
+        );
     }
 
     // excerpt text

@@ -86,4 +86,5 @@ SubmitForm.propTypes = {
 SubmitForm.contextTypes = {
   router : React.PropTypes.object.isRequired 
 };
+
 export default connect(null, { createExcerpt })(SubmitForm);

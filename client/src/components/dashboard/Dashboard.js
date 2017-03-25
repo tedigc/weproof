@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/authActions';
 import { Sidebar, Menu, Icon } from 'semantic-ui-react';
-// import style from './Style';
 
 const SIDEBAR_WIDTH = 128;
 const MAIN_MARGIN   = 32;
