@@ -39,28 +39,43 @@ router.get('/', authenticate, (req, res) => {
 //
 router.post('/', authenticate, (req, res) => {
 
-  let excerptId = req.body.excerptId;
-  let taskType = req.body.taskType;
+  let { excerptId, taskType } = req.body;
 
   Excerpt
     .query({
-      where: { id: excerptId },
+      where: { id : excerptId },
       select: ['id', 'title', 'body', 'heatmap', 'recommended_edits']
     })
     .fetch()
-    .then((excerpt) => {
+    .then(excerpt => {
       if(!excerpt) {
-        res.status(500).json({ error: "No such excerpt" });
+        res.status(500).json({ error : "No such excerpt" });
       } else {
 
-        if(taskType === "find")   return submitFindTask(req, res, excerpt);
-        if(taskType === "fix")    return submitFixTask(req, res, excerpt);
-        if(taskType === "verify") return submitVerifyTask(req, res, excerpt);
+        Task
+          .query({ 
+            where : {
+              owner_id   : req.currentUser.attributes.id,
+              excerpt_id : excerptId
+            }
+          })
+          .fetchAll()
+          .then(tasks => {
+
+            if(taskType === "find")   return submitFindTask(req, res, excerpt);
+            if(taskType === "fix")    return submitFixTask(req, res, excerpt);
+            if(taskType === "verify") return submitVerifyTask(req, res, excerpt);
+
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).json(err);
+          });
 
       }
     })
     .catch(err => {
-      console.error(err);
+      console.error(err);      
       res.status(500).json(err);
     });
 

@@ -84,51 +84,50 @@ class Excerpts extends React.Component {
   }
 
   excerptTableRows() {
-    let self = this;
+
     let { excerpts, filter } = this.state;
-    let emptyRowCounter = 0;
+    let tableRows = [];
 
-    let tableRows = (
-      Object.keys(excerpts).map(function(key, idx) {
-        let item = excerpts[key];
-        let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, accepted } = item.attributes;
+    Object.keys(excerpts).forEach((key, i) => {
 
-        if(filter !== 'all') {
-          let status = (accepted) ? 'accepted' : 'pending';
-          if(status !== filter) {
-            emptyRowCounter++;            
-            return undefined;
-          }
-        }
+      let item = excerpts[key];
+      let { id, title, body, owner_id, created_at, heatmap, recommended_edits, stage, accepted } = item.attributes;
 
-        let excerpt = {
-          id, 
-          title, 
-          body,
-          ownerId : parseInt(owner_id, 10),
-          created : moment(created_at).toDate().toDateString(),
-          heatmap, 
-          recommendedEdits : recommended_edits,
-          stage, 
-          accepted
-        };
+      if(filter !== 'all') {
+        let status = (accepted) ? 'accepted' : 'pending';
+        if(status !== filter) return;
+      }
 
-        let tasks = {
-          tasksFind   : item.tasksFind,
-          tasksFix    : item.tasksFix,
-          tasksVerify : item.tasksVerify
-        };
+      let excerpt = {
+        id, 
+        title, 
+        body,
+        ownerId : parseInt(owner_id, 10),
+        created : moment(created_at).toDate().toDateString(),
+        heatmap, 
+        recommendedEdits : recommended_edits,
+        stage, 
+        accepted
+      };
 
-        return <ExcerptRow
-                key={idx}
-                excerpt={excerpt}
-                tasks={tasks}
-                acceptCorrections={self.acceptExcerptCorrections.bind(null, idx, id)}
-              />;
-      }));
-    
-    // if none of the rows matched the filter, return an empty array so we can display an error message
-    if(tableRows.length === emptyRowCounter) tableRows = [];
+      let tasks = {
+        tasksFind   : item.tasksFind,
+        tasksFix    : item.tasksFix,
+        tasksVerify : item.tasksVerify
+      };
+
+      let row = (
+        <ExcerptRow
+          key={i}
+          excerpt={excerpt}
+          tasks={tasks}
+          acceptCorrections={this.acceptExcerptCorrections.bind(null, i, id)}
+        />
+      );
+
+      tableRows.push(row);
+
+    });
 
     return tableRows;
   }
@@ -136,7 +135,7 @@ class Excerpts extends React.Component {
   render() {
     
     let self = this;
-    let { excerpts, loading, filter, error } = this.state;
+    let { excerpts, loading, modalOpen, filter, error } = this.state;
 
     let tableRows = this.excerptTableRows();
     let tableComponent;
@@ -191,7 +190,7 @@ class Excerpts extends React.Component {
         {/* Filters and refresh button */}
         <Menu secondary>
           <Menu.Item name="all"      active={filter === 'all'}      onClick={() => { this.setFilter('all') }} />
-          <Menu.Item name="complete" active={filter === 'complete'} onClick={() => { this.setFilter('complete') }} />
+          <Menu.Item name="accepted" active={filter === 'accepted'} onClick={() => { this.setFilter('accepted') }} />
           <Menu.Item name="pending"  active={filter === 'pending'}  onClick={() => { this.setFilter('pending') }} />
           <Menu.Item name="refresh" position="right">
             <Button onClick={this.refreshExcerpts}><Icon name="refresh"/> Refresh</Button>
@@ -205,7 +204,7 @@ class Excerpts extends React.Component {
 
         {/* Modal for Excerpt Submit Form */}
         <Modal 
-          open={this.state.modalOpen}
+          open={modalOpen}
           onClose={this.handleClose}
           closeIcon='close'>
           <Header icon='write' content='Submit New Excerpt' />
