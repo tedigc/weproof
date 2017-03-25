@@ -44,6 +44,7 @@ class Task extends React.Component {
   }
 
   render() {
+    
     let display;
     let { loading, excerpt } = this.state;
 

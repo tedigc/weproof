@@ -7,7 +7,7 @@ class Heatmap extends React.Component {
     return (
       <div>
         <Header content='Heatmap'/>
-        <span style={{ marginTop : 10, color : '#999999', lineHeight : 1.5 }}>The excerpt's heatmap shows which regions of text were more commonly highlighted in the 'find' stage by the workers. The graduent ranges from green to red, where green areas were the least highlighted, and red areas the most.</span>
+        <span style={{ marginTop : 10, color : '#999999', lineHeight : 1.5 }}>The excerpt's heatmap shows which regions of text were more commonly highlighted by workers in the 'find' stage. The gradient ranges from green to red, where green areas were the least highlighted, and red areas are the most.</span>
       </div>
     );
   }

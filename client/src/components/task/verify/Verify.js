@@ -134,7 +134,7 @@ class Verify extends React.Component {
                     <Button fluid style={{ marginTop: 20 }} onClick={this.toggleShowOriginal}>View {buttonTextOpposite} Text</Button>
                   </div>
 
-                  <Button fluid type='submit' disabled={submitDisabled} style={{ backgroundColor: '#4096BE' }}>Submit</Button>
+                  <Button fluid type='submit' disabled={submitDisabled} style={{ backgroundColor: '#4096BE' }} primary>Submit</Button>
                 </div>
               </div>  
             </Grid.Column>
