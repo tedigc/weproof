@@ -20,7 +20,7 @@ export function fetchSingleExcerpt(id) {
 
 export function fetchSingleExcerptMin(id) {
   return dispatch => {
-    return axios.get('/api/excerpts/' + id + '/min');
+    return axios.get('/api/excerpts/' + id + '/minified');
   };
 };
 

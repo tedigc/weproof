@@ -14,7 +14,7 @@ export default function(req, res, next) {
   if(token) {
     jwt.verify(token, jwtSecret, function(err, decoded) {
       if(err) {
-        res.status(401).json({ error: "Failed to authenticate" });
+        res.status(401).json({ error : "Failed to authenticate" });
       } else {
 
         // Token is valid
@@ -26,7 +26,7 @@ export default function(req, res, next) {
           .fetch()
           .then((user) => {
             if(!user) {
-              res.status(404).json({ error: "No such user" });
+              res.status(404).json({ error : "No such user" });
             } else {
               // Attach the found user to the request, then call next();
               req.currentUser = user;
@@ -37,6 +37,6 @@ export default function(req, res, next) {
       }
     });
   } else {
-    res.status(403).json({ error: "No auth token"});
+    res.status(403).json({ error : "No auth token" });
   }
 };

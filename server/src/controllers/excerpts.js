@@ -72,20 +72,29 @@ router.get('/:excerptId', authenticate, (req, res) => {
       where: { id: req.params.excerptId }
     })
     .fetch()
-    .then((excerpt) => {
+    .then(excerpt => {
+
       if(!excerpt) {
         res.status(404).json({ error: "No such excerpt" });
-      } else {
-        res.status(200).json({
-          excerpt: excerpt.attributes
-        });
+        return;
       }
+
+      let ownerId = parseInt(excerpt.get('owner_id'), 10);
+      if(ownerId !== req.currentUser.id) {
+        res.status(403).json({ error : "That excerpt does not belong to the current user." });
+        return;
+      }
+
+      res.status(200).json({
+        excerpt: excerpt.attributes
+      });
+
     });
 
 });
 
 // Get an excerpt by its ID and select the bare minimum attributes needed for a task
-router.get('/:excerptId/min', authenticate, (req, res) => {
+router.get('/:excerptId/minified', authenticate, (req, res) => {
 
   Excerpt
     .query({
