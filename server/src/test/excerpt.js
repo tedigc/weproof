@@ -12,7 +12,6 @@ import dbconfig from '../db/knexfile';
 let db = knex(dbconfig.test);
 
 let expect = chai.expect;
-
 chai.use(chaiHttp);
 
 let token = jwt.sign({
