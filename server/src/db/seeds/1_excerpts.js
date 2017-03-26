@@ -6,14 +6,14 @@ exports.seed = function(knex, Promise) {
       return Promise.all([
 
         // Inserts seed entries 
-        knex('excerpts').insert({ title: 'excerpt 1.1', body: 'this is the body of excerpt 1.1', owner_id: 1 }),
-        knex('excerpts').insert({ title: 'excerpt 1.2', body: 'this is the body of excerpt 1.2', owner_id: 1 }),
+        knex('excerpts').insert({ title: 'excerpt 1.1', body: 'this is the body of excerpt 1.1', owner_id: 1, heatmap : new Array(31).fill(0) }),
+        knex('excerpts').insert({ title: 'excerpt 1.2', body: 'this is the body of excerpt 1.2', owner_id: 1, heatmap : new Array(31).fill(0) }),
 
-        knex('excerpts').insert({ title: 'excerpt 2.1', body: 'this is the body of excerpt 2.1', owner_id: 2 }),
-        knex('excerpts').insert({ title: 'excerpt 2.2', body: 'this is the body of excerpt 2.2', owner_id: 2 }),
+        knex('excerpts').insert({ title: 'excerpt 2.1', body: 'this is the body of excerpt 2.1', owner_id: 2, heatmap : new Array(31).fill(0) }),
+        knex('excerpts').insert({ title: 'excerpt 2.2', body: 'this is the body of excerpt 2.2', owner_id: 2, heatmap : new Array(31).fill(0) }),
 
-        knex('excerpts').insert({ title: 'excerpt 3.1', body: 'this is the body of excerpt 3.1', owner_id: 3 }),
-        knex('excerpts').insert({ title: 'excerpt 3.2', body: 'this is the body of excerpt 3.2', owner_id: 3 })
+        knex('excerpts').insert({ title: 'excerpt 3.1', body: 'this is the body of excerpt 3.1', owner_id: 3, heatmap : new Array(31).fill(0) }),
+        knex('excerpts').insert({ title: 'excerpt 3.2', body: 'this is the body of excerpt 3.2', owner_id: 3, heatmap : new Array(31).fill(0) })
 
       ]);
     });

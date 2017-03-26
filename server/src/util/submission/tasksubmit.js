@@ -2,6 +2,7 @@ import bookshelf from '../../db/bookshelf';
 import { Excerpt, Task, TaskFind, TaskFix, TaskVerify } from '../../db/models';
 import aggregate from '../../util/aggregation/aggregate';
 import merge from '../../util/aggregation/merge';
+
 import knex from 'knex';
 import config from '../../db/knexfile';
 let db = knex(config.development);
@@ -28,10 +29,10 @@ export function submitFindTask(req, res, excerpt) {
                 .then(result => {
 
                   let recommended_edits;
-                  let patches = task.attributes.patches;
+                  let patches = task.get('patches');
                   let stage   = 'find';
-                  let heatmap = excerpt.attributes.heatmap;
-                  let body    = excerpt.attributes.body;
+                  let heatmap = excerpt.get('heatmap');
+                  let body    = excerpt.get('body');
                   let nTasks  = parseInt(result[0].count, 10) + 1; // add one, because the TaskFind.forge changes haven't been committed
 
                   // for each patch the user has submitted, increment the heatmap within the patch's range
@@ -98,9 +99,9 @@ export function submitFixTask(req, res, excerpt) {
 
               // count the number of submissions for each recommended edits
 
-              let submissionCounter = new Array(excerpt.attributes.recommended_edits.length).fill(0);
+              let submissionCounter = new Array(excerpt.get('recommended_edits').length).fill(0);
               for(let task of tasks.models) {
-                let idx = task.attributes.chosen_edit;
+                let idx = task.get('chosen_edit');
                 submissionCounter[idx]++;
               }
               
