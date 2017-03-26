@@ -5,16 +5,16 @@
  *
  */
 
-exports.up = function(knex, Promise) {
+export function up(knex, Promise) {
   return Promise.all([
 
-    knex.schema.createTable('tasks_find', function(table) {
+    knex.schema.createTable('tasks_find', (table) => {
       table.increments();
       table.inherits('tasks');
       table.enu('type', ['find', 'fix', 'verify']).defaultTo('find');
     }),
 
-    knex.schema.createTable('tasks_fix', function(table) {
+    knex.schema.createTable('tasks_fix', (table) => {
       table.increments();
       table.inherits('tasks');
       table.integer('chosen_edit');
@@ -22,23 +22,23 @@ exports.up = function(knex, Promise) {
       table.enu('type', ['find', 'fix', 'verify']).defaultTo('fix');
     }),
 
-    knex.schema.table('excerpts', function(table) {
+    knex.schema.table('excerpts', (table) => {
       table.specificType('recommended_edits', 'int[][]');
     })
 
   ]);
-};
+}
 
-exports.down = function(knex, Promise) {
+export function down(knex, Promise) {
   return Promise.all([
 
     knex.schema.dropTable('tasks_find'),
 
     knex.schema.dropTable('tasks_fix'),
 
-    knex.schema.table('excerpts', function(table) {
+    knex.schema.table('excerpts', (table) => {
       table.dropColumn('recommended_edits');
     })
 
   ]);
-};
+}

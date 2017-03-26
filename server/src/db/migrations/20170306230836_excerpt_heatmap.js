@@ -1,12 +1,12 @@
 
-exports.up = function(knex, Promise) {
-  return knex.schema.table('excerpts', function(table) {
+export function up(knex, Promise) {
+  return knex.schema.table('excerpts', (table) => {
     table.specificType('heatmap', 'int[]');
   });
-};
+}
 
-exports.down = function(knex, Promise) {
-  return knex.schema.table('excerpts', function(table) {
+export function down(knex, Promise) {
+  return knex.schema.table('excerpts', (table) => {
     table.dropColumn('heatmap');
   });
-};
+}

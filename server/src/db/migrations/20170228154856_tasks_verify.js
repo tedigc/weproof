@@ -1,6 +1,6 @@
 
-exports.up = function(knex, Promise) {
-  return knex.schema.createTable('tasks_verify', function(table) {
+export function up(knex, Promise) {
+  return knex.schema.createTable('tasks_verify', (table) => {
     table.increments();
     table.inherits('tasks');
     table.bigInteger('tasks_fix_id').unsigned().index().references('id').inTable('tasks_fix').onDelete('CASCADE');
@@ -9,6 +9,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+export function down(knex, Promise) {
   return knex.schema.dropTable('tasks_verify');
 };

@@ -1,5 +1,5 @@
 
-exports.seed = function(knex, Promise) {
+export function seed(knex, Promise) {
   // Deletes ALL existing entries
   return knex('excerpts').del()
     .then(function () {
@@ -17,4 +17,4 @@ exports.seed = function(knex, Promise) {
 
       ]);
     });
-};
+}

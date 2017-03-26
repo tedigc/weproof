@@ -1,5 +1,6 @@
+require('babel-register');
 
-module.exports =  {
+module.exports = {
 
   production: {
     client     : 'postgresql',

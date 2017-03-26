@@ -1,7 +1,7 @@
 
-exports.up = function(knex, Promise) {
+export function up(knex, Promise) {
   
-  return knex.schema.createTable('excerpts', function(table) {
+  return knex.schema.createTable('excerpts', (table) => {
     table.increments();
     table.string('title').notNullable();
     table.text('body').notNullable();
@@ -9,10 +9,10 @@ exports.up = function(knex, Promise) {
     table.timestamps(true, true);
   });
   
-};
+}
 
-exports.down = function(knex, Promise) {
+export function down(knex, Promise) {
   
   return knex.schema.dropTable('excerpts');
 
-};
+}
