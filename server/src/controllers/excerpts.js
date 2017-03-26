@@ -53,8 +53,11 @@ router.post('/', authenticate, (req, res) => {
       heatmap
     }, { hasTimestamps: true })
     .save(null, { method: 'insert'})
-    .then((user) => {
-      res.json({ success: true });
+    .then(excerpt => {
+      res.json({ 
+        success : true,
+        excerpt
+      });
     })
     .catch((err) => {
       console.error(err);
@@ -172,8 +175,8 @@ router.post('/accept', (req, res) => {
 
     })
     .catch(err => {
-      console.error(err)
-      res.status(500).json(err)
+      console.error(err);
+      res.status(500).json(err);
     });
 
 });

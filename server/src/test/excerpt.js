@@ -44,18 +44,6 @@ describe('API routes - excerpts', () => {
     });
   });
 
-  describe('GET /api/excerpts (Unauthorized)', () => {
-    it('Return a 403 (Forbidden) status code.', (done) => {
-      chai.request(server)
-        .get('/api/excerpts/')
-        .end((err, res) => {
-          expect(err.status).to.equal(403);
-          expect(err.response.error.text).to.equal("{\"error\":\"No auth token\"}");
-          done();
-        });
-    });
-  });
-
   describe('GET /api/excerpts', () => {
     it('Returns all a user\'s excerpts all of their attributes, and all the respective tasks', (done) => {
       chai.request(server)
@@ -226,6 +214,94 @@ describe('API routes - excerpts', () => {
         });
 
     });
+  });
+
+  describe('POST /api/excerpts', () => {
+    it('Writes a new excerpt to the database', (done) => {
+      chai.request(server)
+        .post('/api/excerpts')
+        .send({
+          title : 'post test title',
+          body  : 'post test body'
+        })
+        .set('Authorization', authHeader)
+        .end((err, res) => {
+
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.property('excerpt');
+
+          let excerpt = res.body.excerpt;
+          expect(excerpt).to.be.an('object');
+          expect(excerpt).to.have.property('id');
+          expect(excerpt).to.have.property('title');
+          expect(excerpt).to.have.property('body');
+          expect(excerpt).to.have.property('owner_id');
+          expect(excerpt).to.have.property('heatmap');
+          expect(excerpt).to.have.property('created_at');
+          expect(excerpt).to.have.property('updated_at');
+          expect(excerpt).to.not.have.property('stage');
+          expect(excerpt).to.not.have.property('accepted');
+          expect(excerpt).to.not.have.property('recommended_edits');
+
+          done();
+        });
+    });
+
+  });
+
+  describe('POST /api/excerpts/accept', () => {
+    it('Updates an excerpt\'s "accepted" attribute to "true"', (done) => {
+
+      // first, check that the excerpt's "accepted" status is false
+      chai.request(server)
+        .get('/api/excerpts/1')
+        .set('Authorization', authHeader)
+        .end((err, res) => {
+
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body).to.have.property('excerpt');
+          expect(res.body.excerpt).to.have.property('accepted');
+          expect(res.body.excerpt.accepted).to.equal(false);
+
+          // then, make a request to update the "accepted" attribute
+          chai.request(server)
+            .post('/api/excerpts/accept')
+            .send({
+              excerptId : 1
+            })
+            .set('Authorization', authHeader)
+            .end((err, res) => {
+
+              expect(res).to.have.status(200);
+              expect(res.body).to.have.property('excerptToReturn');
+
+              let excerpt = res.body.excerptToReturn;
+              expect(excerpt).to.have.property('attributes');
+              expect(excerpt).to.have.property('tasksFix');
+              expect(excerpt).to.have.property('tasksFind');
+              expect(excerpt).to.have.property('tasksVerify');
+
+              let attributes = excerpt.attributes;
+              expect(attributes).to.be.an('object');
+              expect(attributes).to.have.property('id');
+              expect(attributes).to.have.property('title');
+              expect(attributes).to.have.property('body');
+              expect(attributes).to.have.property('owner_id');
+              expect(attributes).to.have.property('heatmap');
+              expect(attributes).to.have.property('created_at');
+              expect(attributes).to.have.property('updated_at');
+              expect(attributes).to.have.property('stage');
+              expect(attributes).to.have.property('accepted');
+              expect(attributes).to.have.property('recommended_edits');
+              expect(attributes.accepted).to.equal(true);
+
+              done();
+            });
+        });
+
+    });
+
   });
 
 });
