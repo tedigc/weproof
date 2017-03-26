@@ -6,8 +6,9 @@ import { Excerpt, Task } from '../db/models';
 
 let router = express.Router();
 
-// Get all excerpts for the logged in user
-//
+/**
+ * Get all the excerpts for the logged in user
+ */
 router.get('/', authenticate, (req, res) => {
 
   Excerpt
@@ -36,8 +37,9 @@ router.get('/', authenticate, (req, res) => {
 
 });
 
-// Submit an excerpt and write it to the database
-//
+/**
+ * Submit and excerpt and write it to the database
+ */
 router.post('/', authenticate, (req, res) => {
 
   let title = req.body.title;
@@ -66,8 +68,9 @@ router.post('/', authenticate, (req, res) => {
 
 });
 
-// Get an excerpt by its ID
-//
+/**
+ * Get an excerpt by its ID
+ */
 router.get('/:excerptId', authenticate, (req, res) => {
 
   Excerpt
@@ -96,7 +99,9 @@ router.get('/:excerptId', authenticate, (req, res) => {
 
 });
 
-// Get an excerpt by its ID and select the bare minimum attributes needed for a task
+/**
+ * Get a minified excerpt by its ID, containing only the bare minimum attributes needed for a display to another user
+ */
 router.get('/:excerptId/minified', authenticate, (req, res) => {
 
   Excerpt
@@ -141,7 +146,9 @@ router.get('/:excerptId/minified', authenticate, (req, res) => {
 
 });
 
-// Set an excerpt's 'accepted' status to 'true'
+/**
+ * Set an excerpt's 'accepted' status to 'true'
+ */
 router.post('/accept', (req, res) => {
 
   Excerpt

@@ -1,11 +1,10 @@
 process.env.NODE_ENV = 'test';
 
-import jwt from 'jsonwebtoken';
 import jwtDecode from 'jwt-decode';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import config from '../config';
 import server from '../index';
+import authHeader from './_header';
 
 import knex from 'knex';
 import dbconfig from '../db/knexfile';
@@ -13,13 +12,6 @@ let db = knex(dbconfig.test);
 
 let expect = chai.expect;
 chai.use(chaiHttp);
-
-let token = jwt.sign({
-  id       : '1',
-  username : 'user1'
-}, config.jwtSecret);
-
-let authHeader = `Bearer ${token}`;
 
 describe('API routes - auth', () => {
 

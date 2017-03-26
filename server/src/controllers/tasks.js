@@ -10,8 +10,9 @@ let db = knex(config.development);
 
 let router = express.Router();
 
-// Fetch all tasks submitted by the current user
-//
+/**
+ * Fetch all tasks submitted by the current user
+ */
 router.get('/', authenticate, (req, res) => {
 
   Task
@@ -35,8 +36,9 @@ router.get('/', authenticate, (req, res) => {
 
 });
 
-// Submit a task and write it to the database
-//
+/**
+ * Submit a task and write it to the database
+ */
 router.post('/', authenticate, (req, res) => {
 
   let { excerptId, taskType } = req.body;
@@ -85,8 +87,9 @@ router.post('/', authenticate, (req, res) => {
 
 });
 
-// Get all tasks available for completion to the logged in user
-//
+/**
+ * Get all tasks available for completion to the logged in user
+ */
 router.get('/available', authenticate, (req, res) => {
 
   // Find all the excerpt ids of task submissions the user has made
@@ -128,8 +131,9 @@ router.get('/available', authenticate, (req, res) => {
     });
 });
 
-// Get all the necessary information needed for a new fix task
-//
+/**
+ * Get all the necessary information needed for a new fix task
+ */
 router.get('/:excerptId/fix', authenticate, (req, res) => {
 
   TaskFix
@@ -142,10 +146,15 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
       return Excerpt
         .query({
           where : { id : req.params.excerptId },
-          select: [ 'id', 'body', 'recommended_edits' ]
+          select: [ 'id', 'body', 'recommended_edits', 'stage' ]
         })
         .fetch()
         .then(excerpt => {
+
+          if(excerpt.get('stage') !== 'fix') {
+            res.status(400).json({ error : 'The excerpt is not currently in this stage.' });
+            return;
+          }
 
           let chosenEdit = 0;
 
@@ -205,8 +214,9 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
 
 });
 
-// Get all the necessary information needed for a new verify task
-//
+/**
+ * Get all the necessary information needed for a new verify task
+ */
 router.get('/:excerptId/verify', authenticate, (req, res) => {
 
   TaskFix
@@ -218,12 +228,17 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
     .fetchAll({
       withRelated: [
         {'excerpt' : qb => {
-          qb.column('id', 'body', 'accepted', 'recommended_edits'); 
+          qb.column('id', 'body', 'accepted', 'stage', 'recommended_edits'); 
         }},
         'verifications'
       ],
     })
     .then(tasks => {
+
+      if(excerpt.get('stage') !== 'verify') {
+        res.status(400).json({ error : 'The excerpt is not currently in this stage.' });
+        return;
+      }
 
       // check which task has the least verifications
       let fewestVerifications = Number.MAX_SAFE_INTEGER;

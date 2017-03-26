@@ -11,21 +11,6 @@ const MINIMUM_VERIFICATIONS_NEEDED = 1;
 
 export function submitFindTask(req, res, excerpt) {
 
-  // bookshelf.transaction(function(t) {
-  //   User.forge({id: id})
-  //     .save(userData, {transacting: t})
-  //     .then(function(model){
-  //       return when.all(_.map(model.relations, function(relation) {
-  //         return relation.save(null, {transacting: t}));
-  //       }).then(t.commit, t.rollback).yield(model);
-  //     });
-  // }).then(function(model) {
-  //   // wee
-  // })
-  // .otherwise(function(error){
-  //   // :(
-  // });
-
   return bookshelf.transaction(t => {
 
     return TaskFind

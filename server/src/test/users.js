@@ -14,19 +14,7 @@ let db = knex(dbconfig.test);
 let expect = chai.expect;
 chai.use(chaiHttp);
 
-/**
- * [x] successful new user
- * [x] username taken
- * [x] email taken
- * [x] passwords dont match
- * [x] empty username
- * [x] empty email
- * [x] empty password field
- * [x] empty passwordConfirm field
- * [ ] invalid email
- */
-
-describe('API routes - excerpts', () => {
+describe('API routes - users', () => {
 
   beforeEach((done) => {
     db.migrate.rollback()
@@ -72,7 +60,7 @@ describe('API routes - excerpts', () => {
           expect(user).to.have.property('created_at');
           expect(user).to.have.property('updated_at');
 
-          expect(user.id).to.equal(4);
+          expect(user.id).to.equal(41);
           expect(user.username).to.equal('newuser');
           expect(user.email).to.equal('newuser@test.com');
           expect(bcrypt.compareSync('newpassword', user.password_digest)).to.equal(true);
@@ -132,7 +120,7 @@ describe('API routes - excerpts', () => {
         .post('/api/users')
         .send({
           username        : 'newuser',
-          email           : 'user1@test.com',
+          email           : 'newuser@test.com',
           password        : 'newpassword',
           passwordConfirm : 'newpassworddifferent'
         })
@@ -154,7 +142,7 @@ describe('API routes - excerpts', () => {
         .post('/api/users')
         .send({
           username        : '',
-          email           : 'user1@test.com',
+          email           : 'newuser@test.com',
           password        : 'newpassword',
           passwordConfirm : 'newpassworddifferent'
         })
@@ -175,7 +163,7 @@ describe('API routes - excerpts', () => {
       chai.request(server)
         .post('/api/users')
         .send({
-          username        : 'user4',
+          username        : 'newuser',
           email           : '',
           password        : 'newpassword',
           passwordConfirm : 'newpassworddifferent'
@@ -197,8 +185,8 @@ describe('API routes - excerpts', () => {
       chai.request(server)
         .post('/api/users')
         .send({
-          username        : 'user4',
-          email           : 'user4@test.com',
+          username        : 'newuser',
+          email           : 'newuser@test.com',
           password        : '',
           passwordConfirm : 'newpassworddifferent'
         })
@@ -219,8 +207,8 @@ describe('API routes - excerpts', () => {
       chai.request(server)
         .post('/api/users')
         .send({
-          username        : 'user4',
-          email           : 'user4@test.com',
+          username        : 'newuser',
+          email           : 'newuser@test.com',
           password        : 'newpassword',
           passwordConfirm : ''
         })
@@ -241,8 +229,8 @@ describe('API routes - excerpts', () => {
       chai.request(server)
         .post('/api/users')
         .send({
-          username        : 'user4',
-          email           : 'user4notanemail',
+          username        : 'newuser',
+          email           : 'newusernotanemail',
           password        : 'newpassword',
           passwordConfirm : 'newpassword'
         })
