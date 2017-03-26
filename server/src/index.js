@@ -19,7 +19,7 @@ let app  = express();
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, '../../client/build')));
 
-if(process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
+// if(process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 app.use(bodyParser.json());
 
 // set up routes

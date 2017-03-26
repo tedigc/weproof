@@ -31,6 +31,7 @@ function validateInput(data, otherValidations) {
 }
 
 router.post('/', (req, res) => {
+
   validateInput(req.body, commonValidations)
     .then((validation) => {
       if(validation.isValid) {
@@ -46,7 +47,10 @@ router.post('/', (req, res) => {
           }, { hasTimestamps: true })
           .save(null, {method: 'insert'})
           .then((user) => {
-            res.json({ success: true });
+            res.json({ 
+              success: true,
+              user
+            });
           })
           .catch((err) => {
             console.error(err);
