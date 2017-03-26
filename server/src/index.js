@@ -42,3 +42,5 @@ let server = app.listen(port, (err) => {
     console.info("🌎  Server listening at http://%s:%s", host, port);
   }
 });
+
+export default app;

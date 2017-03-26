@@ -16,7 +16,7 @@ router.post('/', (req, res) => {
       orWhere: { email : identifier }
     })
     .fetch()
-    .then((user) => {
+    .then(user => {
       if(user) {
         if(bcrypt.compareSync(password, user.get('password_digest'))){
 
@@ -27,10 +27,10 @@ router.post('/', (req, res) => {
           res.json({ token });
 
         } else {
-          res.status(401).json({ errors: { form: "Incorrect Password" } });
+          res.status(401).json({ errors: { form : "Incorrect Password" } });
         }
       } else {
-        res.status(401).json({ errors: { form: "We couldn't find a user with that Username / Email" } });
+        res.status(401).json({ errors: { form : "We couldn't find a user with that Username / Email" } });
       }
     });
 });

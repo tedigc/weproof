@@ -6,20 +6,11 @@ import FixPropWrapper from './fix/FixPropWrapper';
 import VerifyPropWrapper from './verify/VerifyPropWrapper';
 import { fetchSingleExcerptMin } from '../../actions/excerptActions';
 
-/**
- * 
- * TODO:
- * 
- * - display errors
- * - validate param type before making get request (check its an int)
- *
- */
-
 class Task extends React.Component {
 
   state = {
-    loading: true,
-    excerpt: {}
+    loading : true,
+    excerpt : {}
   }
 
   componentWillMount() {
