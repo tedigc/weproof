@@ -1,6 +1,5 @@
 # WeProof
-
-## Quick Start
+## Quick Start
 
 Clone the repository. Ensure you have npm installed and install all necessary node modules for the root, client, and server 
 by running:
