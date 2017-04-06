@@ -1,4 +1,7 @@
 # WeProof
+
+WeProof is a web application that uses the power of crowdsourcing to help non-native English speakers proof-read their written English, be it in the form of essays, reports or dissertations. This project endeavors to take advantage of the untapped crowdsourcing potential of Universities, in the form of students and staff, and provide much needed assistance to the international and non-native English speaking student populations at Universities around the country.
+
 ## Quick Start
 
 Clone the repository. Ensure you have npm installed and install all necessary node modules for the root, client, and server 
