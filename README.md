@@ -1,109 +1,43 @@
-# Individual Project
+# WeProof
 
-### Quick start
+## Quick Start
 
-First, start postgreSQL ***in its own terminal window*** by running the command:
+Clone the repository. Ensure you have npm installed and install all necessary node modules for the root, client, and server 
+by running:
+
+```
+$ git clone https://github.com/tedigc/weproof
+$ cd weproof
+$ npm install
+$ cd client && npm install
+$ cd ../server && npm install
+$ cd ..
+```
+
+Next, we're going to set up the development and test databases. Make sure you have PostgreSQL installed on your machine, and run the following commands:
+
 ```
 $ postgres -D /usr/local/var/postgres 
+$ createdb weproof
+$ createdb weproof-test
 ```
 
-After that, in another terminal window, start the server and client applications concurrently with:
+With the databases created, we need to make all of the knex migrations to set up the database schema. There are scripts in the `/server` directory to do this for you. Simple run the following commands:
+
+```
+$ cd server
+$ npm run migrate:development
+$ npm run migrate:test
+```
+
+Everything should be ready to work with now. To start the application, ensure you're in the root of the project and run the command:
 
 ```
 $ npm start
 ```
 
-Or alternatively, run the server and client separately in their own individual windows, with these two commands:
-
-```
-$ npm run server
-$ npm run client
-```
+This will run both the server and client applications concurrently. Navigate to `localhost:3000` to start using the application.
 
 ---
 
-### Building and deploying
-
-To deploy to Heroku, first ensure that the client application's latest build is available. Once that is done, you can then push to Heroku.
-
-```
-$ npm run build
-$ git add *
-$ git commit -m "Deploy to Heroku"
-$ git push heroku master --force
-```
-
-If there are any issues once deployed, the commit can be amended with:
-
-```
-$ git add *
-$ git commit --amend
-$ git push heroku master --force
-```
-
-**Working with the db remotely**
-
-The database can be reset at any time with this command:
-
-```
-$ heroku pg:reset DATABASE
-```
-
-It can be rolled back with:
-
-```
-$ heroku run knex migrate:rollback --knexfile server/src/db/knexfile.js
-```
-
-Update the schema by making migrations using knex. This is done with:
-
-```
-$ heroku run knex migrate:latest --knexfile server/src/db/knexfile.js
-```
-
----
-
-### Working with the database
-
-Migrations are incremental, reversable changes made to a databases schema during development. knex provides several tools for managing migrations, but here are some common ones used during this project's development.
-
-**Creating a database** *(realistically only needs to be done once)*
-
-```
-$ createdb <dbname>
-```
-
-**Deleting the database and starting fresh**
-
-The best way to do this is to first drop tables from the database *(including the migration tables)*:
-
-```
-$ psql <dbname>
-$ <dbname>=# drop <tablename>; // do this for all tables
-$ <dbname>=# \q
-```
-
-Then delete any unwanted migrations *(like duplicates)* and run `knex migrate:latest`:
-
-```
-$ cd server/src
-$ cd knex migrate:latest
-```
-
-**Interacting with the database through the shell**
-In its own terminal window, type the command:
-
-```
-$ psql <dbname>
-```
-
-**Some useful commands**
-
-```
-<dbname>=# \x auto   // Pretty print tables
-<dbname>=# \dt       // List all tables
-```
-
----
-
-For annoying errors during development and their fixes, see the [Wiki](https://github.com/tedigc/individual-project/wiki)
+For more useful information, see the project's [Wiki](https://github.com/tedigc/individual-project/wiki).
