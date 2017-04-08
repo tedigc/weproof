@@ -43,6 +43,8 @@ router.post('/', authenticate, (req, res) => {
 
   let { excerptId, taskType } = req.body;
 
+  console.log(excerptId, taskType);
+
   Excerpt
     .query({
       where: { id : excerptId },

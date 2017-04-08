@@ -30,7 +30,7 @@ module.exports = {
       tableName : 'knex_migrations',
       directory : __dirname + '/migrations'
     },
-    seeds      : {
+    seeds : {
       directory : __dirname + '/seeds'
     }
   },
@@ -51,7 +51,7 @@ module.exports = {
       tableName : 'knex_migrations',
       directory : __dirname + '/migrations'
     },
-    seeds      : {
+    seeds : {
       directory : __dirname + '/seeds'
     }
   }

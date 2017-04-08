@@ -11,6 +11,7 @@ export function up(knex, Promise) {
     knex.schema.createTable('tasks_find', (table) => {
       table.increments();
       table.inherits('tasks');
+      table.specificType('patches', 'int[][]');
       table.enu('type', ['find', 'fix', 'verify']).defaultTo('find');
     }),
 

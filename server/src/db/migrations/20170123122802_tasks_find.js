@@ -8,7 +8,6 @@ export function up(knex, Promise) {
       table.increments();
       table.bigInteger('owner_id').unsigned().index().references('id').inTable('users').onDelete('CASCADE');
       table.bigInteger('excerpt_id').unsigned().index().references('id').inTable('excerpts').onDelete('CASCADE');
-      table.specificType('patches', 'int[][]');
       table.enu('type', ['find', 'fix', 'verify']);
       table.timestamps();
     }),
