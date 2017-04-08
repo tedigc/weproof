@@ -4,14 +4,14 @@
   "main": "index.js",
   "scripts": {
     "start": "export NODE_ENV=development && nodemon src/index.js --variables --exec babel-node",
-    "migrate:test"  : "knex migrate:latest   --env test --knexfile src/db/knexfile.js", 
-    "rollback:test" : "knex migrate:rollback --env test --knexfile src/db/knexfile.js",
-    "seed:test"     : "knex seed:run         --env test --knexfile src/db/knexfile.js",
-    "reset:test"    : "npm run rollback:test && npm run migrate:test && npm run seed:test",
-    "migrate:development"  : "knex migrate:latest   --env development --knexfile src/db/knexfile.js", 
-    "rollback:development" : "knex migrate:rollback --env development --knexfile src/db/knexfile.js",
-    "seed:development"     : "knex seed:run         --env development --knexfile src/db/knexfile.js",
-    "reset:development"    : "npm run rollback:development && npm run migrate:development && npm run seed:development",
+    "migrate:test": "knex migrate:latest   --env test --knexfile src/db/knexfile.js",
+    "rollback:test": "knex migrate:rollback --env test --knexfile src/db/knexfile.js",
+    "seed:test": "knex seed:run         --env test --knexfile src/db/knexfile.js",
+    "reset:test": "npm run rollback:test && npm run migrate:test && npm run seed:test",
+    "migrate:development": "knex migrate:latest   --env development --knexfile src/db/knexfile.js",
+    "rollback:development": "knex migrate:rollback --env development --knexfile src/db/knexfile.js",
+    "seed:development": "knex seed:run         --env development --knexfile src/db/knexfile.js",
+    "reset:development": "npm run rollback:development && npm run migrate:development && npm run seed:development",
     "test": "./node_modules/.bin/mocha src/test --compilers js:babel-core/register"
   },
   "author": "tedigc",
@@ -41,6 +41,7 @@
     "webpack": "^1.13.3"
   },
   "devDependencies": {
+    "axios": "^0.15.3",
     "babel-cli": "^6.18.0",
     "babel-loader": "^6.2.7",
     "babel-preset-es2015": "^6.18.0",

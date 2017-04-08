@@ -18,7 +18,7 @@ module.exports = {
   development: {
     client     : 'postgresql',
     connection : {
-      database : 'individual-project',
+      database : 'weproof',
       user     : 'tedigc',
       password : ''
     },
@@ -30,7 +30,7 @@ module.exports = {
       tableName : 'knex_migrations',
       directory : __dirname + '/migrations'
     },
-    seeds      : {
+    seeds : {
       directory : __dirname + '/seeds'
     }
   },
@@ -39,7 +39,7 @@ module.exports = {
   test: {
     client     : 'postgresql',
     connection : {
-      database : 'individual-project-test',
+      database : 'weproof-test',
       user     : 'tedigc',
       password : ''
     },
@@ -51,7 +51,7 @@ module.exports = {
       tableName : 'knex_migrations',
       directory : __dirname + '/migrations'
     },
-    seeds      : {
+    seeds : {
       directory : __dirname + '/seeds'
     }
   }
