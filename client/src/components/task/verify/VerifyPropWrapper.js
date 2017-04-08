@@ -16,11 +16,10 @@ import { fetchVerifyTask } from '../../../actions/taskActions';
 class VerifyPropWrapper extends React.Component {
 
   state = {
-    loading    : true,
-    chosenEdit : -1,
-    correction : '',
+    loading     : true,
+    chosenEdit  : -1,
     patch       : [],
-    taskFixId  : -1
+    corrections : []
   }
 
   componentWillMount() {
@@ -30,14 +29,14 @@ class VerifyPropWrapper extends React.Component {
     fetchVerifyTask(excerpt.id)
       .then(
         res => {
-          let { chosenEdit, correction, patch, taskFixId } = res.data.taskInfo;
+
+          let { chosenEdit, corrections, patch } = res.data;
 
           this.setState({
             loading : false,
             chosenEdit,
-            correction,
+            corrections,
             patch,
-            taskFixId
           });
 
         },
@@ -50,16 +49,15 @@ class VerifyPropWrapper extends React.Component {
 
   render() {
 
-    let { loading, chosenEdit, correction, patch, taskFixId } = this.state;
+    let { loading, chosenEdit, patch, corrections } = this.state;
     let { excerpt } = this.props;
 
     let verifyComponent = (
       <Verify 
         excerpt={excerpt} 
         chosenEdit={chosenEdit} 
-        correction={correction}
         patch={patch}
-        taskFixId={taskFixId}
+        corrections={corrections}
       />
     );
 
