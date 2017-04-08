@@ -18,7 +18,7 @@ module.exports = {
   development: {
     client     : 'postgresql',
     connection : {
-      database : 'individual-project',
+      database : 'weproof',
       user     : 'tedigc',
       password : ''
     },
@@ -39,7 +39,7 @@ module.exports = {
   test: {
     client     : 'postgresql',
     connection : {
-      database : 'individual-project-test',
+      database : 'weproof-test',
       user     : 'tedigc',
       password : ''
     },

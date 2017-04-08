@@ -13,7 +13,7 @@ import auth     from './controllers/auth';
 import excerpts from './controllers/excerpts';
 import tasks    from './controllers/tasks';
 
-let port = process.env.PORT || 8888; 
+let port = process.env.PORT || 8080; 
 let app  = express();
 
 app.use(express.static(__dirname));

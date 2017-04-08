@@ -219,57 +219,103 @@ router.get('/:excerptId/fix', authenticate, (req, res) => {
  */
 router.get('/:excerptId/verify', authenticate, (req, res) => {
 
-  TaskFix
+  TaskVerify
     .query({
-      where  : { 
-        excerpt_id : req.params.excerptId,
+      where : {
+        excerpt_id : req.params.excerptId
       }
     })
     .fetchAll({
       withRelated: [
         {'excerpt' : qb => {
           qb.column('id', 'body', 'accepted', 'stage', 'recommended_edits'); 
-        }},
-        'verifications'
+        }}
       ],
     })
-    .then(tasks => {
+    .then((tasks) => {
 
       if(excerpt.get('stage') !== 'verify') {
         res.status(400).json({ error : 'The excerpt is not currently in this stage.' });
         return;
-      }
+      } 
 
-      // check which task has the least verifications
-      let fewestVerifications = Number.MAX_SAFE_INTEGER;
-      let selectedTask = null;
+      let recommended_edits  = excerpt.get('recommended_edits');     
+      let verifyTasksPerEdit = new Array(recommended_edits.length).fill(0);
+      let chosenEdit = -1;
 
-      for(let task of tasks.models) {
-        let nVerifications = task.relations.verifications.models.length;
-        if(nVerifications < fewestVerifications) {
-          fewestVerifications = nVerifications;
-          selectedTask = task;
+      // if there are no verify tasks submitted, pick a random edit to vote on
+      if(tasks.models.length === 0) {
+        chosenEdit = (Math.floor(Math.random() * recommended_edits.length));
+      } else {
+        // else, pick the edit with the fewest verify tasks
+        for(let task of tasks.models) {
+          verifyTasksPerEdit[task.get('chosen_edit')] += 1;
         }
+
+        console.log(verifyTasksPerEdit);
       }
-
-      let attributes = selectedTask.attributes;
-      let relations  = selectedTask.relations;
-
-      let taskInfo = {
-        taskFixId  : attributes.id,
-        chosenEdit : attributes.chosen_edit,
-        correction : attributes.correction,
-        excerpt    : relations.excerpt,
-        patch      : relations.excerpt.attributes.recommended_edits[attributes.chosen_edit]
-      };
-
-      res.json({ taskInfo });
 
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       res.status(500).json({ error: err });
     });
+
+
+  // TaskFix
+  //   .query({
+  //     where  : { 
+  //       excerpt_id : req.params.excerptId,
+  //     }
+  //   })
+  //   .fetchAll({
+  //     withRelated: [
+  //       {'excerpt' : qb => {
+  //         qb.column('id', 'body', 'accepted', 'stage', 'recommended_edits'); 
+  //       }},
+  //       'verifications'
+  //     ],
+  //   })
+  //   .then(tasks => {
+
+  //     if(excerpt.get('stage') !== 'verify') {
+  //       res.status(400).json({ error : 'The excerpt is not currently in this stage.' });
+  //       return;
+  //     }
+
+  //     let recommended_edits = excerpt.get('recommended_edits');
+
+
+      // // check which task has the least verifications
+      // let fewestVerifications = Number.MAX_SAFE_INTEGER;
+      // let selectedTask = null;
+
+      // for(let task of tasks.models) {
+      //   let nVerifications = task.relations.verifications.models.length;
+      //   if(nVerifications < fewestVerifications) {
+      //     fewestVerifications = nVerifications;
+      //     selectedTask = task;
+      //   }
+      // }
+
+      // let attributes = selectedTask.attributes;
+      // let relations  = selectedTask.relations;
+
+      // let taskInfo = {
+      //   taskFixId  : attributes.id,
+      //   chosenEdit : attributes.chosen_edit,
+      //   correction : attributes.correction,
+      //   excerpt    : relations.excerpt,
+      //   patch      : relations.excerpt.attributes.recommended_edits[attributes.chosen_edit]
+      // };
+
+      // res.json({ taskInfo });
+
+    // })
+    // .catch(err => {
+    //   console.error(err);
+    //   res.status(500).json({ error: err });
+    // });
 
 });
 
