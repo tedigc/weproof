@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Grid, Icon, Label, Segment } from 'semantic-ui-react';
+import { Button, Checkbox, Form, Grid, Item, Label, Segment } from 'semantic-ui-react';
 import { submitTask } from '../../../actions/taskActions';
 import Instructions from '../common/Instructions';
 
@@ -31,11 +31,12 @@ const styles = {
 class Verify extends React.Component {
 
   state = {
-    showOriginal : true,
-    acceptReject : null
+    currentlySelected : 0,
+    votes             : new Array(this.props.corrections.length).fill(false) 
   }
 
   constructor(props) {
+
     super(props);
     this.toggleShowOriginal = this.toggleShowOriginal.bind(this);
     this.getHighlightedText = this.getHighlightedText.bind(this);
@@ -43,53 +44,68 @@ class Verify extends React.Component {
     this.accept = this.accept.bind(this);
     this.reject = this.reject.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleMouseOver = this.handleMouseOver.bind(this);
+    this.handleSelectCorrection = this.handleSelectCorrection.bind(this);
   }
 
   toggleShowOriginal(e) {
+
     e.preventDefault();
     this.setState({ showOriginal: !this.state.showOriginal});
   }
 
   getHighlightedText() {
-    let excerpt = this.props.excerpt.body;
-    let patch = this.props.patch;
-    let original = excerpt.slice(patch[0], patch[1]);
-    let highlight = (this.state.showOriginal) ? original : this.props.correction;
+
+    let { excerpt, patch, corrections } = this.props;
+    let { currentlySelected } = this.state;
+
+    let selectedCorrection = corrections[currentlySelected];
+    let body = excerpt.body;
+    let original = body.slice(patch[0], patch[1]);
+    let highlight = (this.state.showOriginal) ? original : selectedCorrection;
     let style     = (this.state.showOriginal) ? styles.highlightOriginal : styles.highlight;
+
     return (
       <div id="excerpt">
-        {excerpt.slice(0, patch[0])}
+        {body.slice(0, patch[0])}
         <mark className="highlight" style={style}>
-          {highlight}
+          <span style={{ background: '#ffc4d3', color: '#992340', textDecoration: 'line-through' }}>{original}</span>
+          <span style={{ background: '#c1d5ff', color: '#283f70' }}>{highlight}</span>
         </mark>
-        {excerpt.slice(patch[1], excerpt.length)}
+        {body.slice(patch[1], body.length)}
       </div>
     );
   }
 
   acceptedOrRejected() {
+
     let { acceptReject } = this.state;
     return acceptReject === 'accept' || acceptReject === 'reject';
   }
 
   accept(e) {
+
     e.preventDefault();
     this.setState({ acceptReject : 'accept' });
   }
 
   reject(e) {
+
     e.preventDefault();
     this.setState({ acceptReject : 'reject' });
   }
 
   handleSubmit(e) {
+
+    let { excerpt, chosenEdit } = this.props;
+    let { votes } = this.state;
+
     e.preventDefault();
-    console.log('submitty');
     this.props.submitTask({
-      excerptId  : this.props.excerpt.id,
+      excerptId  : excerpt.id,
       taskType   : "verify",
-      accepted   : this.state.acceptReject === 'accept',
-      taskFixId  : this.props.taskFixId
+      votes      : votes,
+      chosenEdit : chosenEdit
     })
       .then(
         res => { this.context.router.push('/dashboard/home'); },
@@ -97,11 +113,41 @@ class Verify extends React.Component {
       );
   }
 
+  handleMouseOver(idx) {
+
+    this.setState({ currentlySelected : idx });
+  }
+
+  handleSelectCorrection(idx) {
+
+    let { votes } = this.state;
+    votes[idx] = !votes[idx];
+    this.setState({ votes });
+  }
+
   render() {
 
-    let buttonText         =  (this.state.showOriginal) ? 'Original' : 'Edited';
-    let buttonTextOpposite = !(this.state.showOriginal) ? 'Original' : 'Edited';
-    let submitDisabled = !this.acceptedOrRejected();
+    let { corrections } = this.props;
+    let { currentlySelected, votes } = this.state;
+
+    let correctionsComponent = (
+      <Item.Group>
+        {corrections.map((item, idx) => {
+          return (
+            <Item 
+              key={idx} 
+              onMouseEnter={() => { return this.handleMouseOver(idx) }} 
+              onClick={() => { this.handleSelectCorrection(idx) }}
+              style={(idx === currentlySelected) ? { cursor : 'pointer', backgroundColor : '#EEEEEE'} : { cursor : 'pointer', backgroundColor : '#FFFFFF' } }
+            >
+              <Item.Content>
+                <Checkbox name={"checkbox" + idx} label={item} checked={votes[idx]}/>
+              </Item.Content>
+            </Item>
+          );
+        })}
+      </Item.Group>
+    );
 
     return (
       <Form onSubmit={this.handleSubmit}>
@@ -112,29 +158,19 @@ class Verify extends React.Component {
             <Grid.Column width={10}>
               <Segment size="large" style={styles.excerpt}>
                 {this.getHighlightedText()}
-                <Label attached='bottom left'>Excerpt - {buttonText}</Label>          
+                <Label attached='bottom left'>Excerpt</Label>          
               </Segment>
             </Grid.Column>
 
             {/* Input Window */}
             <Grid.Column width={6}>
               <div style={{ display: 'flex', flexDirection: 'column', height: excerptHeight}}>
-                <Instructions text='The box on the left shows an excerpt submitted by a user for correction. By clicking the grey button, you can toggle whether it will show the original or edited version. Read both the original and edited versions of the excerpt and decide whether you want to accept or reject the proposed changes to the text.'/>
+                <Instructions text='The box on the left shows an excerpt of text. The red highlighted text indicates a portion of the original text, and the blue section indicates a correction that another user has made. Using the checkboxes on the right, view the different corrections and "check" those that you think are valid.'/>
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 2, marginTop: '20px'}}>
                   
-                  <div style={styles.buttonGroup}>
-                    <div style={{ display : 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <Button name='rejectButton' style={{ flexGrow: 1 }} size='massive' basic={this.state.acceptReject !== 'reject'} onClick={this.reject} negative>
-                        Reject &nbsp; <Icon name='remove'/> 
-                      </Button>
-                      <Button name='acceptButton'style={{ flexGrow: 1 }} size='massive' basic={this.state.acceptReject !== 'accept'} onClick={this.accept} positive>
-                        Accept &nbsp; <Icon name='check'/> 
-                      </Button>
-                    </div>
-                    <Button fluid style={{ marginTop: 20 }} onClick={this.toggleShowOriginal}>View {buttonTextOpposite} Text</Button>
-                  </div>
+                  {correctionsComponent}
 
-                  <Button fluid type='submit' disabled={submitDisabled} style={{ backgroundColor: '#4096BE' }} primary>Submit</Button>
+                  <Button fluid type='submit' style={{ backgroundColor: '#4096BE' }} primary>Submit</Button>
                 </div>
               </div>  
             </Grid.Column>
@@ -148,12 +184,11 @@ class Verify extends React.Component {
 }
 
 Verify.propTypes = {
-  excerpt    : React.PropTypes.object.isRequired,
-  chosenEdit : React.PropTypes.number.isRequired,
-  correction : React.PropTypes.string.isRequired,
-  patch      : React.PropTypes.array.isRequired,
-  taskFixId  : React.PropTypes.number.isRequired,
-  submitTask : React.PropTypes.func.isRequired
+  excerpt     : React.PropTypes.object.isRequired,
+  chosenEdit  : React.PropTypes.number.isRequired,
+  patch       : React.PropTypes.array.isRequired,
+  corrections : React.PropTypes.array.isRequired,
+  submitTask  : React.PropTypes.func.isRequired
 };
 
 Verify.contextTypes = {

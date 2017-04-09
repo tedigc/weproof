@@ -23,7 +23,7 @@ router.get('/', authenticate, (req, res) => {
       for(let i=0; i<results.models.length; i++) {
 
         let singleExcerpt = {
-          attributes : results.models[i].attributes,
+          attributes  : results.models[i].attributes,
           tasksFind   : results.models[i].relations.tasks_find,
           tasksFix    : results.models[i].relations.tasks_fix,
           tasksVerify : results.models[i].relations.tasks_verify

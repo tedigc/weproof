@@ -107,7 +107,7 @@ class ExcerptModal extends React.Component {
   render() {
 
     let { excerpt, tasks, isOpen, acceptCorrections } = this.props;
-    let { title, body, stage, accepted, created } = excerpt;
+    let { title, body, stage, accepted, recommendedEdits, created } = excerpt;
     let { activeItem, selectedCorrection } = this.state;
     let { tasksFind, tasksFix, tasksVerify } = tasks;
     
@@ -125,6 +125,7 @@ class ExcerptModal extends React.Component {
       case 'corrections':
         sideMenuComponent = (
           <Corrections
+            nRecommendedEdits={recommendedEdits.length}
             accepted={accepted}
             tasksFix={tasksFix}
             tasksVerify={tasksVerify}

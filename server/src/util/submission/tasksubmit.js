@@ -139,47 +139,40 @@ export function submitVerifyTask(req, res, excerpt) {
 
   return bookshelf.transaction(t => {
 
+    let { excerptId, chosenEdit, votes } = req.body;
+
     return TaskVerify
       .forge({
-        excerpt_id   : req.body.excerptId,
+        excerpt_id   : excerptId,
         owner_id     : req.currentUser.attributes.id,
-        tasks_fix_id : req.body.taskFixId,
-        accepted     : req.body.accepted
+        chosen_edit  : chosenEdit,
+        votes        : votes
       }, { hasTimestamps: true })
       .save(null, { transacting : t, method: 'insert' })
       .then(() => {
         return new Promise((resolve, reject) => {
 
-          return TaskFix
+          return TaskVerify
             .query({
-              where : { excerpt_id : req.body.excerptId }
+              where : { excerpt_id : excerptId }
             })
             .fetchAll({
-              transacting : t,
-              withRelated : ['verifications']
+              transacting : t
             })
-            .then(tasks => {
-              // check if all the other
-              let allCorrectionsVerified = true;
-              for(let task of tasks.models) {
-                let verifications = task.relations.verifications;
-                if(verifications.length < MINIMUM_VERIFICATIONS_NEEDED) {
-                  allCorrectionsVerified = false;
-                  break;
-                }
-              }
+            .then((tasks) => {
 
-              if(allCorrectionsVerified) {
+              let completed = tasks.models.length >= MINIMUM_VERIFICATIONS_NEEDED;
+              if(completed) {
 
                 // close contributions
                 return excerpt
                   .save({ 
                     stage : 'complete' 
                   }, { transacting : t })
-                  .then(updatedExcerpt => { 
+                  .then((updatedExcerpt) => {
                     resolve(updatedExcerpt) ;
                   })
-                  .catch(err => { 
+                  .catch((err) => { 
                     reject(err); 
                   });
               } else {
@@ -190,10 +183,10 @@ export function submitVerifyTask(req, res, excerpt) {
         }); // promise;
       }); // forge;
   })
-  .then(excerpt => {
+  .then((excerpt) => {
     res.json({ success : true });
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err);
     res.status(500).json(err);
   });
