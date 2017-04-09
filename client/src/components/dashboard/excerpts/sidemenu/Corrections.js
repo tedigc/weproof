@@ -35,23 +35,53 @@ class Corrections extends React.Component {
   getFilteredCorrections() {
 
     let { selectedCorrection, showRejected } = this.state;
-    let { tasksFix, tasksVerify } = this.props;
-    let corrections = [];
+    let { nRecommendedEdits, tasksFix, tasksVerify } = this.props;
 
-    tasksFix.forEach((task, i) => {
-            
-      // get the verify tasks for this correction
-      let filteredTasksVerify = tasksVerify.filter(obj => {
-        return parseInt(obj.tasks_fix_id, 10) === task.id;
-      });
+    // count the votes for each correction
+    let totalVotes = new Array(nRecommendedEdits).fill([]);
+    let voteCounter = new Array(nRecommendedEdits).fill(0);
+
+    for(let verify of tasksVerify) {
+      let chosenEdit = verify.chosen_edit;
+      let votes = verify.votes;
+
+      // initialize the array of votes if it hasn't been initalized yet
+      if(totalVotes[chosenEdit].length === 0) {
+        if(votes.length === 0) continue;
+        else {
+          totalVotes[chosenEdit] = new Array(votes.length).fill(0);
+        }
+      }
 
       // count the votes
-      let votesAccept = 0;
-      let votesReject = 0;
-      for(let verify of filteredTasksVerify) {
-        if(verify.accepted) votesAccept++;
-        else                votesReject++;
+      for(let i=0; i<votes.length; i++) {
+        totalVotes[chosenEdit][i] += (votes[i]) ? 1 : 0;
       }
+      voteCounter[chosenEdit]++;
+    }
+
+    let corrections = [];
+
+    let comparator = function(a, b) {
+      if (a.chosen_edit < b.chosen_edit)
+        return -1;
+      if (a.chosen_edit > b.chosen_edit)
+        return 1;
+      return 0;
+    }
+
+    tasksFix.sort(comparator);
+
+    tasksFix.forEach((task, i) => {
+
+      // console.log(task);
+
+      let votes = totalVotes[task.chosen_edit];
+      let idx = i % totalVotes[task.chosen_edit].length;
+
+      // count the votes
+      let votesAccept = totalVotes[task.chosen_edit][idx];
+      let votesReject = voteCounter[task.chosen_edit] - votesAccept;
 
       // don't show the correction if rejects > accepts
       if(!showRejected) 
@@ -96,6 +126,7 @@ class Corrections extends React.Component {
 }
 
 Corrections.propTypes = {
+  nRecommendedEdits           : React.PropTypes.number.isRequired,
   accepted                    : React.PropTypes.bool.isRequired,
   tasksFix                    : React.PropTypes.array.isRequired,
   tasksVerify                 : React.PropTypes.array.isRequired,

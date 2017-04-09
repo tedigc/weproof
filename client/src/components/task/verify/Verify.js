@@ -32,10 +32,11 @@ class Verify extends React.Component {
 
   state = {
     currentlySelected : 0,
-    accepted          : new Array(this.props.corrections.length).fill(false) 
+    votes             : new Array(this.props.corrections.length).fill(false) 
   }
 
   constructor(props) {
+
     super(props);
     this.toggleShowOriginal = this.toggleShowOriginal.bind(this);
     this.getHighlightedText = this.getHighlightedText.bind(this);
@@ -48,6 +49,7 @@ class Verify extends React.Component {
   }
 
   toggleShowOriginal(e) {
+
     e.preventDefault();
     this.setState({ showOriginal: !this.state.showOriginal});
   }
@@ -76,28 +78,34 @@ class Verify extends React.Component {
   }
 
   acceptedOrRejected() {
+
     let { acceptReject } = this.state;
     return acceptReject === 'accept' || acceptReject === 'reject';
   }
 
   accept(e) {
+
     e.preventDefault();
     this.setState({ acceptReject : 'accept' });
   }
 
   reject(e) {
+
     e.preventDefault();
     this.setState({ acceptReject : 'reject' });
   }
 
   handleSubmit(e) {
+
+    let { excerpt, chosenEdit } = this.props;
+    let { votes } = this.state;
+
     e.preventDefault();
-    console.log('submitty');
     this.props.submitTask({
-      excerptId  : this.props.excerpt.id,
+      excerptId  : excerpt.id,
       taskType   : "verify",
-      accepted   : this.state.acceptReject === 'accept',
-      taskFixId  : this.props.taskFixId
+      votes      : votes,
+      chosenEdit : chosenEdit
     })
       .then(
         res => { this.context.router.push('/dashboard/home'); },
@@ -112,15 +120,15 @@ class Verify extends React.Component {
 
   handleSelectCorrection(idx) {
 
-    let { accepted } = this.state;
-    accepted[idx] = !accepted[idx];
-    this.setState({ accepted });
+    let { votes } = this.state;
+    votes[idx] = !votes[idx];
+    this.setState({ votes });
   }
 
   render() {
 
     let { corrections } = this.props;
-    let { currentlySelected, accepted } = this.state;
+    let { currentlySelected, votes } = this.state;
 
     let correctionsComponent = (
       <Item.Group>
@@ -133,7 +141,7 @@ class Verify extends React.Component {
               style={(idx === currentlySelected) ? { cursor : 'pointer', backgroundColor : '#EEEEEE'} : { cursor : 'pointer', backgroundColor : '#FFFFFF' } }
             >
               <Item.Content>
-                <Checkbox label={item} checked={accepted[idx]}/>
+                <Checkbox name={"checkbox" + idx} label={item} checked={votes[idx]}/>
               </Item.Content>
             </Item>
           );
@@ -157,7 +165,7 @@ class Verify extends React.Component {
             {/* Input Window */}
             <Grid.Column width={6}>
               <div style={{ display: 'flex', flexDirection: 'column', height: excerptHeight}}>
-                <Instructions text='The box on the left shows an excerpt submitted by a user for correction. By clicking the grey button, you can toggle whether it will show the original or edited version. Read both the original and edited versions of the excerpt and decide whether you want to accept or reject the proposed changes to the text.'/>
+                <Instructions text='The box on the left shows an excerpt of text. The red highlighted text indicates a portion of the original text, and the blue section indicates a correction that another user has made. Using the checkboxes on the right, view the different corrections and "check" those that you think are valid.'/>
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 2, marginTop: '20px'}}>
                   
                   {correctionsComponent}
