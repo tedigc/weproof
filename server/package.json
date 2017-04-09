@@ -12,7 +12,7 @@
     "rollback:development": "knex migrate:rollback --env development --knexfile src/db/knexfile.js",
     "seed:development": "knex seed:run         --env development --knexfile src/db/knexfile.js",
     "reset:development": "npm run rollback:development && npm run migrate:development && npm run seed:development",
-    "test": "./node_modules/.bin/mocha src/test --compilers js:babel-core/register"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha src/test --compilers js:babel-core/register"
   },
   "author": "tedigc",
   "license": "ISC",

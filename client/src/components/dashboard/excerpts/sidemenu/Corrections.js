@@ -83,9 +83,6 @@ class Corrections extends React.Component {
 
     tasksFix.forEach((task, i) => {
 
-      // console.log(task);
-
-      let votes = totalVotes[task.chosen_edit];
       let idx = i % totalVotes[task.chosen_edit].length;
 
       // count the votes

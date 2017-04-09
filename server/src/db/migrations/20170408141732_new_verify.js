@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
 
-  knex.schema.table('tasks_verify', (table) => {
+  return knex.schema.table('tasks_verify', (table) => {
     table.bigInteger('tasks_fix_id').unsigned().index().references('id').inTable('tasks_fix').onDelete('CASCADE');
     table.boolean('accepted').defaultTo(false);
     table.dropColumn('chosen_edit');
