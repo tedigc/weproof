@@ -3,6 +3,15 @@ import { Checkbox, Header, Label, Menu } from 'semantic-ui-react';
 
 const MAX_PREVIEW_LENGTH = 8;
 
+const styles = {
+  rejected : {
+    backgroundColor : '#ffc4d3'
+  },
+  rejectedActive : {
+    backgroundColor : '#DFB3BE'
+  }
+};
+
 class Corrections extends React.Component {
 
   state = {
@@ -87,12 +96,20 @@ class Corrections extends React.Component {
       if(!showRejected) 
         if(votesReject > votesAccept) return;
 
+      let style;
+      if(votesReject > votesAccept) {
+        if(i === selectedCorrection) style = styles.rejectedActive;
+        else                         style = styles.rejected;
+      }
+
       let correctionPreview = (task.correction.length > MAX_PREVIEW_LENGTH) ? task.correction.slice(0, MAX_PREVIEW_LENGTH) + '...' : task.correction;
       let correction = (
         <Menu.Item 
           key={i} 
           active={i === selectedCorrection} 
           onClick={() => { this.setSelectedCorrection(i); }}
+          style={style}
+          activeStyle={{}}
         >
           {correctionPreview}
           <Label color='red'>{votesReject}</Label>
