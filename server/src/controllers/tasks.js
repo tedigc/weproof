@@ -44,8 +44,6 @@ router.post('/', authenticate, (req, res) => {
 
   let { excerptId, taskType } = req.body;
 
-  console.log('> 0');
-
   Excerpt
     .query({
       where: { id : excerptId },
@@ -63,8 +61,6 @@ router.post('/', authenticate, (req, res) => {
           res.status(403).json({ error : 'The excerpt has progressed to the next stage and is no longer accepting ' + taskType + ' tasks.'});
           return;
         }
-
-        console.log('> 3');
 
         // check if the user has already submitted a task for this excerpt
         db('tasks').where('excerpt_id', excerptId).andWhere('owner_id', req.currentUser.get('id')).countDistinct('id')
