@@ -55,6 +55,11 @@ class SubmitForm extends React.Component {
     else if(remaining <= 80) charColour = 'orange';
     let spanStyle = { color : charColour }
 
+
+    let disabled = (title.length === 0) || (body.length === 0) || (remaining < 0);
+
+    console.log(disabled);
+
     if(submitted) {
       return (
         <Header as='h2' textAlign="center" icon>
@@ -70,7 +75,7 @@ class SubmitForm extends React.Component {
         <Form loading={loading} onSubmit={this.handleSubmit}> 
           <Form.Input name="title" placeholder="Title" value={title} onChange={this.handleChange} />
           <Form.TextArea name="body" placeholder="Write your excerpt here..." value={body} onChange={this.handleChange} />
-          <Button floated="right" type='submit' style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}} disabled={(remaining < 0)}>Submit</Button>
+          <Button floated="right" type='submit' style={{ backgroundColor : '#4096BE', color : '#FFFFFF'}} disabled={disabled}>Submit</Button>
           <span style={spanStyle} >Characters remaining: {MAX_EXCERPT_LENGTH - body.length}</span>
         </Form>
       );

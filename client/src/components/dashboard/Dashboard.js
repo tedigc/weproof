@@ -66,10 +66,10 @@ class Dashboard extends React.Component {
             My Excerpts
           </Menu.Item>
 
-          <Menu.Item as={Link} to='/dashboard/settings' name='setting' active={activeItem === '/dashboard/settings'}>
+          {/*<Menu.Item as={Link} to='/dashboard/settings' name='setting' active={activeItem === '/dashboard/settings'}>
             <Icon name='setting' />
             Settings
-          </Menu.Item>
+          </Menu.Item>*/}
 
           <Menu.Item name='logout' onClick={this.logout}>
             <Icon name='sign out' />
