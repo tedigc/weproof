@@ -6,7 +6,8 @@ import aggregate from '../util/aggregation/aggregate';
 
 import knex from 'knex';
 import config from '../db/knexfile';
-let db = knex(config.development);
+let env = process.env.NODE_ENV;
+let db = knex(config[env]);
 
 let router = express.Router();
 
@@ -43,6 +44,8 @@ router.post('/', authenticate, (req, res) => {
 
   let { excerptId, taskType } = req.body;
 
+  console.log('> 0');
+
   Excerpt
     .query({
       where: { id : excerptId },
@@ -50,6 +53,7 @@ router.post('/', authenticate, (req, res) => {
     })
     .fetch()
     .then(excerpt => {
+
       if(!excerpt) {
         res.status(500).json({ error : "No such excerpt" });
       } else {
@@ -60,9 +64,12 @@ router.post('/', authenticate, (req, res) => {
           return;
         }
 
+        console.log('> 3');
+
         // check if the user has already submitted a task for this excerpt
-        db('tasks').where('excerpt_id', excerptId).andWhere('owner_id', req.currentUser.attributes.id).countDistinct('id')
+        db('tasks').where('excerpt_id', excerptId).andWhere('owner_id', req.currentUser.get('id')).countDistinct('id')
           .then(result => {
+
             let nTasks = parseInt(result[0].count, 10);
             if(nTasks === 0) {
               if(taskType === "find")   return submitFindTask(req, res, excerpt);
@@ -72,6 +79,7 @@ router.post('/', authenticate, (req, res) => {
               res.status(403).json({ error : 'You have already submitted a task for this excerpt' });
               return;
             }
+
           })
           .catch(err => {
             console.error(err);
@@ -112,6 +120,7 @@ router.get('/available', authenticate, (req, res) => {
         .query((qb) => {
 
           qb
+            .select('id', 'body', 'stage', 'created_at')
             .where('id', 'not in', submittedTaskExcerptIDs)
             .andWhere('owner_id', '!=', req.currentUser.id )
             .andWhere('stage', '<>', 'complete');
@@ -124,6 +133,7 @@ router.get('/available', authenticate, (req, res) => {
           for(let i=0; i<excerpts.models.length; i++) {
             taskAttributes.push(excerpts.models[i].attributes);
           }
+
           res.status(200).json(taskAttributes);
 
         });

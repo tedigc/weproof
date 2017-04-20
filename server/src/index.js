@@ -2,6 +2,8 @@ require('babel-register')({
   "presets": ["es2015"]
 });
 
+console.log(process.env.NODE_ENV);
+
 import express    from 'express';
 import morgan     from 'morgan';
 import path       from 'path';

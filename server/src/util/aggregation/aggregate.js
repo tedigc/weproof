@@ -67,7 +67,11 @@ export function calculateFinalPatches(body, roughPatches) {
 
 export default function(nTasks, body, heatmap) {
 
+  console.log('aggregating');
+  console.log('nTasks ' + nTasks);
+
   if(nTasks < MINIMUM_SUBMISSIONS_REQUIRED) return [];
+
   let cutoff = nTasks * 0.2;  // 20% of users should agree on patches
   let roughPatches = calculateRoughPatches(heatmap, cutoff);
 

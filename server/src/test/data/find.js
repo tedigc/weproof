@@ -1,4 +1,4 @@
-let testData = [
+let data = [
   {
     "excerptId" : 1,
     "taskType"  : "find",
@@ -51,4 +51,4 @@ let testData = [
   }
 ];
 
-export default testData;
+export default data;

@@ -5,7 +5,8 @@ import merge from '../../util/aggregation/merge';
 
 import knex from 'knex';
 import config from '../../db/knexfile';
-let db = knex(config.development);
+let env = process.env.NODE_ENV;
+let db = knex(config[env]);
 
 const MINIMUM_FIX_TASK_SUBMISSIONS = 3;
 const MINIMUM_VERIFICATIONS_NEEDED = 1;
@@ -35,6 +36,9 @@ export function submitFindTask(req, res, excerpt) {
                   let body    = excerpt.get('body');
                   let nTasks  = parseInt(result[0].count, 10) + 1; // add one, because the TaskFind.forge changes haven't been committed
 
+                  console.log(task.id);
+                  console.log(nTasks);
+
                   // for each patch the user has submitted, increment the heatmap within the patch's range
                   for(let i=0; i<patches.length; i++) {
                     let patch = patches[i];
@@ -44,6 +48,9 @@ export function submitFindTask(req, res, excerpt) {
                   }
 
                   recommended_edits = aggregate(nTasks, body, heatmap);
+
+                  console.log(recommended_edits);
+
                   if(recommended_edits.length > 0) stage = 'fix';
 
                   // update the excerpt's stage and recommended edits
@@ -54,7 +61,10 @@ export function submitFindTask(req, res, excerpt) {
                       heatmap
                     }, { transacting : t })
                     .then(result => {
-                      resolve(result);
+                      resolve({
+                        task,
+                        excerpt : result
+                      });
                     })
                     .catch(err => {
                       reject(err);
@@ -64,8 +74,11 @@ export function submitFindTask(req, res, excerpt) {
         });
       });
   })
-  .then(excerpt => {
-    res.json({ success : true });
+  .then(result => {
+    res.json({ 
+      success : true,
+      result
+    });
   })
   .catch(err => {
     console.error(err);

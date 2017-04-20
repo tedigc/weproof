@@ -12,7 +12,10 @@
     "rollback:development": "knex migrate:rollback --env development --knexfile src/db/knexfile.js",
     "seed:development": "knex seed:run         --env development --knexfile src/db/knexfile.js",
     "reset:development": "npm run rollback:development && npm run migrate:development && npm run seed:development",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha src/test --compilers js:babel-core/register"
+    "migrate:production": "knex migrate:latest   --env production --knexfile src/db/knexfile.js",
+    "rollback:production": "knex migrate:rollback --env production --knexfile src/db/knexfile.js",
+    "reset:production": "npm run rollback:production && npm run migrate:production && npm run seed:production",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha src/test --timeout 20000 --compilers js:babel-core/register"
   },
   "author": "tedigc",
   "license": "ISC",
