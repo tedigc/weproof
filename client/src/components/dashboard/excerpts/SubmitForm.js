@@ -58,8 +58,6 @@ class SubmitForm extends React.Component {
 
     let disabled = (title.length === 0) || (body.length === 0) || (remaining < 0);
 
-    console.log(disabled);
-
     if(submitted) {
       return (
         <Header as='h2' textAlign="center" icon>

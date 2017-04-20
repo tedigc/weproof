@@ -22,55 +22,49 @@ export function submitFindTask(req, res, excerpt) {
         patches    : req.body.patches
       }, { hasTimestamps: true })
       .save(null, { transacting : t, method: 'insert' })
-      .then(task => {
+      .then((task) => {
 
         return new Promise((resolve, reject) => {
 
-            return db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
-                .then(result => {
+          return db('tasks_find').where('excerpt_id', excerpt.id).countDistinct('id')
+              .then(result => {
 
-                  let recommended_edits;
-                  let patches = task.get('patches');
-                  let stage   = 'find';
-                  let heatmap = excerpt.get('heatmap');
-                  let body    = excerpt.get('body');
-                  let nTasks  = parseInt(result[0].count, 10) + 1; // add one, because the TaskFind.forge changes haven't been committed
+                let recommended_edits;
+                let patches = task.get('patches');
+                let stage   = 'find';
+                let heatmap = excerpt.get('heatmap');
+                let body    = excerpt.get('body');
+                let nTasks  = parseInt(result[0].count, 10) + 1; // add one, because the TaskFind.forge changes haven't been committed
 
-                  console.log(task.id);
-                  console.log(nTasks);
-
-                  // for each patch the user has submitted, increment the heatmap within the patch's range
-                  for(let i=0; i<patches.length; i++) {
-                    let patch = patches[i];
-                    for(let j=patch[0]; j<patch[1]; j++) {
-                      heatmap[j]++;
-                    }
+                // for each patch the user has submitted, increment the heatmap within the patch's range
+                for(let i=0; i<patches.length; i++) {
+                  let patch = patches[i];
+                  for(let j=patch[0]; j<patch[1]; j++) {
+                    heatmap[j]++;
                   }
+                }
 
-                  recommended_edits = aggregate(nTasks, body, heatmap);
+                recommended_edits = aggregate(nTasks, body, heatmap);
+                if(recommended_edits.length > 0) stage = 'fix';
 
-                  console.log(recommended_edits);
-
-                  if(recommended_edits.length > 0) stage = 'fix';
-
-                  // update the excerpt's stage and recommended edits
-                  return excerpt
-                    .save({
-                      stage,
-                      recommended_edits,
-                      heatmap
-                    }, { transacting : t })
-                    .then(result => {
-                      resolve({
-                        task,
-                        excerpt : result
-                      });
-                    })
-                    .catch(err => {
-                      reject(err);
+                // update the excerpt's stage and recommended edits
+                return excerpt
+                  .save({
+                    stage,
+                    recommended_edits,
+                    heatmap
+                  }, { transacting : t })
+                  .then(updatedExcerpt => {
+                    resolve({
+                      excerpt : updatedExcerpt,
+                      task
                     });
+                  })
+                  .catch(err => {
+                    reject(err);
+                  });
 
-                });
+              });
         });
       });
   })
@@ -98,7 +92,7 @@ export function submitFixTask(req, res, excerpt) {
         correction  : req.body.correction
       }, { hasTimestamps: true })
       .save(null, { transacting : t, method: 'insert' })
-      .then(submittedTask => {
+      .then(task => {
 
         return new Promise((resolve, reject) => {
 
@@ -126,8 +120,11 @@ export function submitFixTask(req, res, excerpt) {
                 .save({ 
                   stage 
                 }, { transacting : t })
-                .then(result => {
-                  resolve(result);
+                .then(updatedExcerpt => {
+                  resolve({
+                    excerpt : updatedExcerpt,
+                    task
+                  });
                 })
                 .catch(err => {
                   reject(err);
@@ -138,8 +135,11 @@ export function submitFixTask(req, res, excerpt) {
       }); // forge
 
   })
-  .then(excerpt => {
-    res.json({ success : true });
+  .then(result => {
+    res.json({ 
+      success : true,
+      result
+    });
   })
   .catch(err => {
     console.error(err);
@@ -162,7 +162,7 @@ export function submitVerifyTask(req, res, excerpt) {
         votes        : votes
       }, { hasTimestamps: true })
       .save(null, { transacting : t, method: 'insert' })
-      .then(() => {
+      .then((task) => {
         return new Promise((resolve, reject) => {
 
           return TaskVerify
@@ -183,7 +183,10 @@ export function submitVerifyTask(req, res, excerpt) {
                     stage : 'complete' 
                   }, { transacting : t })
                   .then((updatedExcerpt) => {
-                    resolve(updatedExcerpt) ;
+                    resolve({
+                      excerpt : updatedExcerpt,
+                      task
+                    });
                   })
                   .catch((err) => { 
                     reject(err); 
@@ -196,8 +199,11 @@ export function submitVerifyTask(req, res, excerpt) {
         }); // promise;
       }); // forge;
   })
-  .then((excerpt) => {
-    res.json({ success : true });
+  .then((result) => {
+    res.json({ 
+      success : true,
+      result
+    });
   })
   .catch((err) => {
     console.error(err);

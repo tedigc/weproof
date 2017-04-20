@@ -58,7 +58,7 @@ router.post('/', authenticate, (req, res) => {
 
         // check that the excerpt stage and task type match
         if(excerpt.get('stage') !== taskType) {
-          res.status(403).json({ error : 'The excerpt has progressed to the next stage and is no longer accepting ' + taskType + ' tasks.'});
+          res.status(403).json({ error : 'The excerpt is not currently in this stage.'});
           return;
         }
 
@@ -301,7 +301,7 @@ router.get('/:excerptId/verify', authenticate, (req, res) => {
             corrections
           };
 
-          res.json(taskInfo);
+          res.json({taskInfo});
 
         })
         .catch((err) => {
