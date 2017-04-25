@@ -12,7 +12,6 @@ class Summary extends React.Component {
   render() {
     let { complete, accepted, dateCreated, dateCompleted, length, nTasksFind, nTasksFix, nTasksVerify } = this.props;
     let nTotalTasks = nTasksFind + nTasksFix + nTasksVerify;
-    let cost = '£' + (nTotalTasks * PRICE_PER_TASK).toFixed(2);
     let { rowName, rowValue } = styles;
 
     let acceptButton = (
@@ -66,11 +65,6 @@ class Summary extends React.Component {
           <Table.Row>
             <Table.Cell style={rowName}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Verify Tasks</Table.Cell>
             <Table.Cell style={rowValue}>{nTasksVerify}</Table.Cell>
-          </Table.Row>
-
-          <Table.Row>
-            <Table.Cell style={rowName}>Cost</Table.Cell>
-            <Table.Cell style={rowValue}>{cost}</Table.Cell>
           </Table.Row>
 
         </Table>
