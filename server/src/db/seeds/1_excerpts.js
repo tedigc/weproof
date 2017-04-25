@@ -1,5 +1,5 @@
 
-let body1 = 'This project aims to produce a web application that uses crowdsourcing to assist non-native English speakers with their written English. This is a demographic common to many British universities with a large international student population';
+let body1 = 'This project aims to produce a web aplicaton that uses crowdsourcing to assist non-native English speakerz with their writtten English. This is a demographic common to many British universities with a large international student population';
 let body2 = 'Formally speaking, the project has two groups of primary stakeholders. The first group is made up of primarily non-native English speakers seeking assistance with their written English who, in the final product, should be able to:';
 let body3 = 'Both target audiences will be able to view a summary of their individual use of the application. For example; workers will have a dashboard showing tasks they can complete and a history of their submissions, while users seeking assistance should be able to review any verified corrections they have received.';
 let body4 = 'Secondary to these points, the project aims to provide a maintainable code base for future work, explore and effectively use contemporary web technologies, and provide a positive user experience by focusing on implementing an intuitive and responsive UI.';

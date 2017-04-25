@@ -30,7 +30,7 @@ class VerifyPropWrapper extends React.Component {
       .then(
         res => {
 
-          let { chosenEdit, corrections, patch } = res.data;
+          let { chosenEdit, corrections, patch } = res.data.taskInfo;
 
           this.setState({
             loading : false,
