@@ -72,8 +72,6 @@ describe('API routes - auth', () => {
           expect(decoded).to.have.property('id');
           expect(decoded).to.have.property('username');
           expect(decoded).to.have.property('iat');
-          
-          expect(decoded.id).to.equal(1);
           expect(decoded.username).to.equal('user1');
 
           done();
@@ -103,7 +101,6 @@ describe('API routes - auth', () => {
           expect(decoded).to.have.property('username');
           expect(decoded).to.have.property('iat');
           
-          expect(decoded.id).to.equal(1);
           expect(decoded.username).to.equal('user1');
 
           done();
