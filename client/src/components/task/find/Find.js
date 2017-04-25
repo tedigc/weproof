@@ -236,7 +236,7 @@ class Find extends React.Component {
                       <Button style={styles.highlightButton} content="Highlight" fluid onClick={this.handleHighlight} />
                       <Button basic content="Clear All" fluid onClick={this.handleClear}/>
                     </div>
-                    <Button style={{ marginTop : 15, backgroundColor : '#4096BE' }} fluid type='submit' primary>Submit</Button>
+                    <Button style={{ marginTop : 15, backgroundColor : '#4096BE' }} fluid type='submit' primary disabled={patches.length === 0}>Submit</Button>
                   </div>
                 </div>
               </div>
