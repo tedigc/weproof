@@ -9,7 +9,7 @@ let env = process.env.NODE_ENV;
 let db = knex(config[env]);
 
 const MINIMUM_FIX_TASK_SUBMISSIONS = 3;
-const MINIMUM_VERIFICATIONS_NEEDED = 1;
+const MINIMUM_VERIFICATIONS_NEEDED = 5;
 
 export function submitFindTask(req, res, excerpt) {
 
