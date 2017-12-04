@@ -2,6 +2,10 @@
 
 WeProof is a web application that uses the power of crowdsourcing to help non-native English speakers proof-read their written English, be it in the form of essays, reports or dissertations. This project endeavors to take advantage of the untapped crowdsourcing potential of Universities, in the form of students and staff, and provide much needed assistance to the international and non-native English speaking student populations at Universities around the country.
 
+This was made for my third-year project as part of my Computer Science degree. It's very much a prototype and doesn't yet feature things like incentive payouts or low-effort-feedback flagging. Feel free to make a pull request for these or any other additional features you think would be useful.
+
+[Check it out here](https://tedigc-individual-project.herokuapp.com/)
+
 ## Quick Start
 
 Clone the repository. Ensure you have npm installed and install all necessary node modules for the root, client, and server 
